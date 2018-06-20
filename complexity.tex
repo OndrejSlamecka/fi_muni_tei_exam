@@ -1,0 +1,502 @@
+\section{Složitost}
+
+\subsection{Časové a paměťové složitosti}
+
+\begin{definition}
+    Nechť $f, g : \mathbb{N} \to \mathbb{N}$. Řekneme, že
+    $f \in \mathcal{O}(g)$, pokud
+    \[
+        \exists c, n_0 \; \forall n, n > n_0
+        \text{ platí }
+        f(n) \leq c \cdot g(n)
+    \]
+\end{definition}
+
+\begin{definition}
+Řekneme že Turingův stroj vyžaduje čas $T(n)$, $T : \mathbb{N} \to \mathbb{N}$,
+pokud pro každý vstup $w$ provede nejvýše $T(\lvert w \rvert)$ kroků.
+
+Řekneme že Turingův stroj vyžaduje prostor $S(n)$, $S : \mathbb{N} \to \mathbb{N}$,
+pokud pro každý vstup $w$ použije nejvýše $S(\lvert w \rvert)$ míst
+pásky.
+\end{definition}
+
+\begin{claim}
+    Jestliže funkce $f : \{0, 1\}^* \to \{0, 1\}$ je funkce vyčíslitelná
+    TS $M$ s~abecedou $\Gamma$ v~čase $T(n)$, potom je vyčíslitelná i
+    TS $M'$ s abecedou $\{0,1\}$ v~čase $4 \log \lvert \Gamma \rvert
+    \cdot T(n)$.
+\end{claim}
+
+Jednoduše každý prvek $\Gamma$ kódujeme pomocí $\log \lvert \Gamma
+\rvert$ bitů.
+
+\begin{claim}
+    Jestliže funkce $f : \{0, 1\}^* \to \{0, 1\}$ je funkce vyčíslitelná
+    TS $M$ s~$k$ páskami (a páskou pro vstup a páskou pro výstup) v~čase $T(n)$,
+    potom je vyčíslitelná i TS $M'$ s~jedinou pracovní páskou (a páskou
+    pro vstup a páskou pro výstup) v~čase
+    $5 k \cdot T(n)^2$.
+\end{claim}
+
+Turingův stroj $M'$ kóduje obsah prvního políčka $k$ pásek pomocí pozic
+$1, k+1, 2k+1,\ldots$, obsah druhého políčka pomocí $2, k+2,
+2k+2,\ldots,$ a tak dále. Ke každému symbolu $a$ nabíc máme $\hat a$,
+který značí, že na této pozici je hlava odpovídající pásky.
+Každý krok výpočtu nejprve projde celou pásku pro nalezení pozic hlav
+a potom provede změnu pásek dle definice $M$. Každý takový krok má tedy
+složitost $5kT(n)$ (projítí celé pásky $M'$) a je jich $T(n)$ (dle složitosti $M$).
+
+Definujeme základní třídy rozhodovacích problémů v~závistlosti
+na potřebném čase pro jejich řešení. Nejprve však uvedeme větu, která
+vysvětlí důvod multiplikativní konstanty u času vyžadovaného v~definici.
+
+\begin{theorem}[Lineární zrychlení]
+    Nechť $M$ je TS se složitostí $T(n)$ a $c > 0$.
+    Potom existuje TS $M'$, který řeší stejný problém
+    se složitostí $1/2 T(n) + n + 2$.
+\end{theorem}
+
+Pro důkaz se zkonstruuje stroj se stavy reprezentujícími trojice stavů
+původního automatu. Pozice pásky $i$ nového automatu reprezentuje stavy
+$2i-1, 2i, 2i+1$, tedy trojice se překrývají. Neaktuální stavy ve
+vedlejších trojicích je třeba při přechodu aktualizovat.
+
+Podobně existuje věta o kompresi pásky.
+
+\begin{itemize}
+    \item $DTIME(T(n)) = \{ L(M) \mid \text{$M$ je det. TS vyžadující
+        čas $c \cdot T(n)$}, c > 0 \}$
+    \item $NTIME(T(n)) = \{ L(M) \mid \text{$M$ je nedet. TS vyžadující
+    čas } c \cdot T(n), c > 0 \}$
+\end{itemize}
+
+Platí například, že pro každý nedeterministický stroj počítající v~čase
+$T(n)$ existuje deterministický stroj počítající v~čase
+$2^{\mathcal{O}(T(n))}$. A to protože nedeterministický stroj lze
+simulovat deterministickým tak, že prohledává strom možný konfigurací do
+šířky.
+
+Pro složitostní třídy uvažujeme TS s~vyhrazenou read-only vstupní páskou
+a write-only výstupní páskou, které do použitého prostoru nepočítáme.
+
+\begin{itemize}
+    \item $DSPACE(T(n)) = \{ L(M) \mid \text{$M$ je det. TS vyžad.
+        prostor } c \cdot T(n), c > 0 \}$
+    \item $NSPACE(T(n)) = \{ L(M) \mid \text{$M$ je nedet. TS vyžadující
+        prostor nejvýše}$ $c \cdot T(n) \text{ v~každé větvi}, c > 0 \}$
+\end{itemize}
+
+\begin{theorem}[Savitch]
+    Nechť $S : \mathbb{N} \to \mathbb{N}$, $S(n) \geq \log n$,
+    potom $NSPACE(S(n)) \subseteq DSPACE(S(n)^2)$.
+\end{theorem}
+
+Savitch navrhl algoritmus \verb|k_edge_path|,
+který zjišťuje, zda existuje cesta z~$s$ do $t$ délky~nejvýše $k$, a to
+tak, že v~každém kroku rekurzivně zkusí, jestli existuje cesta z~$s$ do
+nějakého (tj. zkusí všechny) $u$ délky $k/2$ a z~$u$ do $t$ délky $k/2$.
+Algoritmus použije nejvýše $\log n$ úrovní a v~každé
+$\mathcal{O}(\log n)$ bitů.
+Výpočet stroje pro problém v~$NSPACE$ můžeme interpretovat jako graf
+velikosti $2^{S(n)}$, počáteční stav nazvat $s$, zkusit koncové stavy
+$t$ a za $k$ dosadit $n$. Celková složitost je tedy
+$\mathcal{O}((\log 2^{S(n)})^2) = \mathcal{O}((S(n))^2)$.
+
+Zavedeme některé užitečné třídy složitosti.
+
+\begin{itemize}
+    \item $\P = \bigcup DTIME(n^k)$
+    \item $\NP = \bigcup NTIME(n^k)$
+    \item $\PSPACE = \bigcup DSPACE(n^k)$
+\end{itemize}
+Platí například
+\begin{itemize}
+    \item $\PSPACE = \NPSPACE$ (ze Savitchovy věty),
+    \item jinak nevíme nic moc, ani třeba zda $\NP \cap \coNP$ (kde je
+        například grafový izomorfismus) je $\P$.
+\end{itemize}
+
+Povolíme-li navíc pásku s~náhodnými bity získáváme pravděpodobnostní
+Turingovy stroje (PTS) a třídy složitosti.
+
+\begin{itemize}
+    \item $\BPP$ -- problémy rozhodnutelné v~polynomiálním čase PTS s~oboustrannou chybou,
+    \item $\RP$ -- problémy rozhodnutelné v~polynomiálním čase PTS s~jednostrannou chybou,
+    \item $\ZPP$ -- problémy rozhodnutelné v~{\bf očekávaném}
+        polynomiálním čase na PTS bez chyb.
+\end{itemize}
+Platí například
+\begin{itemize}
+    \item $\ZPP = \RP \cap \coRP$,
+    \item $\P \subseteq \ZPP$,
+    \item vztah $\BPP$ a $\NP$ není znám,
+    \item $\BPP \subseteq \Sigma_2 \cap \Pi_2$ (důkaz není snadný).
+\end{itemize}
+
+\subsection{Úplné problémy složitostních tříd}
+
+\begin{definition}
+    Nechť $A, B$ jsou rozhodovací problémy.
+    Řekneme, že $A$ se {\em polynomiálně redukuje} na $B$,
+    $A \leq_p B$, pokud existuje v~polynomiálním čase vyčíslitelná
+    funkce $f$ taková, že $x \in A \iff f(x) \in B$.
+\end{definition}
+
+Obdobně můžeme definovat relaci redukce v~logaritmickém {\bf prostoru}
+$\leq_{\log}$. Je důležité si uvědomit, že $\L \subseteq \P$,
+jelikož TS používající $\mathcal{O}(\log n)$ prostoru nemůže
+použít více než $2^{\mathcal{O}(\log n)} = n^{\mathcal{O}(1)}$ času
+aniž by opakoval již projdené konfigurace. Platí tedy
+$(A,B) \in {\leq_{\log}} \implies (A,B) \in {\leq_p}$.
+
+\begin{definition}
+    Nechť $\mathcal{C}$ je třída rozhodovacích problémů
+    a $\preceq$ relace redukce.
+    Problém $A$ nazveme $\preceq$-{\em těžký} v~$\mathcal{C}$,
+    pokud pro každý problém $B \in \mathcal{C}$
+    platí $B \preceq A$.
+    Problém $A$ nazveme $\preceq$-{\em úplný} v~$\mathcal{C}$, pokud je
+    $\preceq$-těžký v~$\mathcal{C}$ a $A \in \mathcal{C}$.
+\end{definition}
+
+Každý problém v~$\P$ je triviálně úplný vzhledem k~polynomiální redukci.
+Příkladem $\P$ úplného problému vzhledem k~logaritmické redukci je
+{\em Circuit Value Problem}.
+
+\begin{definition}
+    Instance {\em Circuit Value Problem (CVP)}
+    je zadána konečně mnoha přiřazení tvaru
+    \begin{itemize}
+        \item $P_i \coloneqq 0$,
+        \item $P_i \coloneqq 1,$
+        \item $P_i \coloneqq P_j \land P_k, \quad j, k < i$,
+        \item $P_i \coloneqq P_j \lor P_k, \quad j, k < i$,
+        \item $P_i, \coloneqq \neg P_j, \quad j < i$.
+    \end{itemize}
+    kde každé $P_i$ se vyskytuje na levé straně právě jednou. Díky
+    podmínkám $j,k < i$ je zaručena acyklicita. Cílem je spočítat $P_n$,
+    kde $n$ je nejvyšší index.
+\end{definition}
+
+\begin{theorem}
+    CVP je $\leq_{\log}$-úplný v~$\P$.
+\end{theorem}
+
+\begin{proof} (Náčrt.)
+    Příšlušnost $CVP$ do $\P$ se ověří snadno. Odpovídající TS projde
+    $P_i$ v pořadí $i = 1,\ldots,n$ a vyhodnotí je.
+
+    Pro důkaz $\leq_{\log}$-úplnosti v~$\P$ zakódujeme výpočet
+    deterministického TS vyžadujícího polynomiální množství času na
+    daném vstupu jako instanci $CVP$.
+    Základní myšlenka je definovat v~obvodu booleovské proměnné
+    $P^{a}_{ij}, a \in \Gamma$, která značí, že na pásce je na pozici
+    $j$ symbol $a$ v~čase $i$,
+    $Q^q_{ij}, q \in Q$, která značí, že stroj v~čase $i$ je ve stavu $q$
+    a hlavu má na pozici $j$.
+    Konkrétněji můžeme například definovat $P^{b}_{ij}$ tak,
+    že už na pozici $j$ symbol byl v čase $i-1$ a hlava stroje se tam
+    nenachází {\em nebo} (tj. disjunkce)
+    jako disjunkci přes všechny přechody tak, že stroj byl
+    v~odpovídajícím stavu a s~odpovídajícím stavem pásky tak, aby byl
+    povolen přechod.
+    Detaily jsou v~{\em Theory of Computation} (Kozen).
+    Konstrukce používá logaritmický prostor pro zapsání indexů,
+    v~ostatních místech stačí prostor konstantní.
+\end{proof}
+
+\pagebreak
+
+\begin{theorem}[Cook-Levin]
+    $SAT$ je $\NP$-úplný.
+\end{theorem}
+
+K důkazu můžeme použít myšlenky důkaz pro $CVP$.
+Získaný $CVP$ transformujeme na formuli tak, že zvolíme
+$P_i \Leftrightarrow E_i$ pro každé $P_i \coloneqq E_i$
+a vezmeme konjunkci všech takto získaných formulí. Získaná formule je
+splnitelná právě tehdy když $M$ akceptuje.
+
+Standardnější, i když podobný, způsob důkazu je zakódování popisu
+výpočtu každého nedeterministického TS do formule prvořádové logiky.
+
+% https://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/npcomplete.pdf
+
+Nyní ukážeme důkaz $\NP$-těžkosti pomocí redukce. Připomeňme, že problém
+vrcholového pokrytí je najít množinu takovou, že každá hrana v~ní má
+alespoň jeden vrchol. Problém nezávislé množiny je pro $k$ se ptá, zda
+v~grafu existuje množina alespoň $k$ vrcholů nespojených hranou.
+
+\begin{theorem}
+    $S$ je nezávislá množina $\iff$ $V \setminus S$ je vrcholové
+    pokrytí.
+\end{theorem}
+
+\begin{proof}
+$\implies$ Předpokládejme, že $S$ je nezávislá množina
+a $e = (u,v)$ hrana. Pouze jeden z~$u,v$ je v~$S$,
+tedy pouze jeden z~$u,v$ je v~$V \setminus S$, tedy $V \setminus S$ je
+vrcholové pokrytí.
+
+$\impliedby$ Předpokládejme, že $V \setminus S$ je vrcholové pokrytí
+a $u, v \in S$. Mezi $u,v$ není hrana (jinak by nebyl pokrytý
+v~$V \setminus S$). Takže $S$ je nezávislá množina.
+\end{proof}
+
+Problém nezávislé množiny se redukuje na problém vrcholového pokrytí.
+Podle věty se na existenci nezávislé množiny velikosti $k$
+je potřeba zeptat na existenci vrcholového pokrytí
+$V \setminus S$ velikosti $ \leq \lvert V \rvert - k$.
+
+Problém vrcholového pokrytí se redukuje na problém nezávislé množiny.
+Podle věty se na zjištění existence vrcholového pokrytí o $k$ vrcholech
+je potřeba se zeptat na nezávislou množinu velikosti $n-k$.
+
+O obou problémech nyní víme, že jsou stejně těžké, jelikož se na sebe
+redukují. Stačí vědět o jednom (předpokládejme, že máme důkaz), že je
+$\NP$-těžký a nyní automaticky víme, že i ten druhý je $\NP$-těžký.
+Důkaz příslušnosti do $\NP$ je snadný, problémy jsou tedy $\NP$-úplné.
+
+\subsection{$\P-\NP$ problém}
+
+\begin{itemize}
+\item $\P \neq \NP$, důkaz dává dolní odhad na řešení SAT se složitostí
+    $2^{\lvert\varphi\rvert}$.
+    Zůstává teorie i praxe.
+
+\item $\P \neq \NP$, ale existuje algoritmus pro SAT se složitostí
+    $2^{\lvert\varphi\rvert^{0.001}}$.
+    Teorie zůstává jak jsme předpokládali, praxe se
+    dost mění (zejména kryptografie).
+
+\item $\P = \NP$, ale nejlepší polynomiální algoritmus pro SAT má
+    složitost $2^{1000000!} \cdot \lvert \varphi \rvert$.  Teorie se
+    dost mění, praxe zůstává stejná.
+
+\item $\P = \NP$, nejlepší algoritmus pro SAT má složitost
+    $c \cdot \lvert \varphi \rvert$, kde $c$ je přiměřeně malá konstanta
+    vzhledem k současným možnostem hardware.
+    Mění se teorie i praxe.
+\end{itemize}
+
+\subsection{Složitost aproximací}
+
+O algoritmech více v~sekci o řešení těkých problémů.
+(Vzhledem k~tomu, že složitost aproximací se nikde neprobírala (kromě
+občasné zmínky \uv{pro tento problém neexistuje aproximační algoritmus}
+na IA101), spokojím se zde s krátkým přehledem složitostních tříd.)
+Připomeňme, že níže uvedené jsou třídy optimizačních problémů.
+% https://en.wikipedia.org/wiki/Optimization_problem
+
+\begin{definition}
+    Problém patří do třídy $\APX$ ({\em approximable}), pokud pro něj existuje
+    aproximativní algoritmus s~polynomiální složitostí
+    a konstantním aproximativním poměrem.
+\end{definition}
+
+\begin{definition}
+    Problém patří do třídy $\PTAS$ ({\em polynomial time approximation
+    scheme}), pokud pro něj existuje
+    aproximativní algoritmus, který pro daný vstup a $\varepsilon > 0$
+    vypočte $(1+\varepsilon)$-aproximativní řešení
+    v~čase polynomiálním vzhledem k~velikosti vstupu.
+\end{definition}
+
+Zejména třeba $n^{1/\varepsilon}$ je povolená
+složitost, přestože nárust složitosti je se zmenšujícím se $\varepsilon$
+exponenciální.
+
+\begin{definition}
+    Problém patří do třídy $\FPTAS$ ({\em fully polynomial time approximation
+    scheme}), pokud pro něj existuje
+    aproximativní algoritmus, který pro daný vstup a $\varepsilon > 0$
+    vypočte $(1+\varepsilon)$-aproximativní řešení
+    v~čase polynomiálním vzhledem k~velikosti vstupu a k~$1/\varepsilon$.
+\end{definition}
+
+Platí $\FPTAS \subseteq \PTAS \subseteq \APX$.
+
+\subsection{Interaktivní a zero-knowledge dokazovací systémy}
+
+\begin{definition}
+    Nechť $P, V$ ({\em Prover, Verifier}) jsou Turingovy stroje s~dvěmi
+    společnými páskami: vstupní a komunikační. $P$ je s neomezenými
+    zdroji a $V$ má pracovní pásku, polynomiální čas a přístup k
+    náhodným bitům. $V$ začíná výpočet a může přes pracovní pásku
+    polynomiálněkrát položit dotaz $P$. Na konci $V$ buď akceptuje
+    nebo zamítá.
+
+    Protokol $(P,V)$ nazveme {\em interaktivní dokazovací systém} pro
+    $A$, pokud pro všechny $x$,
+    \begin{itemize}
+        \item pokud $x \in A$, pak platí $P_y((P,V)$ akceptuje $x) > 1/2$,
+        \item pokud $x \not \in A$, pak pro všechny $P'$ platí $P_y((P',V)$
+            akceptuje $x) < 1/2$,
+    \end{itemize}
+    kde pravděpodobnost je přes uniformní distribuci bitových
+    posloupností $y$ (delších než kolik může verifier použít).
+
+    Třídu problémů rozhodnutelných interaktivním dokazovacím systémem nazýváme
+    $\IP$.
+\end{definition}
+
+\pagebreak
+
+\begin{theorem}
+    $SAT \in \IP$.
+\end{theorem}
+
+\begin{proof}
+    Prover pošle splňující přiřazení, pokud existuje. Verifier
+    akceptuje právě tehdy, když je formule s~přiřazením splněna.
+
+    Pokud je $\phi \in SAT$, pak $(P,V)$ akceptuje s~pravděpodobností 1.
+    Pokud $\phi \not \in SAT$, pak žádný $P'$ nepřesvědčí Verifiera o
+    splnitelnosti $\phi$, tedy akceptuje s~pravděpodobností 0.
+\end{proof}
+
+\begin{theorem}
+    Grafový {\bf ne}izomorfismus je v~$\IP$.
+\end{theorem}
+
+Grafový izomorfismus je v~$\NP$, nevíme ale, zda je v $\coNP$.
+Důkaz je popsán v {\em Theory of Computation} (Kozen).
+
+
+Zero-knowledge dokazovací systémy jsou takové, ve kterých $P$ neprozradí
+$V$ žádnou informaci kromě platnosti nějakého tvrzení. Příkladem je
+problém Peggy, barvoslepého Viktora a dvou jablek zcela identických až
+na barvu. Peggy chce přesvědčit Viktora, že jablka jsou různá, aniž by
+mu prozradila, která je které.
+
+Viktor ukáže Peggy jablko v~levé ruce a v~pravé ruce. Následně s~nimi
+za zády zamíchá (pro náhodný bit 0 zůstanou jablka tam kde byly, pro
+náhodný bit 1 jsou v~opačné ruce), ukáže Peggy jablko v~pravé ruce a
+zeptá se Peggy, jestli je to jablko, které bylo v pravé ruce předtím.
+Pokud jablka mají různé barvy, Peggy odpoví správně, pokud ne, má
+pravděpodobnost správné odpovědi $1/2$.
+Experiment se opakuje a po $k$ opakováních má Peggy šanci na uhádnutí
+jen $1/2^k$. Viktor uzná rozdílnost jablek po dostatečně velkém
+$k$, případně dříve odhalí, že Peggy lže.
+
+Protokol skutečně splňuje očekávání od zero-knowledge dokazovacího
+systému. Je (pravděpodobnostně) korektní, jelikož Viktor není (až na
+malou pravděpodobnost) nikdy přesvědčen o nepravdě.
+Je úplný, protože pokud jsou jablka rozdílné barvy je Viktor vždy
+přesvědčen. A je zero-knowledge, protože Peggy nikdy nevyzradí žádnou
+informaci o barvě.
+
+\subsection{Komunikační složitost}
+
+Uvažujeme model dvou stran s~neomezenou výpočetní kapacitou.
+Každá strana má svůj $n$-bitový vstup a nezná vstup pro druhou stranu.
+Dohromady se snaží spočítat oběma známou funkci
+$f : \{0,1\}^n \times \{0,1\}^n \to \{0,1\}$
+pomocí předem ustanoveného protokolu. Složitost protokolu měříme v~počtech
+bitů, které v~nejhorším případě putují po komunikačním kanálu.
+
+\begin{example}
+Problém parity má konstantní složitost.
+\end{example}
+
+\begin{example}
+Problém porovnání řetězců má nejvýše lineární složitost.
+\end{example}
+
+Komunikační složitost byla přímo zavedena pro zkoumání dolních odhadů
+pro složitost výpočtu. Rozdělíme-li problém mezi několik paralelně
+běžících procesorů, můžeme je rozdělit na poloviny a zkoumat, kolik bitů
+potřebují přenést, což přímo dává odhad na výpočetní složitost.
+
+Další aplikací je například důkaz, že TS s~$S(n) \leq n$ prostorovou složitostí
+potřebuje alespoň $\Omega(n / S(n))$ času pro rozhodnutí jazyka
+$\{ x\#x \mid x \in \{0,1\}^* \}$. Komunikační složitost byla také
+použita k~dokazování dolních odhadů složitosti operací na datových
+strukturách jako jsou haldy.
+
+Nyní ukážeme dva způsoby jak dokázat, že problém porovnání řetězců má
+nejméně lineární složitost.
+
+První je metoda {\em fooling set}.
+Předpokládejme, že existuje protokol se složitostí nejvýše $n-1$ bitů.
+Tedy existuje pro něj nejvýše $2^{n-1}$ možných komunikací mezi oběma
+stranami. Avšak možných páru pro porovnání rovnosti je $2^n$.
+Podle Dirichletova principu musí existovat páry $(x,x), (x',x')$ pro
+které komunikují strany stejně podle tohoto protokolu.
+Což ale znamená, že odpoví špatně na $(x,x')$.
+
+Pro funkci $f$ je fooling set $(S,b)$ množina vstupů
+a binární hodnota taková, že pro všechny $(x,y) \in S \; f(x,y) = b$,
+ale pro dva vstupy $(x,y) \neq (x',y') \in S$ platí
+$f(x,y') \neq b$ nebo $f(x',y) \neq b$.
+Platí (bez důkazu), že složitost výpočtu funkce je alespoň logaritmus velikosti
+fooling setu.
+V~případě našeho problému je fooling set $\{(x,x) \mid x \in \{0,1\}^n \}$.
+
+% http://www.cs.cmu.edu/~venkatg/teaching/ITCS-spr2013/notes/lect-apr2-4.pdf
+
+Druhá je {\em rank method}. Funkci $f$ můžeme zapsat do matice,
+potom (bez důkazu) platí, že složitost výpočtu funkce je alespoň
+logaritmus hodnosti této matice. V~našem příkladu je $2^n$ možných
+vstupů, matice pro problém EQ je přitom matice identity $I_{2^n}$,
+tedy podle tvrzení získáváme složitost alespoň $n$.
+
+Rank method je silnější, dá se s~ní například dokázat, že složitost
+skalárního součinu je alespoň lineární, zatímco fooling set metodou lze
+pouze logaritmický odhad.
+
+$\P^{\CC}$ je třída všech funkcí, které jsou vyčíslitelné
+v~polynomiálním počtem vyměněných bitů. Stejným způsobem se definují
+další třídy komunikační složitosti. Většinou platí inkluze známe ze
+standardní složitosti, a to ze stejných důvodů. (Tohle tvrdí Complexity
+Zoo. Žádné jednoduché, zajímavé tvrzení o složitostních třídach jsem
+nenašel, možná je něco v nějakých přehledových článcích, ale kvůli jedné
+podotázce, která se nikde neprobírá, je číst nebudu.)
+
+
+\subsection{Kolmogorovská složitost}
+
+Zafixujme nějaký Turingovsky úplný programovací jazyk.  Kolmogorovská
+složitost $K(s)$ řetězce $s$ je délka nejkratšího programu, který vypíše
+$s$.
+
+\begin{theorem}
+    Existuje $c$ takové, že pro všechny $s$ platí
+    $K(s) \leq |s| + c$.
+\end{theorem}
+
+\begin{proof}
+Důkazem je program s kódem \verb|print(|$s$\verb|)|, kde se do $c$
+schová název funkce pro tisk a závorky.
+\end{proof}
+
+\begin{theorem}
+    Pro každé $n \in \mathbb{N}$ existuje $s$ takový, že $K(s) > n$.
+\end{theorem}
+
+\begin{proof}
+V opačném případě by všech nekonečně mnoho možných řetězců bylo možné
+generovat (konečně mnoha) programy kratší než $n$ bitů (pro nějaké $n$).
+\end{proof}
+
+\pagebreak
+
+\begin{theorem}
+    $K$ není totálně vyčíslitelná.
+\end{theorem}
+
+\begin{proof}
+Předpokládejme, že existuje funkce $K$ v~daném programovacím jazyce,
+která počítá Kolmogorovskou složitost
+a je dlouhá $X$ bitů. Navíc předpokládejme, že interpret našeho jazyka
+je $Y$ bitů dlouhý. Vytvoříme funkci, která zkouší postupně všechny řetězce $s$ délky
+$1,2,\ldots$ a počítá $K(s)$ než nalezne $s$ takový, že $K(s) \geq
+X+Y+100000$. Taková funkce nalezne řetězec, jehož kolomogorovská
+složitost je větší než $X+Y+100000$, tedy řetězec, který nelze
+vyprodukovat kratším programem než $X+Y+100000$-bitovým.
+
+Poznamenejme, že argument skutečně funguje, jelikož naše funkce je jistě
+kratší než 100000 bitů, a $X$, $Y$ jsou konstanty.
+\end{proof}
+

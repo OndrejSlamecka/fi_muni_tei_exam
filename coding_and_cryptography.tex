@@ -1,0 +1,448 @@
+\section{Kódování a kryptografie}
+
+Blokový kód je injektivní zobrazení $C : \Sigma^k \to \Sigma^n$,
+kde $k$ značí délku zpráv a $n$ délku jejich kódů.
+Běžně značíme kód trojicí $(n,k,d)_q$, kde $q$ je velikost abecedy
+$\Sigma$ a $d$ značí vzdálenost kódu. Vzdálenost
+$\Delta(c, c') = \lvert \{ i \mid c_i \neq c'_i \} \rvert$
+slov $c, c' \in \Sigma^k$ je počet znaků, ve kterých se $c, c'$
+liší. Vzdálenost kódu je minimální počet pozic ve kterých se nějaká dvě
+různá slova liší, tedy $\min_{c \neq c'} \Delta(c, c')$.
+
+Pokud je vzdálenost kódu $d$, je možné odhalit až $d-1$ chyb
+a opravit až $\lfloor (d-1) / 2 \rfloor$.
+Můžeme si představit metrický prostor daný slovy a počtem pozic ve
+kterých se liší. Okolo každého slova z~kódu je tak koule s~poloměrem
+alespoň $d-1$.
+
+\uv{Trefa} do této koule ale mimo slova z~kódu značí
+přítomnost chyb, které opravíme volbou nejbližšího slova z~kódu. Takové
+dekódování dle nejmenší vzdálenosti funguje dobře za předpokladu, že
+přenos probíhá přes binární, symetrický, bezpaměťový kanál
+s~pravděpodobností chyby menší než $1/2$.
+
+\subsection{Lineární kódy}
+
+\subsubsection{Základní vlastnosti}
+
+% http://web.mit.edu/6.02/www/s2012/handouts/6.pdf
+
+\begin{definition}
+    {\em Lineární kód} délky $n$ a stupně $k$
+    je lineární podprostor o rozměru $k$
+    vektorového prostoru $\mathbb{F}^n_q$,
+    kde $\mathbb{F}_q$ je $q$-prvkové konečné těleso.
+\end{definition}
+
+Lineární kód stupně $k$ nad $q$-prvkovým tělesem má $q^k$ kódových slov.
+
+\begin{definition}
+    {\em Váha} $w(c)$ slova $c$ v~daném lineárním kódu je počet
+    nenulových znaků v~$c$, tedy $w(c) = \Delta(c, 0)$, kde $0$ je
+    nulový vektor.
+\end{definition}
+
+\begin{claim}
+Pro lineární $(n,k,d)_q$-kód platí $d = \min_{c, c \neq 0} w(c)$.
+\end{claim}
+
+\begin{proof}
+\end{proof}
+
+Protože každý lineární kód tvoří lineární prostor, je generován nějakou
+bází, která dává kódu úspornou reprezentaci. Takové matici říkáme
+{\em generující}.
+
+\begin{example}
+    $G$ je generující matice $(7,4,3)_2$ kódu
+    a $H$ je kontrolní matice.
+\[
+G =
+\begin{pmatrix}
+    1\ 0\ 0\ 0\ 1\ 1\ 0 \\
+    0\ 1\ 0\ 0\ 0\ 1\ 1 \\
+    0\ 0\ 1\ 0\ 1\ 1\ 1 \\
+    0\ 0\ 0\ 1\ 1\ 0\ 1
+\end{pmatrix},
+H =
+\begin{pmatrix}
+    1\ 0\ 1\ 1\ 1\ 0\ 0 \\
+    1\ 1\ 1\ 0\ 0\ 1\ 0 \\
+    0\ 1\ 1\ 1\ 0\ 0\ 1
+\end{pmatrix}
+\]
+
+\end{example}
+
+Máme-li zprávu $m = (m_1,\ldots,m_k)$ a generující matici $G$,
+potom kód zprávy $c = (c_1, \ldots, c_n)$
+získáme násobením $m \cdot G = c$.
+
+\begin{definition}
+    Nechť $C \subseteq \mathbb{F}^n_q$ je lineární kód.
+    Kód $C^\bot = \{ x \in \mathbb{F}^n_q \mid c \in C, \langle x,c \rangle = 0 \}$
+    nazýváme {\em duální} k~$C$.
+\end{definition}
+
+Platí $\dim C + \dim C^\bot = n$.
+Báze duálního kódu $C^\bot$ k~$C$ tvoří {\em kontrolní matici}.
+Je-li $G$ generující matice pro $C$ ve standardním tvaru, tj.
+$G = (I_k \mid A)$, potom báze duálního kódu je $H = (-A^T \mid I_{n - k})$
+(stačí zkontrolovat, že $GH^T = P - P = 0$).
+Zřejmě platí, že $c \in C \iff Hc^T = 0$.
+
+
+\subsubsection{Dekódování}
+
+Prakticky se dříve popsané {\bf dekódování dle vzdálenosti} realizuje
+{\em standardní tabulkou}. V~prvním řádku má tabulka slova z~kódu. Dokud
+tabulka neobsahuje všechny slova, přidáváme další řádky tak, že
+v~nejlevnějším sloupci je dosud neuvedený vektor s~nejmenší
+váhou\footnote{{\em Coset leader} -- název napovídá, že řádky tvoří
+rozklad kódu.}. V~každé vnitřní buňce ve sloupci $i$ a řádku $j$ je
+kódové slovo ze sloupce $i$ sečtené s~{\em coset leaderem} řádku $j$.
+Pro dekódování stačí najít slovo v~tabulce a odečíst {\em coset leadera}
+z~jeho řádku.
+
+Podstatně úspornější způsob je {\bf dekódování pomocí {\em syndromů}}. To je
+podobné předchozímu, ale používá podstatně menší dekódovací tabulku.
+Protože pro zprávu $z = x + e$ pro slovo $x$ s~chybou $e$ platí
+$Hz = He$ (kde $H$ je matice parity), snadno se určí chyba
+z~předpočítané tabulky mapující $He$ na $e$ a z~ní dopočte $x = z -e$.
+Tabulka má velikost $\sum_{i = 0}^{t} {n \choose i} < \lvert C \rvert$,
+kde $n$ je délka kódu $C$ a $t$ je nejvyšší možný počet chyb.
+
+
+\begin{example}
+    Hammingovy kódy. Nechť $r \in \mathbb{Z}$ a $H$ je
+    $r \times (2^r-1)$ matice jejíž sloupce jsou různá nenulová binární
+    slova. Kód, který má $H$ jako matici parity, se nazývá Hammingův.
+    Tyto kódy jsou užitečné, protože v~případě jediné chyby dává
+    nenulový syndrom binární kód pozice výskytu chyby.
+\end{example}
+
+\subsection{Cyklické kódy}
+
+\begin{definition}
+    Nechť $C$ je lineární kód nad $GF(q)$ s délkou bloku $n$.
+    $C$ nazveme {\em cyklický}, pokud pro každé $(c_1,\ldots,c_n) \in C$
+    platí $(c_n,c_1,\ldots,c_{n-1}) \in C$.
+\end{definition}
+
+Zásadní výhodou cyklických kódů je jejich algebraická charakterizace.
+Zatímco lineární kód lze reprezentovat generující maticí (to jest kód
+velikosti $2^k$ je popsán $k$~vektory), kód cyklický lze popsat
+jediným polynomem.
+
+Slovo $c_0c_1 \ldots c_{n-1}$ si vzájemně odpovídá s~polynomem
+$c_0 + x c_1 + \ldots + x^{n-1} c_{n-1}$. Násobení $x$ odpovídá
+cyklickému posunu. Kód je generován unikátním monickým polynomem
+minimálního stupně $g$. Platí $g \mid (x^n - 1)$.
+Pro generátor stupně $d$ má kód rank $n - d$.
+
+Kódování zprávy $m$ se provede tak, že se reprezentuje polynomem $m(x)$
+(zbylé bity do $n$ se doplní nulami)
+a vynásobí generátorem $g(x)$.
+
+Každý binární Hammingův kód je cyklický.
+
+\subsection{Turbo kódy a low-density kódy}
+
+(Profesor Gruska tuto látku na přednášce naznačil jen pár schématy, takže
+to tady taky odbydu. Low-desnsity kódy se AFAIK neprobraly vůbec.)
+
+% https://pdfs.semanticscholar.org/a3a7/4017298a273ec8a955b6147ec3caf6559286.pdf
+% http://users.ecs.soton.ac.uk/sqc/ELEC6214/AWCNS-L16.pdf
+
+Motivace: Míra (rate) turbo kódu je se blíží teoretické kapacitě,
+low-density kódy se ukazují ještě o něco lepší. Využívají se například
+k~přenosu televizního signálu.
+
+Turbo kódy jsou lineární blokové kódy.
+Turbo kódování kódem délky $n$ probíhá tak, že se nejprve za vstup délky $k$ přidá $n -
+k$ nul. Posloupnost se pošle jednou nezměněná $x_0$ a dvakrát upravená
+$x_1, x_2$. Úprava
+je v~obou případech přes {\em interleaver}, který posloupnost nějak
+permutuje a poté použije konvoluční enkodér, který vytvoří paritní
+posloupnost $x_1$ nebo $x_2$. Rate celého kódu je $k/(3n)$.
+
+Konvoluční kódy jsou zadány maticí polynomů nad $GF(2)$. Mějme kód
+s~$k\times n$ generující maticí $G$ a $k$-tici zpráv
+$I = (I_0(x),\ldots,I_k(x))$ jako polynomů. $n$-tici kódových slov
+$C$ získáme pro každé $0 \leq j \leq n$ jako $C_j = I_j(G) \cdot G$.
+
+% https://en.wikipedia.org/wiki/Low-density_parity-check_code#Operational_use
+
+Low-density kódy jsou zadány řídkými maticemi, často náhodně
+generovanými. Paritní kódy se dají popsat bipartitními grafy.
+Jednu stranu nazveme $=$, druhou $+$. Umístíme-li bity zprávy z~LD kódu
+do vrcholů strany $=$, tak musí platit, že součet hodnot, ke kterým je
+připojený každý $+$ vrchol je roven $0$ mod $2$.
+
+Například kód s~třemi $+$ a šesti $=$ kóduje tříbitové zprávy šesti
+bity. Bipartitní graf přímo zadává matici sousednosti matice parity pro
+daný kód, z~nějž pak můžeme standardním způsobem dopočítat generující
+matici.
+
+
+\subsection{Kryptosystémy s privátním klíčem}
+
+Caesarova šifra (posun každého písmena o konstantu).
+Vigenèrova šifra (posun $n$-tic písmen, každé o různou konstantu).
+Hillův kryptosystém (kódujeme $n$-tice násobením maticí-klíčem,
+dekódujeme její inverzí). DES a AES.
+
+\subsection{DES a AES}
+
+DES rozdělí zprávu do 64-bitových bloků
+a v~šestnácti krocích provádí nad každým blokem operace, které mají jako
+argument také zvolený klíč. Argumentem operací může být i hodnota
+předchozích bloků. Dešifrování spočívá v~pouhém obrácení pořadí operací.
+8 bitů z~64 v~klíči je pro kontrolu parity, klíče jsou tedy prakticky
+jen 56bitové.
+
+DES byl nahrazen AES (ve verzi Rijndael [réndál]), který pracuje se
+128bitovými bloky a až 256bitovými klíči. Dnes se používá například
+k~šifrování disků nebo VPN.
+
+Při šifrování AES používá matici $4 \times 4$ bytů a aplikuje na ni
+postupně transformace (pro 256bitové klíče až 14 kol).
+Jeden typ transformací jsou substituční tabulky,
+další je posun bitů v řádcích,
+ještě další je přehazování sloupců
+a poslední je xor-ování sloupců s~klíčem.
+
+\subsection{Kryptosystémy s veřejným klíčem, RSA}
+
+V~kryptosystémech s~veřejným klíčem disponuje každý účastník dvěma
+klíči: veřejným a soukromým. Uživatel může podepsat dokument svým
+soukromým klíčem a každý potom může pomocí veřejného klíče ověřit
+autenticitu dokumentu. Navíc každý může zašifrovat pomocí veřejného
+klíče dokument, ten je pak dešifrovatelný pouze s~klíčem privátním.
+
+Nejznámější kryptosystém s~veřejným klíčem je RSA, který je založený na
+myšlence, že násobení čísel je snadné, zatímco na rozklad na prvočísla
+dobrý algoritmus neznáme.
+
+Pro ustanovení klíčů uživatel vygeneruje $s$-bitová prvočísla $p,q$
+(typicky $s = 1024$), spočte $n = pq, \varphi(n) = (p-1)(q-1)$,
+vybere velké $d$ tak, že $gcd(n, \varphi(n)) = 1$
+a spočte $e = d^{-1} \mod \varphi(n)$. Veřejný klíč je tvořen dvojicí
+$(n, e)$, soukromý klíč trojicí $p,q,d$.
+
+Šifrujeme slowo $w$ výpočtem $c = w^e \bmod n$,
+dešifrujeme $w = c^d \bmod n$.
+Pro důkaz korektnosti potřebujeme Eulerovu větu $a^{\varphi(n)} = 1
+\bmod \varphi(n)$ ($a,n$ jsou nesoudělná)
+a Fermatovu větu $w^{p-1} = 1 \bmod p$ ($p$ je prvočíslo).
+Pokud $p \nmid w, q \nmid w$, potom $gcd(n,w) = 1$, takže lze použít
+Eulerovu větu a $c^d = w^{ed} = w^{j \varphi(n) + 1} = w \bmod n$.
+Pokud $p \mid w$, ale $q \nmid w$,
+pak snadno platí $w^{ed} = w \bmod p$
+a navíc z~Fermatovy věty $w^{q-1} = 1 \bmod q$,
+tedy
+$w^{ed} = w^{ed - 1} w = w^{k(q-1)} w = (w^{q-1})^k w = 1^kw = w \bmod q$
+a nakonec z Čínské zbytkové věty
+$w^{ed} = w \bmod pq$.
+Obě $p,q$ nemůžou dělit $w$, protože volíme čísla tak, aby $w < n$.
+
+Prakticky zprávy kódujeme jako decimálně zapsané čísla,
+rozdělené na bloky délky $i$ t.ž. $10^{i-1} \leq n < 10^i$.
+Pro výpočet $w^e$ použijeme algoritmus binárního umocňování ({\em
+exponentiation by squaring}).
+Pro výpočet $d^{-1}$ použijeme rozšířený Euklidův
+algoritmus.
+
+% https://en.wikipedia.org/wiki/RSA_(cryptosystem)#Proofs_of_correctness
+
+\subsection{Kryptografie na eliptických křivkách}
+
+Výhodou eliptických křivek je,
+že pro zaručení stejné bezpečnosti jako použití běžných struktur (např.
+$\mathbb{Z}_n$) stačí použít podstatně menších klíčů.
+
+Eliptická křivka je graf bodů v~rovině splňujících
+$y^2 = x + ax + b \bmod n$, kde $a,b,n$ jsou celá čísla,
+spolu s {\em bodem v nekonečnu}. Uvažujeme pouze křivky, kde neexistují
+násobné kořeny (ekvivalentně $4a^3 + 27b^2 \neq 0$).
+
+Pro každou křivku můžeme definovat sčítání tak, aby body spolu se
+sčítáním tvořili komutativní grupu. Vzorce jsou poměrně komplikované,
+příklad sčítání poskytne obrázek. Pomocí této grupy můžeme implementovat
+například RSA.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=200pt]{ec_add.png}
+    \caption{Sčítání, \href{https://www.certicom.com/content/certicom/en/21-elliptic-curve-addition-a-geometric-approach.html}{zdroj}}
+\end{figure}
+
+Výhoda, kterou eliptické křivky poskytují, je v~podstatně složitějším
+hádání klíčů, tedy stačí podstatně kratší klíče pro zajištění stejné
+bezpečnosti jako u standradních postupů. Stejně jako pro čísla
+pro křivky není známý rychlý
+způsob výpočtu diskrétního logaritmu (tedy hledání $k$ takového, že $B =
+kA$).
+
+Nevýhodou je, že pro každé $x$ nemusí existovat $y$ a tedy některé
+zprávy nejdou přímo zakódovat. Problém se řeší randomizovaným
+algoritmem, který přidává několik bitů za takové zprávy.
+
+\subsection{Schémata pro digitální podpisy}
+
+Máme zprávu $m$, její hash $h(m)$. Chceme {\em podepsat} $h(m)$ (kvůli
+efektivitě ne přímo $m$) funkcí $sig_{k_s}$ závislou na páru klíčů $(k_s,
+k_p)$ a ověřit podpis funkcí $ver_{k_p}$.
+
+Jedním schématem je \uv{obrácené RSA}. V~běžném RSA máme veřejné $n = pq$,
+exponent $e$ a soukromý dešifrovací exponent $d$ a čísla $p,q$.
+Šifrujeme zprávu $w$: $c = w^e$. Dešifrujeme $c$: $w = c^d$.
+Podpis pomocí RSA se vytvoří $c = w^d$ a ověřuje se zda $w = c^e$.
+
+Další schémata jsou například ElGamal či Rabinovo schéma.
+
+\subsection{Autentizační protokoly}
+
+(Uvedeme jeden protokol. Profesor Gruska uvádí ještě dva, technicky
+náročné protokoly jejichž memorování asi nemá větší význam.)
+
+\begin{example}
+Předpokládejme, že Alice a Bob sdíli tajný klíč $k$ a jednosměrnou
+funkci $f_k$. Bob pošle Alici náhodné číslo $r$, Alice pošle Bobovi
+$p = f_k(r)$ (tady by se Cyril mohl pokusit o podvod posláním špatného
+$p$), Bob ověří $p = f_k(r)$.
+\end{example}
+
+\subsection{Protokoly pro coin tossing}
+
+{\em Házení mincí} je způsob digitálního hození mincí takový, že ani
+jedna ze dvou stran nemůže výsledek určit, ale obě strany mohou hodnotu
+ověřit.
+
+Uvedeme dva protokoly. V~tom prvním Alice vybere jednosměrnou funkci $f$
+a pošle Bobovi $f(0), f(1)$. Bob se pokusí uhádnout, které z $f(0), f(1)$
+je výsledkem aplikace $f$ na $1$. Alice mu sdělí, zda je jeho odpověď
+správná a pošle mu $f$, aby si mohl výsledek sám ověřit.
+
+V tom druhém Alice vybere prvočísla $p,q$, pošle Bobovi $n = pq$.
+Bob vybere $1 \leq x \leq n/2$, pošle alici $y = x^2 \bmod n$.
+Alice vypočte všechny čtyři kořeny $x_1, n-x_1, x_2, n - x_2$ (spočte
+nějakým algoritmem nebo zkusí možnosti modulo každé prvočíslo a pak použije CRT)
+a tipem vybere jeden ze dvou,
+které jsou menší než $n/2$. Bob jí sdělí, zda trefila $x$ nebo ne a
+pošle jí ho pro ověření, zatímco ona jemu pošle $p,q$ pro ověření.
+
+\pagebreak
+
+\subsection{Protokoly pro bit commitment}
+
+Účelem protokolů pro {\em závázní se k~bitu} je provedení volby, která
+nelze jiným účastníkem předčasně odhalit, ale je možné ji po odhalení
+ověřit.
+
+Například Alice může bit napsat na papírek, umístit ho do truhly, tu
+zamčít a dát Bobovi. Ve chvíli odhalení pak zkontroluje integritu truhly
+a odemče ji svým klíčem.  Formálněji Alice zvolí jednosměrnou funkci
+$f$, sudé (liché) $x$, pokud chce zakódovat $0$ ($1$) a pošle Bobovi
+$(f, f(x))$.
+
+U protokolů popisujeme {\em commitment phase} a {\em opening phase}.
+Od protokolů očekáváme tři vlastnosti:
+\begin{itemize}
+    \item {\em hiding} -- Bob nemůže volbu Alice odhalit,
+    \item {\em binding} -- Alice nemůže volbu skrytě změnit,
+    \item {\em correctness} -- pokud vše probíhá dle protokolu, Bob se dozví správný bit.
+\end{itemize}
+
+Další protokol je například následující. Mějme prvočísla $p,q$,
+číslo $n = pq$ a nakonec $m$ je kvandratický nezbytek\footnote{Tedy
+neexistuje $x$ takové, že $x \bmod n = m$.} modulo $n$. Čísla $n, m$
+zveřejníme.  Commitment je potom $f(b, x) = m^b x^2 \bmod n$ pro náhodně
+zvolené $x \in \mathbb{Z}^*_n$. Protokol je hiding, protože výpočet
+kvadratických zbytků je těžký. Protokol je binding, protože $m \in
+QNR(n)$, a proto neexistují $x_1, x_2$ takové, že
+$m x_1^2 = x_2^2 \bmod n$.
+
+
+\subsection{Protokoly pro oblivious transfer}
+
+Problém: Navrhnout protokol, který pošle zprávu od Alice Bobovi tak, že
+Bob ji dostane s~pravděpodobností $1/2$. Bob ví, zda dostal zprávu nebo
+chybnou zprávu, Alice to nezjistí.
+
+Takový je například následující protokol:
+\begin{enumerate}
+    \item Alice zvolí dvě prvočísla $p,q$ a pošle Bobovi $n = pq$.
+    \item Bob zvolí náhodně $x$ a pošle $y = x^2 \bmod n$.
+    \item Alice spočte čtyři kořeny $y \bmod n$ a pošle jeden z~nich
+        Bobovi.
+    \item Bob ověří, jestli zaslaný kořen je kongruentní $x$. Pokud ano,
+        nic se nedozvěděl. Pokud ne, má dva různé kořeny modulo $n$ a
+        může tak faktorizovat $n$. Alice se nic nedozvěděla.
+\end{enumerate}
+
+Můžeme také navrhnout protokol, ve kterém Alice pošle dvě zprávy a Bob
+se dozví právě jednu z~nich a Alice se nedozví kterou.
+
+\pagebreak
+
+\subsection{Steganografie a vodotisk}
+
+Steganografie skrývá hlavní zprávu v~datech (například jako tajný přenos
+dat), zatímco vodotisk je pouze
+značkou umístěnou do hlavní zprávy (například pro kontrolu původu).
+
+\begin{verbatim}
+Příkladem,
+a to ne moc dobrým,
+steganografie v textu je
+tento
+asymetrický odstavec.
+\end{verbatim}
+
+Existují algoritmy pro vložení bitů do obrázků (jejich popis je
+technický).
+
+K digitálnímu vodotisku profesor Gruska říká pouze tolik, že jde o
+vložení značky do dat tak, aby nešla odstranit nebo nejlépe ani
+detekovat. Schmématem (bez bližšího vysvětlení) znázorňuje jak probíhá
+vložení značky a její extrakce pro ověření. Rozlišuje míru znalostí pro
+ověření: buď je potřeba originálu dat i verze s vodotiskem, nebo stačí
+mít verzi s~vodotiskem.
+
+% https://www.fi.muni.cz/usr/gruska/crypto17/cr1711.pdf
+
+\subsection{Kryptografické stroje a jejich historie}
+
+Enigma byla vynalezena v~roce 1918. Má tři libovolně rotory, kde každá
+pozice implementuje Caesarovu šifru. První rotor po napsání písmena
+otočí o jedno dál a až obejde celou otáčku, tak posune o jedna další
+rotor.  Navíc má Enigma desku pro transpozici písmen. Dohromady asi
+$10^{16}$ možných konfigurací.
+
+V~roce 1931 se dostaly do Francie dokumenty popisující zapojení rotorů.
+Tento popis se dostal do rukou matematikovi Rejewskému,
+který s~chytrým využitím teorie grup dokázal shrnout problém hledání
+konfigurace Enigmy do několika rovnic.
+Rejewski si navíc všiml, že Němci na začátku dne pro kontrolu dvakrát pošlou jednu
+třípísmennou zprávu, což umožnilo redukovat počet možností pro kód
+zvolený Němci pro daný den.
+
+Rejewski měl k~dispozici model Enigmy pro komerční použití se zapojením
+kláves v~běžném pořadí německých psacích strojů, $QWERTZU$\ldots Enigma
+pro vojenské účely však měla klávesy v~pořadí $ABCDEF$\ldots -- tuto
+možnost Britští kryptoanalytici ani nevyzkoušeli, jelikož ji považovali
+za příliš zřejmou.
+
+Rejewského tým navrhl mechanický počítač Bomba, který zkoušel již značně
+omezený počet kombinací, což umožnilo dešifrovat zprávy z~Enigmy každý
+den. Tuto technologii předali pět týdnu před začátkem války Francouzům a
+Britům. Britský tým tuto technologii značně zdokonalil.
+
+\subsection{Kvantová kryptografie}
+
+Generování náhodných tajných klasických klíčů, kvantová teleportace.
+Ve slidech profesora Grusky (které na přednášce neprobral)
+a na Wikipedii.
+% https://en.wikipedia.org/wiki/Quantum_key_distribution
+% https://en.wikipedia.org/wiki/Quantum_teleportation

@@ -1,0 +1,780 @@
+\section{Automaty}
+
+\subsection{Deterministické automaty}
+
+\begin{definition}
+    Deterministický konečný automat (DFA) je zadán
+    pracovní abecedou $\Sigma$,
+    množinou stavů $S$,
+    počátečním stavem $s_0$,
+    množinou koncových stavů $F$,
+    a přechodovou funkcí $\delta : S \times \Sigma \to S$.
+\end{definition}
+
+Není-li přechodová funkce totální, snadno získáme ekvivalentní automat
+s~totální prechodovou funkcí tak, že přidáme nový stav, kam pošleme
+všechny dosud nedefinované přechody. Od teď pracujeme pouze s~úplnými
+automaty.
+
+\begin{definition}
+    Pro daný $\mathcal{M} = (\Sigma, S, s_0, F, \delta)$
+    induktivně definujeme přechodovou funkci
+    $\delta^* : S \times \Sigma^* \to S$.
+    Pro libovolný stav $s \in S$, písmeno $a \in \Sigma$ a
+    slovo $aw \in \Sigma^*$ (tedy začínající písmenem $a$).
+\begin{align*}
+    \delta^*(s, \epsilon) &= s \\
+    \delta^*(s, aw) &= \delta^*(\delta(s,a), w)
+\end{align*}
+\end{definition}
+
+\begin{definition}[Jazyk rozpoznávaný automatem]
+    Funkce $L$ přiřazuje automatu jazyk. Tedy
+    $L(\mathcal{M}) = \{ w \mid \delta^*(s_0, w) \in F \}$
+    pro $\mathcal{M} = (\Sigma, S, s_0, F, \delta)$.
+    %Definujeme funkci $L : \mathfrak{M} \to \powerset{\Sigma^*}$.
+\end{definition}
+
+\subsubsection{Minimalizace DFA}
+
+\begin{definition}
+    Nechť $\mathfrak{M}$ jsou automaty rozpoznávající nějaký daný jazyk.
+    Buď $n_\mathcal{M}$ počet stavů automatu $\mathcal{M}$.
+    Automat $\mathcal{M} \in \mathfrak{M}$ nazveme {\em minimální},
+    jestliže $\mathcal{M} \in \argmin_{M \in \mathfrak{M}} n_M$.
+\end{definition}
+
+Důvodem ne-minimality nějakého automaty jsou stavy nedosažitelné a nerozlišitelné.
+Nedosažitelné stavy odstraníme jednoduchou variantou DFS. Zbývá
+ztotožnit nerozlišitelné.
+
+%\begin{definition}
+    %Nechť $L$ je jazyk nad $\Sigma$ a $x,y \in \Sigma^*$.
+    %Řetězec $z \in \Sigma^*$ nazveme {\em rozlišující rozšíření},
+    %jestliže právě jeden z řetězců $xz, yz$ patří do $L$.
+
+    %Definujeme $x \sim_L y$ právě tehdy, když neexistuje rolišující
+    %rozšíření $x$ a $y$.
+%\end{definition}
+
+Hopcroftův algoritmus pro výpočet minimálního automatu rozdělí stavy
+automatu do dvou tříd ekvivalence (dle (ne)příslušnosti do $F$) a pak
+postupně relaci zjemňuje. V každém kroku je prodloužena délka řetězů po
+jejichž projítí mají dané stavy skončit ve stejné tříde.  Nakonec
+algoritmus vrátí faktorizaci daného automatu dle konečné relace --
+ve tříde ekvivalence jsou ty stavy, ze kterých výpočet
+skončí stejně pro libovolné slovo.
+
+\begin{algorithm}
+\caption{Minimalizace DFA bez nedosažitelných stavů}
+\begin{algorithmic}[1]
+\Function{MinDFA}{$\mathcal{M} = (\Sigma, S, s_0, F, \delta)$}
+    \State ${\equiv} \gets \{(p,q) \mid p \in F \iff q \in F \}$
+    \While{${\equiv}$ changes}
+        \State ${\equiv} \gets
+            \{ (p,q) \mid p \equiv q \land \forall a \in \Sigma :
+            \delta(p,a) \equiv \delta(q,a) \}$
+    \EndWhile
+    \State \Return Factorization of $\mathcal{M}$ by ${\equiv}$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\begin{example}
+\end{example}
+
+\subsubsection{Rozhodovací problémy o DFA}
+% http://www.cse.msu.edu/~torng/360Book/RegLang/Decision/
+
+Problém ekvivalence (rozpoznávání stejného jazyka) dvou DFA je
+rozhodnutelný minimalizací obou automatů a jejich porovnáním.
+
+Kromě ekvivalence můžeme rozhodovat další problémy. Například zda
+\linebreak $L(\mathcal{M}) = \emptyset$ nebo zda $L(\mathcal{M})$ je
+konečný.
+
+$L(\mathcal{M})$ je neprázdný pravě tehdy, když $\mathcal{M}$
+akceptuje jedno ze slov délky nejvýše $\lvert S \rvert -1$.
+Kdyby akceptoval pouze delší slova, musel by se ve výpočtu některý stav
+opakovat, výpočet by šel o získaný cyklus zkrátit a získali bychom tak
+kratší akceptované slovo (stejný princip jako pumping lemma).
+
+$L(\mathcal{M})$ je konečný pravě tehdy, když $\mathcal{M}$
+akceptuje jedno ze slov délky $n$ až $2 \lvert S \rvert - 1$.
+Akceptuje-li takové slovo, potom ve výpočtu existuje cyklus, jehož
+odpovídající část ve slovu můžeme libovolně pumpovat a získat tak
+nekonečně mnoho delších slov.
+
+\subsection{Nedeterministické automaty}
+
+\begin{definition}
+    Nedeterministický konečný automat (NFA) je zadán
+    pracovní abecedou $\Sigma$,
+    množinou stavů $S$,
+    počátečním stavem $s_0$,
+    množinou koncových stavů $F$,
+    a přechodovou funkcí $\delta : S \times \Sigma \to \powerset{S}$.
+\end{definition}
+
+Narozdíl od NFA se může vyskytovat ve více stavech zároveň. Každé NFA
+však lze snadno převést na ekvivalentní DFA. Řešení dříve uvažovaných
+problémů na DFA se tak přímočaře převede na řešení stejných problémů na
+NFA.
+
+Determinizace DFA se provede tzv. {\em powerset construction}. Pro
+každou množinu stavů, kterou může NFA pro nějaký vstup obývat je
+sestrojen jediný stav nového DFA. Projdením celého NFA na způsob
+grafového prohledávání je zaručeno, že DFA je úplné.
+
+NFA bychom mohli definovat tak, že povolíme $\epsilon$-kroky. Před
+determinizací by potom bylo potřeba spočítat $\epsilon$-uzávěr každého
+stavu. Počítat $\epsilon$-uzávěr TODO
+
+\subsection{Pravděpodobnostní automaty}
+
+NFA, ve kterém jsou přechody nahrazeny přechodovou distribucí.
+Nebo MDP ve kterém jsou navíc povoleny $\varepsilon$ kroky a více akcí
+se stejným názvem v jednom stavu.
+
+% http://www.sciencedirect.com/science/article/pii/S0890540112001149
+
+(Tohle se nikde neučí a vygooglit k tomu jde jen těžko něco. Zřejmě
+existuje nějaký polynomiální algoritmus pro rozhodování ekvivalence.
+Některé PA jsou ekvivalentní DFA, takže pro ně je jistě možná i
+minimalizace.)
+
+\subsection{Regulární jazyky a pumping lemma}
+
+\begin{definition}
+Nechť $\Sigma$ je abeceda. Jazyk $R$ je regulární právě tehdy, když
+existuje DFA $\mathcal{A}$ takový, že $L(\mathcal{A}) = R$.
+\end{definition}
+
+Ekvivalentně lze regulární jazyky definovat pomocí regulárních výrazů a
+regulárních gramatik.
+
+Regulární jazyky jsou uzavřené na sjednocení (důkaz: spojením
+dvou regexů pomocí \verb|+|), zřetězení (důkaz: spojením dvou
+regexů za sebe), doplněk (důkaz: automat pro doplněk je stejný
+jako pro původní jazyk, jen má obrácené akceptující stavy), průnik
+(důkaz: platí $A \cap B = \overline{\overline{A} \cup \overline{B}}$ a
+uzavřenost na doplněk a sjednocení jsme již dokázali).
+
+\begin{theorem}[Pumping lemma]
+Nechť $L$ je regulární jazyk nad $\Sigma$.
+Potom
+$\exists p \geq 1$ takové,
+že $\forall w \in L, \lvert w \rvert \geq p$,
+platí, že existují $x,y,z \in \Sigma^*$ tak, že $w = xyz$ a zároveň
+
+\begin{itemize}
+    \item $\lvert y \rvert \geq 1$ (cyklus je neprázdný),
+    \item $\lvert xy \rvert < p$ (je v prvních $p$ znacích),
+    \item $xy^nz \in L$ pro každé $n \geq 0$ (lze libovolně pumpovat).
+\end{itemize}
+\end{theorem}
+
+\begin{example}
+    Mějme jazyk $L = \{ a^n b^n \mid n \in \mathbb{N} \}$,
+    pro spor předpokládejme, že je regulární.
+    Mějme $p,x,y,z,n$ jako výše a zvolme $w = a^p b^p$.
+    Z lemmatu víme, že $xy < p$, tedy $y$ je tvořeno nenulovým počtem
+    písmen $a$.  Potom z lemmatu taky musí platit $xy^nz \in L$, to však
+    zřejmě není pravda už pro $n = 2$.
+\end{example}
+
+\subsection{Zásobníkové automaty a bezkontextové jazyky}
+
+\begin{definition}
+    Zásobníkový automat (PDA) je zadán
+    pracovní abecedou $\Sigma$,
+    zásobníkovou abecedou $\Gamma$,
+    množinou stavů $S$,
+    počátečním stavem $s_0$,
+    počátečním zásobníkovým symbolem,
+    množinou koncových stavů $F$,
+    přechodovou funkcí
+    $\delta : S \times (\Sigma \cup \{ \varepsilon \}) \times \Gamma \to
+    \finpowerset{S \times \Gamma^*}$
+    a navíc informací o způsobu akceptování: buď koncovým stavem, nebo
+    zásobníkem.
+\end{definition}
+
+Například lze sestrojit PDA pro jazyk
+$\{ 0^n 1^n \mid n \in \mathbb{N} \}$.
+PDA můžeme rozdělit na nedeterministické a deterministické. Existuje
+bezkontextový jazyk, který nelze analyzovat DPDA.
+
+\begin{definition}
+    Jazyk je bezkontextový (CFL), pokud je generován bezkontextovou
+    gramatikou (viz dále).
+\end{definition}
+
+Platí například, že jsou-li $L, P$ CFL, potom $L \cup P$ je CFL (důkaz:
+jednoduše vytvoříme nové PDA, které nedeterministicky přejde do PDA pro
+$L$ či $P$).
+
+\begin{example}
+    Jazyky
+    $\{ a^m b^n c^n \mid m, n \in \mathbb{N} \}$,
+    $\{ a^n b^m c^n \mid m, n \in \mathbb{N} \}$
+    jsou bezkontextové, ale
+    jejich průnik už není (ukáže se pumping lemma pro CFL).
+
+    Z pozorování, že
+    $A \cap B = \overline{\overline{A} \cup \overline{B}}$
+    vyplývá, že CFL nejsou uzavřené ani na doplněk.
+\end{example}
+
+\pagebreak
+\subsection{Gramatiky}
+
+% https://en.wikipedia.org/wiki/Chomsky_hierarchy#The_hierarchy
+
+\begin{longtable}[]{llll}
+\toprule
+Gramatika & Jazyk & Automat & Pravidla \tabularnewline
+\midrule
+\endhead
+Typ-0 & Částečně rozhodnutelné & Turingův stroj & $\alpha \rightarrow \beta$ \tabularnewline
+Typ-1 & Kontextové & Linérně ohr. TM & $\alpha A \beta \rightarrow \alpha \gamma \beta$ \tabularnewline
+Typ-2 & CFL & (N)PDA &	$ A\rightarrow \gamma$ \tabularnewline
+Typ-3 & Regulární & DFA & $A \rightarrow a$, $A \rightarrow aB$ \tabularnewline
+\bottomrule
+\end{longtable}
+
+\vtop{\hbox{\strut Význam symbolů:}
+\hbox{\strut \(a\) =
+terminal}\hbox{\strut \(\alpha\) = terminal, non-terminal, or
+empty}\hbox{\strut \(\beta\) = terminal, non-terminal, or
+empty}\hbox{\strut \(\gamma\) = terminal or
+non-terminal}\hbox{\strut \(A\) = non-terminal}\hbox{\strut \(B\) =
+non-terminal}}
+
+\bigskip
+
+\begin{definition}
+    Gramatika je v {\em Greibachové normální formě}, pokud
+    každé pravidlo je tvaru
+    $A \to a A_1 A_2 \ldots A_n$ nebo $S \to \varepsilon$.
+\end{definition}
+
+Každý top-down parser (zejména recursive descent parser)
+zastaví nejvýše v hloubce rovné délce parsovaného řetězce. Prostorová
+složitost parsování gramatiky v CFG je tedy lineární.
+
+Navíc každou CFG lze převést do GNF, což dává důkaz, že každá CFG je
+rozpoznatelná PDA.
+
+\begin{definition}
+    Gramatika je v Chomského normální formě, pokud každé pravidlo je
+    tvaru $A \to BC$ nebo $A \to a$ nebo $S \to \varepsilon$.
+\end{definition}
+
+Parsovací strom takové gramatiky je binární. Převod do této formy se
+použije v CYK algoritmu.
+
+
+\subsection{Syntaktická analýza CFL}
+
+Bezkontextové gramatiky můžeme analyzovat nedterministickým PDA
+{\em shora dolů}, {\em zdola nahorů} nebo také algoritmem CYK na bázi
+dynamického programování v~čase $\mathcal{O}(n^3 \lvert G \rvert)$.
+
+Některé podmnožiny CFG bezkontextových gramatik lze analyzovat rychleji.
+Zejména popíšeme LL(1) a LR(0) gramatiky, kterými se dají popsat běžné
+programovací jazyky. Rychlost parsování je lineární v~součinu velikosti
+vstupu a velikosti parsovací tabulky\footnote{TODO: Chtělo by to asi hlubší
+zamyšlení, jestli to tak opravdu je a jak velká může být tabulka, ale
+IMO je to zhruba velikost gramatiky na k-tou.}.
+
+\subsubsection{Nedeterministická analýza}
+
+Pro obecnou CFG můžeme sestrojit nedeterministické PDA. Rozlišujeme dva
+základní způsoby parsování: shora dolů, zdola nahorů.
+
+Metoda shora dolů je realizována jednostavovým automatem, který ve svém
+zásobníku simuluje levé derivace gramatiky tak, aby platilo:
+s~obsahem zásobníku $\alpha$ a zbytkem vstupu $w$ automat akceptuje
+prázdným zásobníkem $\iff$ $\alpha \Rightarrow^* w$.
+
+Rozlišujeme dvě akce automatu, které se opakují.
+Je-li na vrcholu zásobníku neterminál
+$X$, potom jej nahradíme pravou stranou nějakého pravidla $X \to
+\ldots$. Je-li na vrcholu zásobníku terminál $x$, potom ověříme,
+že ukazatel na čtené slovo ukazuje na znak $x$ a oba znaky umažeme.
+
+\begin{example}
+
+\end{example}
+
+Metoda zdola nahorů použije dvoustavový rozšířený\footnote{Rozšířený
+PDA může z~vrcholu zásobníku vybrat libovolný počet znaků.} automat, druhý
+stav však slouží jen jako koncový. Automat práci začne
+nad vstupní větou a skončí s~prázdným vstupem a s~kořenem gramatiky na
+zásobníku.
+
+Začne-li automat pracovat nad vstupem, který je větou z jazyka, pak
+platí: $\alpha A y$ je obsah zásobníku zřetězený se zbytkem vstupu
+$\iff$ $a A y$ je pravá větná forma. Rozlišujeme tři akce automatu,
+které se opakují:
+\begin{enumerate}
+    \item $\delta(q, a, \epsilon) = \{ (q, a) \}, a \in \Sigma$,
+    \item je-li $A \to \alpha$, pak $\delta(q, \varepsilon, \alpha)$
+        obsahuje $(q, A)$,
+    \item $\delta(q, \varepsilon, \bot S) = \{ (r, \varepsilon) \}$.
+\end{enumerate}
+
+\begin{example}
+\end{example}
+
+
+\subsubsection{CYK algoritmus}
+
+CYK algoritmus je narozdíl od předchozích metod deterministický.
+
+\begin{Verbatim}[fontsize=\small]
+let the input be a string I consisting of n characters: a1 ... an.
+let the grammar contain r nonterminal symbols R1 ... Rr, with start symbol R1.
+let P[n,n,r] be an array of booleans. Initialize all elements of P to false.
+for each s = 1 to n
+  for each unit production Rv -> as
+    set P[1,s,v] = true
+for each l = 2 to n -- Length of span
+  for each s = 1 to n-l+1 -- Start of span
+    for each p = 1 to l-1 -- Partition of span
+      for each production Ra -> Rb Rc
+        if P[p,s,b] and P[l-p,s+p,c] then set P[l,s,a] = true
+if P[n,1,1] is true then
+  I is member of language
+else
+  I is not member of language
+\end{Verbatim}
+
+\subsubsection{LL(1) gramatiky}
+
+% https://www.fi.muni.cz/usr/kretinsky/LL1aSLL.pdf
+
+Nejprve zavedeme obecně LL(k) gramatiky, nakonec se ale zaměříme na
+analýzu nejpoužívanější varianty, a to LL(1).
+
+\begin{definition}
+    Funkce $FIRST^G_k(\alpha)$ pro dané $\alpha \in (N \cup \Sigma)^+$
+    vrátí všechny řetězce délky až $k$, které se dají z~$\alpha$
+    odvodit.
+
+    Funkce $FOLLOW^G_k(A)$ pro dané $A \in N$
+    vrátí všechny řetězce délky až $k$, které mohou po terminálu $A$
+    následovat.
+
+    Binární operátor ${:}$ definujeme pro $k : w$ jako prvních $k$ znaků
+    ze slova $w$ (nebo celé $w$ pro $w$ kratší než $k$).
+\end{definition}
+
+\begin{definition}
+    Nechť $G = (N, \Sigma, P, S)$ je CFG, $k \geq 1$. $G$ nazveme LL(k)
+    právě tehdy, když pro libovolné dvě nejlevější derivace
+    $S \Rightarrow^* wA\alpha \Rightarrow w\beta\alpha \Rightarrow^* wx$,
+    $S \Rightarrow^* wA\alpha \Rightarrow w\gamma\alpha \Rightarrow^* wy$,
+    platí, že $k : x = k : y \implies \beta = \gamma$.
+\end{definition}
+
+\begin{theorem}
+    Každá LL(k) gramatika je jednoznačná.
+\end{theorem}
+
+\begin{proof}
+Pokud by nebyla jednoznačná, pak by existovala věta s~dvěmi odvozeními.
+Potom by ale neplatila implikace v~definici.
+\end{proof}
+
+Věta: Levorekurzivní implikuje, že není ll(k) pro žádné k.
+
+Gramatika je LL(k) právě když pro každé dvě větné formy $\beta \alpha$,
+$\gamma \alpha$ a pravidla $A \to \beta, A \to \gamma$
+platí $FIRST_k(\beta \alpha) \cap FIRST_k(\gamma \alpha) = \emptyset$.
+Pro případ $k = 1$ však stačí snáze ověřitelná podmínka.
+
+\begin{theorem}
+    $G = (N, \Sigma, P, S)$ je LL(1) právě tehdy, když
+    pro každé $A \in N$
+    a každé dvě pravidla $A \to \beta, A \to \gamma$
+    platí
+    \[
+        FIRST_1(\beta FOLLOW_1(A)) \cap FIRST_1(\gamma FOLLOW_1(A)) = \emptyset
+    \]
+\end{theorem}
+
+Nyní ukážeme, jak sestrojit DPDA pro danou LL(1) gramatiku.
+DPDA bude mít jeden stav, akceptuje prázdným zásobníkem
+a začíná s~$S\$$ na zásobníku, kde $S$ je kořen
+gramatiky a $\$$ se v gramatice nevyskytuje.
+
+Definujme přechodovou funkci $M$.
+Pro pravidlo $A \to \alpha$, potom pro každé $a \in FIRST_1(\alpha)$
+definujeme $M(A, a) = \alpha$. Pokud $\varepsilon \in FIRST_1(\alpha)$,
+potom pro každé $b \in FOLLOW_1(A)$ definujeme $M(A,b) = \alpha$.
+Pro $a \in (\Sigma \cup \{ \$ \}$ definujeme $M(a,a) =$ {\em odstraň},
+pro $x, a \in Sigma, x \neq a$ definujeme $M(x, a) =$ {\em zamítni}.
+
+% https://www.cs.bgu.ac.il/~comp151/wiki.files/ps6.html#sec-2
+
+\begin{example}
+Mějme gramatiku $G$ s následujícími pravidly
+\begin{verbatim}
+S -> A
+A -> aAb | c
+\end{verbatim}
+Přechodová tabulka má řádek pro neterminál $A$,
+pod symbolem $a$ je pravidlo $A \to aAb$, pod $b$ není nic a pod $c$ je
+$A \to c$.
+
+\pagebreak
+
+Mějme vstup \verb|aacbb$|, analýza probíhá takto:
+
+\medskip
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+           & \textbf{Zbývající vstup} & \textbf{Zásobník}    \\ \hline
+\textbf{1} & \verb|aacbb$|                  & \verb|A$|      \\ \hline
+\textbf{2} & \verb|aacbb$|                  & \verb|aAb$|    \\ \hline
+\textbf{3} & \verb|acbb$|                   & \verb|Ab$|     \\ \hline
+\textbf{4} & \verb|acbb$|                   & \verb|aAbb$|   \\ \hline
+\textbf{5} & \verb|cbb$|                    & \verb|Abb$|    \\ \hline
+\textbf{6} & \verb|cbb$|                    & \verb|cbb$|    \\ \hline
+\textbf{7} & \verb|bb$|                     & \verb|bb$|     \\ \hline
+\textbf{8} & \verb|b$|                      & \verb|b$|      \\ \hline
+\textbf{8} & \verb|$|                       & \verb|$|       \\ \hline
+\textbf{9} & $\varepsilon$                              & $\varepsilon$          \\ \hline
+\end{tabular}
+\end{example}
+
+\subsubsection{LR(0) gramatiky}
+
+% https://is.muni.cz/auth/el/1433/podzim2015/IA006/um/LR0.pdf
+% https://www.cs.bgu.ac.il/~comp151/wiki.files/ps6.html#sec-2
+% https://stackoverflow.com/questions/7378337/what-is-the-difference-between-lr0-and-slr-parsing
+
+LR gramatiky jsou naopak takové, které jsou rozpoznávané deterministickými PDA,
+které postupují ve směru zdola nahoru. Zaměříme se na nejčastěji
+používané LR(0) gramatiky.
+
+Pro zjednodušení v~každé gramatice k~LR parsování nahradíme počáteční
+neterminál $S$ novým $S'$ a přidáme pravidlo $S' \to S\$$. Za každý
+vstup navíc zapíšeme ještě před začátkem analýzy $\$$.
+
+\begin{definition}
+    Nechť $G = (N, \Sigma, P, S)$ je CFG.
+    {\em Položkou gramatiky} $G$ nazveme výraz tvaru
+    $X \to \alpha \bullet \beta$, kde $X \to \alpha \beta \in P$.
+
+    Pro každé $X \to \gamma \in P$ nazýváme $X \to \gamma \bullet$
+    {\em úplnou položkou}.
+\end{definition}
+
+Nyní definujeme funkci {\em položkového uzávěru}
+\[
+    c(I) = I \cup
+    \{ A \to \bullet \alpha \text{ pro každé } B \to \beta \bullet A \gamma \in I \},
+\]
+tedy funkci, která k~danému stavu parsování přiřadí všechny
+\uv{ekvivalentní} stavy. Dále definujeme funkci (\uv{goto})
+\[
+g(I, a) = \{ B \to \alpha a \bullet \beta \text{ pro každé }
+    B \to \alpha \bullet a \beta \in I \},
+\]
+která posune průběh analýzy o jeden znak (může být i neterminál).
+S těmito dvěma funkcemi můžeme definovat LR(0) gramatiky.
+
+\begin{definition}
+    Gramatika $G$ je LR(0), pokud
+    \begin{enumerate}
+        \item pro libovolnou položku $\gamma$ se v $c(\gamma)$ vyskytuje
+            nejvýše jedna úplná položka;
+        \item jestliže se v~$c(\gamma)$ vyskytuje úplná položka, potom
+            už v~$c(\gamma)$ není obsažena žádná položka, v~níž
+            je bezprostředně vpravo od $\bullet$ terminální symbol.
+    \end{enumerate}
+\end{definition}
+
+Nyní průchodem ve stylu DFS sestrojíme automat. Začneme s~počátečním
+pravidlem a vytvoříme stav reprezentující $c(S' \to \bullet S\$)$.
+Pro každý terminál či neterminál $a$ vyskytující se
+za $\bullet$ teď vytvoříme nový stav $c(g(c(S' \to \bullet S\$), a))$
+a vedeme hranu z~dosud zpracovávaného stavu.
+Postup opakujeme, stav do kterého se přijde čtením $\$$ je koncový.
+
+Pokud by gramatika nebyla LR(0), potom snadno ověříme v~zakresleném
+automatu, že není splněna jedna z~části definice.
+
+\begin{example}
+    \href{https://www.cs.bgu.ac.il/~comp151/wiki.files/ps6.html\#sec-2}
+{https://www.cs.bgu.ac.il/{\textasciitilde}comp151/wiki.files/ps6.html\#sec-2}
+\end{example}
+
+
+\subsection{Konečné automaty nad nekonečnými slovy}
+
+% https://www7.in.tum.de/~esparza/autoskript.pdf
+
+Pro automaty nad nekonečnými slovy používáme výraz $\omega$-automaty.
+$\omega$-slovo je nekonečně dlouhé slovo.
+
+$\omega$-automaty slouží jako konečná reprezentace množin nekonečných
+slov. Nekonečnými slovy lze popsat například reálná čísla nebo průběh
+programů.
+
+Běžné operace na jazycích se provádí stejně na $\omega$-jazycích.
+Drobným rozdílem je $\omega$ iterace, která je definována
+$L^\omega = \{ (w_i)_{i \in \mathbb{N}} \mid w_i \in L \setminus \{ \varepsilon \} \}$,
+tedy zejména
+$\emptyset^\omega = \emptyset$, zatímco u Kleeneho iterace
+$\emptyset^* = \{ \varepsilon \}$.
+
+\begin{example}
+    Intuitivním způsobem můžeme definovat
+    $\omega$-regulární výrazy jako rozšíření regulárních výrazů.
+    Např. $\emptyset$ je $\omega$-regulární, jelikož
+    $L_\omega(\emptyset^\omega) = \emptyset$.
+    Dále $(a+b)^\omega$ značí jazyk nekonečně dlouhých slov z~písmen
+    $a,b$;
+    $(a+b)^*b^\omega$ značí jazyk $\omega$-slov s konečně mnoha $a$;
+    $(a+b)*ab)^\omega$ je jazyk slov obsahujících nekonečně mnoho $a$ i $b$.
+\end{example}
+
+\begin{definition}
+    Nedeterministický $\omega$-automat je zadán
+    pracovní abecedou $\Sigma$,
+    množinou stavů $S$,
+    počátečními stavy $S_0 \subseteq S$,
+    akceptující podmínkou $S_{Acc} \subseteq S^\omega$
+    a přechodovou funkcí $\delta : S \times \Sigma \to \powerset{S}$.
+\end{definition}
+
+Automat nazveme {\em deterministický}, pokud
+$\lvert \delta(s,a) \rvert \leq 1$ pro každé $s,a$.
+
+Posloupnost navštívených stavů při výpočtu na slově $w$ nazveme {\em běh
+na $w$}.
+$\omega$-automat akceptuje $w \in \Sigma^\omega$,
+pokud běh na $w$ leží v~$S_{Acc}$.
+
+$\omega$-automaty řadíme do několika kategorií podle volby akceptující
+podmínky.
+
+\begin{definition}
+    Nechť $F \subseteq S$ je nějaká množina.
+    $\omega$-automat nazveme {\em Büchiho},
+    pokud pro každý běh $\rho \in S_{Acc}$ platí
+    $\Inf{\rho} \cap F \neq \emptyset$.
+\end{definition}
+
+Büchiho automaty jsou tedy takové, které akceptují právě slova, které
+navštíví některý z vybraných stavů nekonečněkrát.
+
+\begin{example}
+    Nechť jazyk $L$ nad $\{0,1\}$ obsahuje všechna $\omega$-slova,
+    ve kterých se $1$ vyskytuje nekonečněkrát.
+    $L$ je lze rozpoznat deterministickým Büchiho automatem.
+
+\begin{center}
+\begin{tikzpicture}[shorten >=1pt,node distance=2cm,on grid,auto]
+   \node[state,initial] (q_0)  {$q_0$};
+   \node[state,accepting](q_1) [right=of q_0] {$q_1$};
+    \path[->]
+    (q_0) edge [bend left]  node {1} (q_1)
+          edge [loop above] node {0} ()
+    (q_1) edge [loop above] node {1} ()
+          edge [bend left]  node {0} (q_0);
+\end{tikzpicture}
+\end{center}
+\end{example}
+
+\begin{example}
+    Nechť jazyk $L$ nad $\{0,1\}$ obsahuje všechna $\omega$-slova, ve
+    kterých se $1$ vyskytuje pouze konečněkrát.
+    $L$ je lze rozpoznat nedeterministickým Büchiho automatem.
+
+\begin{center}
+\begin{tikzpicture}[shorten >=1pt,node distance=2cm,on grid,auto]
+   \node[state,initial] (q_0)  {$q_0$};
+   \node[state,accepting](q_1) [right=of q_0] {$q_1$};
+    \path[->]
+    (q_0) edge  node {0} (q_1)
+         edge [loop above] node {0} ()
+         edge [loop below] node {1} ()
+    (q_1) edge [loop above] node {0} ();
+\end{tikzpicture}
+\end{center}
+\end{example}
+
+\begin{claim}
+    Deterministický Büchiho automat rozpoznávající jazyk
+    $(0+1)^*0^\omega$ neexistuje.
+\end{claim}
+
+Intuitivně NBA \uv{uhodne} poslední výskyt $1$,
+deterministický by na to potřeboval nekonečně mnoho stavů.
+
+Můžeme uvažovat i jiné podmínky než Büchiho.
+
+\begin{definition}
+    Nechť $\Omega = \{(E_i, F_i)\}_{1 \leq i \leq n}$ pro nějaké
+    $n \in \mathbb{N}$.
+    $\omega$-automat nazveme {\em Rabinův},
+    pokud pro každý běh $\rho \in S_{Acc}$
+    existuje $i$ takové, že \linebreak
+    $E_i \cap \Inf{\rho} = \emptyset$
+    a
+    $F_i \cap \Inf{\rho} \neq \emptyset$.
+\end{definition}
+
+Pokud dostaneme NBA s podmínkou $\{q_1, \ldots, q_k\}$,
+snadno odvodíme NRA s podmínkou $\{(q_1, \emptyset, \ldots, (q_k, \emptyset))\}$.
+
+\begin{example}
+\end{example}
+
+Nyní charakterizujeme jazyky rozpoznávané deterministickými $\omega$-automaty.
+
+\begin{definition}
+    Nechť $L$ je jazyk slov s~konečnou délkou.
+    $\omega$-slovo $w$ je v limitě $L$ právě tehdy,
+    když průnik všech prefixů $w$ s $L$ je nekonečná množina.
+\end{definition}
+
+Jinak řečeno pro každé $n$ lze v~$L$ najít slovo delší $n$ takové, že
+je prefixem $w$.
+
+\begin{theorem}
+$\omega$-jazyk je rozpoznatelný deterministickým Büchiho automatem
+právě tehdy, když je limitním jazykem nějakého regulární jazyka.
+\end{theorem}
+
+% Důkaz https://en.wikipedia.org/wiki/B%C3%BCchi_automaton
+
+\subsection{Turingovy stroje}
+
+\begin{definition}
+    Turingův stroj (TM) je zadán
+    páskovou abecedou $\Gamma$,
+    symbolem prázdného políčka $b \in \Gamma$,
+    vstupní abecedou $\Sigma \subseteq \Gamma \setminus \{b\}$,
+    množinou stavů $S$,
+    počátečním stavem $s_0$,
+    množinou koncových stavů $F$,
+    a přechodovou funkcí \linebreak
+    $\delta : (S \setminus F) \times \Gamma
+        \to S \times \Gamma \times \{L,R\}$.
+\end{definition}
+
+\begin{definition}[Univerzální TS]
+Turingův stroj nazveme {\em univerzální},
+který pokud na vstupu dostane dvojici kódu stroje a vstupu
+$(\langle M \rangle, w)$, tak emuluje výpočet $M$ na $w$.
+\end{definition}
+
+Je třeba si dát pozor na technické problémy jako například různě velké
+pracovní abecedy.
+
+\begin{definition}[Rozhodnutelnost a vyčíslitelnost]
+    Jazyk $L$ je {\em částečně rozhodnutelný}, pokud existuje Turingův
+    stroj, který každý vstup $w$ akceptuje právě tehdy, když $w \in L$.
+
+    Jazyk je {\em rozhodnutelný}, pokud je částečně rozhodnutelný
+    strojem $M$ a navíc stroj $M$ zastaví na každém vstupu $w$.
+
+    Funkce $f$ je {\em vyčíslitelná}, pokud existuje Turingův
+    stroj $M$ takový, že pro $w$ z definičního oboru $f$ zastaví a na pásce má
+    uloženo $f(w)$, pro ostatní $w$ cyklí.
+
+    Funkce $f$ je {\em totálně vyčíslitelná}, pokud je vyčíslitelná a
+    navíc totální.
+\end{definition}
+
+
+\begin{theorem}[Nerozhodnutelnost problému zastavení]
+Mějme nějakou enumeraci vyčíslitelných Turingových strojů.
+Následující funkce není vyčíslitelná.
+\[
+    f(i) =
+    \begin{cases}
+        1, & \text{jestliže program } i \text { zastaví na vstupu } i \\
+        0, & \text{jestliže program } i \text { nezastaví na vstupu } i \\
+    \end{cases}
+\]
+\end{theorem}
+
+\begin{proof}
+Dokážeme sporem. Nechť
+\[
+    g(i) =
+    \begin{cases}
+        \bot, & \text{jestliže } f(i) = 1 \\
+        1, & \text{jestliže } f(i) = 0 \\
+    \end{cases}
+\]
+Funkce $g$ je zřejmě částečně vyčíslitelná. Nechť $e$ je index stroje
+počítajícího $g$ v dané enumeraci.
+
+Pokud $g(e)$ je definováno, pak $f(e) = 0$ a tedy $g(e)$ nezastaví. Naopak
+pokud $g(e)$ není definováno, pak $f(e) = 1$ a tedy $g(e)$ zastaví.
+Dostáváme spor.
+\end{proof}
+
+Všimneme si, že v pomyslné tabulce programů a vstupů se funkce $g$ chová
+na diagonále jinak, než každý program, což dává spor s její
+vyčíslitelností.
+
+Problém zastavení je však zřejmě částečně rozhodnutelný.
+Naopak problém nezastavení není ani částečně rozhodnutelný (bez důkazu).
+
+\subsection{RAM a PRAM modely}
+
+% http://pages.cs.wisc.edu/~tvrdik/2/html/Section2.html
+
+RAM je idealizovaný model běžného počítače. Paměť obsahuje libovolně
+mnoho libovolně velkých buněk. Výpočetní jednotka nabízí
+instrukce podobné běžným assemblerům, každá trvá jednotku času nehledě
+na velikost operandů. Časová a prostorová složitost tak odpovídají počtu
+provedených instrukcí a počtu použitých paměťových buněk.
+
+PRAM je idealizovaný model SIMD (single instruction, multiple data) se
+sdílenou pamětí. Obsahuje
+neomezeně mnoho RAM procesorů $P_0, P_1,\ldots$
+a neomezeně mnoho paměťových buněk $M[0], M[1],\ldots$
+
+Procesory provádí synchroně operace {\em čti z buňky} $M$, proveď svůj
+výpočet, {\em zapiš do buňky} $M$.
+$P_0$ nejprve spočítá počet potřebných procesorů, teprve potom probíhá
+výpočet. Výpočet končí se zastavením $P_0$. Časová složitost je čas
+do zastavení $P_0$ (paralelismus!).
+
+Rozlišujeme různé kategorie PRAM modelů dle řešení konfliktů při čtení a
+zápisu. Viz
+\href{http://pages.cs.wisc.edu/~tvrdik/2/html/Section2.html#Handling}{http://pages.cs.wisc.edu/{\textasciitilde}tvrdik/2/html/Section2.html\#Handling}\\
+\href{https://en.wikipedia.org/wiki/Parallel_random-access_machine#Read/write_conflicts}{https://en.wikipedia.org/wiki/Parallel\_random-access\_machine\#Read/write\_conflicts}.
+
+\subsection{Celulární automaty}
+
+Například {\em Game of Life}, celulární automat na dvourozměrné, nekonečné
+mřížce, kde každá buňka nabývá stavu {\em live} nebo {\em dead}.
+
+\begin{enumerate}
+    \item Any live cell with fewer than two live neighbours dies, as if caused by underpopulation.
+    \item Any live cell with two or three live neighbours lives on to the next generation.
+    \item Any live cell with more than three live neighbours dies, as if by overpopulation.
+    \item Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+\end{enumerate}
+
+Tato jednoduchá pravidla dávají snadno za vznik například tzv. {\em
+gliderům}, objektům, které cestují po mřížce.
+V tomto formalismu je možno zakódovat univerzální Turingův stroj.
+
+Celulární automaty lze rozdělit do tříd dle stability a
+chaotičnosti jejich vývoje. Již pro jednorozměrné
+mřížky existují pravidla, která demonstrují jak chaotické chování
+(pravidlo 30), tak částečně pravidelné a částečně chaotické (pravidlo
+110).

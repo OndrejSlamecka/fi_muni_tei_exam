@@ -1,0 +1,323 @@
+\section{Algoritmy pro těžké problémy}
+
+Algoritmy pro řešení výpočetně náročných problémů.
+
+\subsection{Náhodnostní algoritmy}
+
+\subsubsection{Monte Carlo algoritmy}
+
+Monte Carlo algoritmy mají povolenou chybu s~omezenou pravděpodobností
+menší než $1/2$.
+
+% Text v komentáři je pro rozhodovací problémy, nás zajímají spíše
+% funkční problémy.
+%
+%\begin{definition}
+%Pravděpodobnostní algoritmus $M$ pro $L$ nazveme {\em Monte Carlo s~dvoustrannou
+%chybou}, pokud počítá v~polynomiálním čase
+%a navíc
+%\begin{itemize}
+    %\item pro $x \in L$ platí $P(M(x) = 1) > 1/2$,
+    %\item pro $x \not \in L$ platí $P(M(x) = 1) < 1/2$.
+%\end{itemize}
+%\end{definition}
+
+%\begin{definition}
+%Pravděpodobnostní algoritmus $M$ pro $L$ nazveme {\em Monte Carlo s~jednostrannou
+%chybou}, který počítá v~polynomiálním čase
+%a navíc
+%\begin{itemize}
+    %\item pro $x \in L$ platí $P(M(x) = 1) > 1/2$,
+    %\item pro $x \not \in L$ platí $P(M(x) = 1) = 0$.
+%\end{itemize}
+%\end{definition}
+
+%Třídu problémů řešitelných MC algoritmy s~dvoustrannou chybou nazýváme
+%$\BPP$, třídu problémů řešitelných MC algoritmy s~jednostrannou chybou
+%$\RP$.
+%Z~definice vyplývá, že Monte Carlo algoritmus nejde konvertovat na Las Vegas algoritmus.
+%Platí ale, že $\RP \cap \coRP = \ZPP$ (třída problémů řešitelných Las
+%Vegas algoritmy).
+
+\begin{example}
+    Definujme problém {\em hledání a}, ve kterém je zadané pole, v~němž
+    polovinu prvků tvoří písmena $a$ a polovinu písmena $b$. Úkolem je
+    najít index nějakého $a$.
+
+    Uvažme algoritmus, který se $k$-krát podívá na náhodný index v~poli,
+    pokud je na něm $a$, vrátí tento index, jinak po $k$ opakování vrátí
+    některý z~navštívených indexů (tedy jistě špatný).
+    Tento algoritmus je zřejmě Monte Carlo.
+\end{example}
+
+Dalším příkladem Monte Carlo algoritmu je Kargerův algoritmus pro
+hledání minimálního řezu (více v~sekci o grafových algoritmech).
+
+Důležitým aspektem Monte Carlo algoritmů je možnost je {\em
+amplifikovat}. Jelikož je pravděpodobnost chyby $p < 1/2$, s~$k$
+opakováními je pravděpodobnost chyby $p^k$, tedy klesá velmi rychle.
+
+
+\subsubsection{Las Vegas algoritmy}
+
+Las Vegas algoritmy nikdy nevrátí špatný výsledek, ale
+s~pravděpodobností menší než $1/2$ můžou
+vrátit odpověď \verb|?|. Příkladem Las Vegas algoritmu, který nevrací
+\verb|?| je QuickSort s~náhodnostní volbou pivotu.
+
+\begin{example}
+    Uvažme opět problém hledání $a$ jako v~příkladu výše.
+    Nyní navrhneme algoritmus, který se podívá na náhodný index v~poli,
+    pokud je na něm $a$, vrátí tento index, jinak se opakuje.
+    Tento algoritmus je zřejmě Las Vegas.
+\end{example}
+
+Každý Las Vegas algoritmus, který vrací \verb|?| lze převést na
+algoritmus, který \verb|?| nevrací prostým opakováním výpočtu dokud
+nevrátí výstup různý od \verb|?|.
+
+%Třída Las Vegas algoritmů se označuje $\ZPP$ a platí
+%$\ZPP = \RP \cap \coRP$.
+
+\subsection{Náhodné procházky}
+
+Prof. Gruska má v~IA062 přednášku na téma náhodných procházek.
+Naneštěstí jeho slidy se zabývají spíše náhodnými procházkami obecně
+a nejde z~nich vyčíst žádná rozumná aplikace pro řešení problémů.
+Podíváme se na algoritmus simulovaného žíhaní (simulated annealing) --
+nejčastěji používaný algoritmus na bázi náhodných procházek pro řešení
+optimalizačních problémů.
+
+Nejprve připomeneme algoritmus {\em lokálního hledání} (local search,
+hill climbing), který v~každém stavu vybere náhodný sousední stav a
+přejde do něj, pokud je lepší než současný -- to opakuje tak dlouho,
+dokud existuje lepší sousední stav.
+
+% http://what-when-how.com/artificial-intelligence/a-comparison-of-cooling-schedules-for-simulated-annealing-artificial-intelligence/
+
+
+Pro vysvětlení algoritmu {\em simulovaného žíhání} uvažme fyzikální
+systém. Naším cílem je dostat se v~systému z~libovolného iniciálního
+stavu do stavu s~nejmenší možnou energií. Chceme algoritmus navrhnout
+tak, aby do lepších stavů přecházel vždy, ale zároveň chceme umožnit,
+aby s~nějakou pravděpodobností unikl z~možného lokálního minima.
+Postupně však chceme tyto možnosti stoupání omezit, abychom
+se ke konci vymezeného času dostoupali do lokálního minima.
+
+Pravděpodobnost přechodu je určena funkcí $P($energie současného stavu,
+energie nového stavu, teplota$)$, která se $P$ definuje typicky takto:
+\[
+    P(E(s), E(s_{new}), T) =
+    \begin{cases}
+        1 & \text{pokud } E(s_{new}) < E(s), \\
+        e^{-(E(s_{new}) - E(s)) / T} & \text{jinak.}
+    \end{cases}
+\]
+Motivace pro volbu této funkce má sice kořeny ve fyzikálních aplikacích,
+v~obecném použití jde ale hlavně o funkci, která má vlastnosti, které
+pro správný průběh heuristiky potřebujeme.
+
+\begin{algorithm}
+\caption{Simulované žíhání}
+\begin{algorithmic}[1]
+\Function{SA}{$ $}
+    \State $s = s_0$
+    \For{$k = 1..k_{max}$}
+        \State $T \gets $ temperature$(k / k_{max})$
+        \State $s_{new} \gets $ random\_neighbour$(s)$
+        \If{$P(E(s), E(s_{new}), T) \geq$ random$(0,1)$}
+            \State $s \gets s_{new}$
+        \EndIf
+    \EndFor
+    \State \Return $s$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+Heuristiku můžeme aplikovat na problém obchodního cestujícího. Stavy
+jsou permutace měst. Funkce získání souseda může například prohodit
+dvě města. Teplotu můžeme například v~každém kroku násobit nějakou mírou
+zchlazení.
+
+\subsection{Aproximační algoritmy}
+
+Aproximační algoritmus pro nějaký problém vrátí řešení, které je nějaké
+kvality v~porovnání s~optimálním řešením.
+Pro problém $L$ a jeho vstup $x$ definujeme aproximativní poměr
+algoritmu $A$ jako
+\[
+    R_A(x) = \max \big \{ \frac{Opt_A(x)}{cena(A(x))},
+    \frac{cena(A(x))}{Opt_A(x)} \big \}
+\]
+Algoritmus $A$ nazveme $\delta$-aproximativní pro $L$ pro
+nějaké $\delta > 1$ pokud $R_A(x) < \delta$ pro všechna $x \in L$.
+$\delta$ nemusí být jen konstanta, ale může to být i funkce velikosti
+vstupu.
+
+\pagebreak
+
+\begin{example}[Problém vrcholového pokrytí]
+Ukážeme, že následující hladový algoritmus je $2$-aproximativní.  Stačí
+uvážit, že každá vybraná hrana musí mít alespoň jeden z~vrcholů
+v~optimálním pokrytí. Algoritmus přidal vždy dva vrcholy. Nemůže jich
+být tedy ve výsledku více než dvojnásobek od optima.
+%Všimneme si, že žádné dvě hrany vybrané algoritmem nemají společný
+%vrchol, proto $\frac{1}{2} \lvert T \rvert \leq Opt(G)$,
+%tedy $\frac{ \lvert T \rvert }{Opt(G)} \leq 2$.
+
+\begin{algorithm}
+\caption{Hladový algoritmus pro vrcholové pokrytí}
+\begin{algorithmic}[1]
+\Function{GreedyVC}{$G = (V,E)$}
+    \State $T \gets \emptyset$
+    \While{$E \neq \emptyset$}
+        \State $(u,v) \gets$ pick an edge from $E$
+        \State $T \gets T \cup \{u,v\}$
+        \State $E \gets \{ (x,y) \in E \mid x,y \not \in \{u, v\} \}$
+            \Comment{$E$ without edges incident to $u,v$}
+    \EndWhile
+    \State \Return $T$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+\end{example}
+
+\begin{example}
+    % https://www.cs.cmu.edu/~avrim/451f12/lectures/lect1106.pdf
+
+    Problém množinového pokrytí. Mějme množinu $X$ o $n$ prvcích
+    a $m$ podmnožin $S_i$. Úkolem je najít nejmenší soubor množin $S_i$,
+    který ve sjednocení dá $X$.
+
+    Odpovídající rozhodovací problém má jako součást vstupu $k$ a ptá
+    se, zda lze $X$ pokrýt $k$ množinami. Problém je $\NP$-úplný.
+
+    Navrhneme hladový algoritmus: Vyber z~$S_i$ množinu, která pokrývá
+    nejvíce prvků, odstraň tyto prvky a opakuj dokud není pokryto.
+
+    Dokážeme, že pokud optimální řešení používá $k$ množin, tento
+    algoritmus použije nejvýše $k \ln n$.
+
+    Z~existence optimálního řešení musí existovat množina pokrývající alespoň
+    $1/k$ prvků. Právě tu přitom algoritmus vybere, takže po první
+    iteraci zbývá pokrýt nejvýše $n(1 - 1/k)$ prvků.
+    Opět musí být množina pokrývající alespoň $1/k$ zbytku prvků.
+    Po $t$ kolech zbývá $n(1-1/k)^t$ prvků,
+    což pro $t = k \ln n$ je $n(1-1/k)^{k \ln n} < n(1/e)^{\ln n} = 1$,
+    takže algoritmus je hotov.
+\end{example}
+
+Další metody odvození aproximačních algoritmů jsou například pomocí
+lokálního vyhledávání nebo lineárního programování.
+V~kontextu státnic je však důkaz jejich korektnosti složité tvrzení.
+
+\subsection{Genetické algoritmy}
+
+Genetický algoritmus provádí iterace. Udržuje přitom populaci řešení,
+každé z~nich je kódováno (nejčastěji posloupností 0 a 1). V iteraci se
+vyhodnotí kvalita řešení (pomocí funkce dané s problémem či simulací)
+a vyberou se ty lepší. Z~vybraných řešení se vytvoří nové křížením
+(zkombinují se části kódů rodičů) a mutací (náhodné změny). Pokračuje se
+na další iteraci.
+
+Příklad: Hledání řetězce s nejvyšším počtem jedniček.
+
+\subsection{Úvod do kvantových algoritmů}
+
+% https://math.stackexchange.com/questions/1779194/what-is-bra-and-ket-notation-and-how-does-it-relate-to-hilbert-spaces
+% https://ocw.mit.edu/courses/physics/8-05-quantum-physics-ii-fall-2013/lecture-notes/MIT8_05F13_Chap_04.pdf
+
+Krátký, intuitivní a nepřesný! (Toto téma není v~žádném z~povinných
+předmětů a na dostudování těsně před státnicemi to není úplně snadné.)
+
+Vektor $v$ značíme $\ket{v}$ ({\em ket}
+$v$). Je-li $x \in \mathbb{N}$, potom $\ket{x}$ značí vektor binární
+reprezentace $x$. {\em Qubit} $\ket{\psi}$ je lineární kombinace
+$\ket{\psi} = \alpha \ket{1} + \beta \ket{0}$, kde $\ket{0} =
+\bigl[\begin{smallmatrix}
+1\\
+0
+\end{smallmatrix}\bigr]$, $\ket{1} = \bigl[\begin{smallmatrix}
+0\\
+1
+\end{smallmatrix}\bigr]$, $\alpha, \beta \in \mathbb{C}$,
+$\lvert \alpha \rvert^2 + \lvert \beta \rvert^2 = 1$.
+
+{\em Měření quibtu} $\ket{\psi}$ (s~$\alpha, \beta$ jako výše) je sampling,
+kde $1$ je vrácena s pravděpodobností
+$\lvert \alpha \rvert^2 = 1$
+a $0$ je vrácena s pravděpodobností
+$\lvert \beta \rvert^2 = 1$. Měříme-li více qubitů zároveň, pak získáme
+binární reprezentaci přirozeného čísla.
+
+\subsection{Shorův faktorizační algoritmus}
+
+Mějme dané číslo $N$, které chceme faktorizovat na $N = pq$.
+Číslo N musí být skutečně složené (ověříme testem prvočíselnosti)
+a nesmí být mocninou prvočísla (pro všechna $k \leq \log N$ otestujeme,
+že $\sqrt[k]{N}$ není celé číslo).
+
+Díky předpokladům a důsledkem CRT má $N$ čtyři různé odmocniny modulo
+$N$, dvě z~nich $1$, $-1$. Hledáme odmocninu $b$ různou od $1,-1$, díky
+které faktorizujeme $N$. Číslo $b$ nalezneme skrze náhodné číslo $a$
+a jeho periodu.
+
+Algoritmus probíhá následovně:
+
+\begin{enumerate}
+    \item Vyber náhodně $a < N$.
+    \item Pokud $gcd(a, N) \neq 1$ máme dělitele.
+    \item Použijeme QFT pro nalezení periody $f(x) = a^x \bmod N$,
+        tj. řádu $a$ v~$\mathbb{Z}_N^*$.
+    \item Je-li $r$ liché nebo $a^{r/2} = -1 \bmod N$, začni znova.
+    \item $gcd(a^{r/2} + 1, N)$ a $gcd(a^{r/2} - 1, N)$ jsou dělitelé $N$.
+\end{enumerate}
+
+Intuitivní popis QFT nabízí Scott Aaronson \\
+\href{https://www.scottaaronson.com/blog/?p=208}{https://www.scottaaronson.com/blog/?p=208}
+
+% https://www.scottaaronson.com/blog/?p=208
+% https://www.quora.com/How-does-Shors-algorithm-work-in-laymans-terms
+
+\subsection{Groverův vyhledávací algoritmus}
+
+% https://www.quora.com/How-would-you-explain-Grovers-algorithm-to-a-professional-programmer
+% https://qbnets.wordpress.com/2010/01/06/grovers-algorithm-for-dummies/
+% https://people.cs.umass.edu/~strubell/doc/quantum_tutorial.pdf
+% https://www.quora.com/What-is-a-laymans-explanation-of-why-Grovers-algorithm-works?share=
+
+% best
+% http://twistedoakstudios.com/blog/Post2644_grovers-quantum-search-algorithm
+% https://cstheory.stackexchange.com/questions/38538/oracle-construction-for-grovers-algorithm
+
+Mějme čísla v rozsahu $[0, N)$, $N \in \mathbb{N}$ a hledáme
+$\bar x$, které splňuje $f(\bar x) = 1$, zatímco $f(x') = 0, x' \neq
+\bar x$.
+
+Na klasickém počítači je tento problém řešitelný pouze průchodem všech
+čísel, tedy v~čase $\Theta(N)$.
+Groverův algoritmus tento problém řeší v~čase $\mathcal{O}(\sqrt{N})$.
+
+Číslo $N$ reprezentujeme $n = \log_2 N$ bity jako vektor
+$\ket{b_1 b_2 \ldots b_n}$. Pokud máme vektor blízko vektoru
+reprezentujícímu $x$, potom kvantový sampling nám vrátí s~vysokou
+pravděpodobností právě $x$. Groverův algoritmus v~$\sqrt{N}$ krocích
+posune počáteční superpozici $\frac{1}{\sqrt{N}} \sum_{x = 0}^{N-1}
+\ket{x}$, ve které jsou všechny hodnoty stejně pravděpodobné,
+do směru $\bar x$.
+
+\pagebreak
+
+Každý krok Groverova algoritmu je implementován postupnou aplikací
+kvantového orákula $\mathcal{O}$, které převrátí amplitudu u $\bar x$,
+tedy provede
+\[
+    \ket{x} \stackrel{\mathcal{O}}{\to} (-1)^{f(x)} \ket{x}
+\]
+potom spočítá průměr amplitud a zrcadlí každou amplitudu okolo průměru.
+
+V~každém kroku se tak všechny neřešení posunou blíže k~sobě a změnšují
+se, zatímco správné řešení vyčnívá a víc a víc. Kvantové orákulum je
+realizace funkce $f$ na kvantovém počítači -- nemůžeme jej použít přímo,
+protože by to znamenalo čtení kvantového registru dříve, než je správná
+pravděpodobnost pro nalezení řešení.

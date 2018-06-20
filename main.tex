@@ -1,0 +1,152 @@
+\documentclass{article}
+
+\usepackage[czech]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+% Czech and German use the same quotes
+\usepackage[style=german]{csquotes}
+
+\usepackage[perpage]{footmisc} % per page numbering of footnotes
+\usepackage{array}
+\usepackage{multienum}
+
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{booktabs} % toprule, midrule
+\usepackage{longtable}
+\usepackage{fancyvrb} % "Verbatim" (capital V) with font size
+
+% References
+\usepackage[unicode]{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black, % BrickRed
+  urlcolor=blue,
+  linkbordercolor=blue
+}
+
+% Math packages
+\usepackage{amssymb}
+\usepackage{amstext}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{braket}
+\usepackage{stmaryrd} % mapsfrom
+\usepackage{physics} % \dv{s}{t} for derivative of s by t
+
+\usepackage{algorithm} % this does the figure environment
+\usepackage{algpseudocode} % algorithmicx, this does the actual algs
+
+\usepackage{tikz}
+\usepackage{tikz-cd}
+\usetikzlibrary{automata,positioning}
+
+\usepackage[capitalize,nameinlink,noabbrev]{cleveref} % has to be below amsthm
+
+% Don't number algorithms
+\makeatletter
+\renewcommand{\fnum@algorithm}{\fname@algorithm}
+\makeatother
+
+% Fix the weird reference stuff
+% https://tex.stackexchange.com/questions/177025/hyperref-cleveref-and-algpseudocode-same-identifier-warning
+\makeatletter
+\newcounter{algorithmicH}% New algorithmic-like hyperref counter
+\let\oldalgorithmic\algorithmic
+\renewcommand{\algorithmic}{%
+  \stepcounter{algorithmicH}% Step counter
+  \oldalgorithmic}% Do what was always done with algorithmic environment
+\renewcommand{\theHALG@line}{ALG@line.\thealgorithmicH.\arabic{ALG@line}}
+\makeatother
+
+% Theorems, their numbering and style
+\theoremstyle{plain}
+\newtheorem{theorem}{Věta}[section]
+\newtheorem{claim}[theorem]{Tvrzení}
+\newcommand{\claimautorefname}{Tvrzení}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Důsledek}
+\newtheorem{note}[theorem]{Poznámka}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definice}
+\newtheorem{example}[theorem]{Příklad}
+
+%% Math operators
+
+% Probability
+\DeclareMathOperator{\Image}{Im}
+\DeclareMathOperator{\Expect}{E}
+\DeclareMathOperator{\Var}{Var}
+
+\DeclareMathOperator{\true}{true}
+\DeclareMathOperator{\false}{false}
+\DeclareMathOperator{\mand}{\ \&\ } % to distinguish from \wedge
+\DeclareMathOperator{\mor}{\ |\ } % to distinguish from \vee
+\DeclareMathOperator{\lcm}{lcm}
+\DeclareMathOperator{\barvee}{\overline{\vee}}
+%\DeclareMathOperator{\barwedge}{\overline{\wedge}}
+%\DeclareMathOperator{\eval}{eval}
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\Models}{Mod}
+\DeclareMathOperator{\Id}{Id}
+
+% Commands
+\newcommand{\powerset}[1]{\mathcal{P}(#1)}
+\newcommand{\finpowerset}[1]{\mathcal{P}^{\text{fin}}(#1)}
+\newcommand{\downset}[1]{{\downarrow #1}}
+\newcommand{\conggen}[1]{{\langle #1 \rangle_{\text{cong}}}}
+\newcommand\logeq{\mathrel{\buildrel{def}\over\iff}}
+\newcommand{\freealg}[2]{\mathcal{F}_{\mathcal{#1}}(#2)}
+\DeclareMathOperator*{\argmin}{\arg\!\min}
+\newcommand{\diff}[1]{\; \text{d} #1}
+\newcommand{\Inf}[1]{\text{Inf}(#1)}
+
+% Complexity classes, package `complexity` clashes with other packages
+\newcommand{\ComplexityFont}[1]{{\ensuremath{\mathsf{#1}}}}
+\renewcommand{\L}{\ComplexityFont{L}}
+\renewcommand{\P}{\ComplexityFont{P}}
+\newcommand{\NP}{\ComplexityFont{NP}}
+\newcommand{\coNP}{\ComplexityFont{coNP}}
+\newcommand{\PSPACE}{\ComplexityFont{PSPACE}}
+\newcommand{\NPSPACE}{\ComplexityFont{NPSPACE}}
+\newcommand{\ZPP}{\ComplexityFont{ZPP}}
+\newcommand{\RP}{\ComplexityFont{RP}}
+\newcommand{\coRP}{\ComplexityFont{coRP}}
+\newcommand{\BPP}{\ComplexityFont{BPP}}
+\newcommand{\FPTAS}{\ComplexityFont{FPTAS}}
+\newcommand{\PTAS}{\ComplexityFont{PTAS}}
+\newcommand{\APX}{\ComplexityFont{APX}}
+\newcommand{\IP}{\ComplexityFont{IP}}
+\newcommand{\CC}{\ComplexityFont{CC}}
+
+% TikZ styles
+\tikzset{%
+    dot/.style={%
+        draw, shape=circle, fill, inner sep=2pt
+    }
+}
+
+\begin{document}
+
+\title{Teoretická Informatika -- Státnicové Otázky}
+
+\maketitle
+\tableofcontents
+\thispagestyle{empty} % do not show number
+\clearpage % end page
+\setcounter{page}{1} % reset counter to 1
+
+\include{probability}
+\include{algebra}
+\include{graph_alg}
+
+\include{automata}
+\include{complexity}
+\include{algorithms_for_hard_problems}
+\include{coding_and_cryptography}
+\include{analysis}
+
+\end{document}

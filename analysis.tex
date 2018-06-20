@@ -1,0 +1,325 @@
+\section{Matematická analýza}
+
+\subsection{Obyčejné diferenciální rovnice}
+
+\begin{definition}
+Nechť $x$ je proměnná, $y$ je funkce proměnné $x$, $y' = \dv{y}{x}$.
+Na $y, y'$ můžeme nahlížet také jako na {\em závislé proměnné}
+v $\mathbb{R}$. Nechť $F : M \subseteq \mathbb{R}^3 \to \mathbb{R}$
+je daná funkce. Pak rovnice
+\[
+    F(x,y,y',\ldots,y^{(n-1)}) = 0
+\]
+se nazývá {\em obyčejná diferenciální rovnice prvního řádu}.
+
+{\em Řešení} takové rovnice je každá funkce $\varphi(x) = y$,
+která má derivaci na intervalu $\mathcal{I} \subseteq \mathbb{R}$,
+a platí $[x, \varphi(x), \varphi'(x)] \subseteq M$
+a $\forall x \in \mathcal{I} \; F(x, \varphi(x), \varphi'(x)) = 0$.
+\end{definition}
+
+\begin{example}[Se separovatelnými proměnnými]
+Rovnice tvaru $y' = g(x) h(y)$. Například následující.
+\begin{align*}
+    2 y'             &=    2x + 1               \\
+    2 \dv{y}{x}      &=    2x + 1               \\
+    2 \; \text{d}y   &=   (2x + 1) \; \text{d}x \\
+    \int 2 \; \text{d}y &= \int (2x + 1) \; \text{d}x \\
+    2 y              &= x^2 + x +C               \\
+      y              &= \frac{x^2 + x + C}{2}    \\
+\end{align*}
+\end{example}
+
+\begin{example}[Lineární rovnice]
+    % http://people.math.gatech.edu/~xchen/teach/ode/nth_ord_eq.pdf
+    Rovnice tvaru $y' + p(x)y = q(x)$.
+    Řešení homogenní varianty takové rovnice (tj. $y' + p(x)y = 0$)
+    jsou tvaru $e^{\int -p(x) \; \text{d}x}$.
+    Úpravami se pak snadno získá řešení homogenní varianty a z něj pak
+    dosazením původní rovnice.
+    Například následující.
+\begin{align*}
+    y' + 2xy        &= x \\
+    \text{Nejprve vyřešíme } y' + 2xy &= 0 &\\
+    y_H &= e^{\int -2x \; \text{d}x} = e^{-x^2} \cdot C(x) \\
+    \text{Zpět k řešení původní rovnice;}&\text{ potřebujeme C(x) tak, aby} \\
+    y'_H + 2xy_H   &= x \\
+    (-2x e^{-x^2} \cdot C(x) + e^{-x^2} \cdot C'(x)) + 2x e^{-x^2}\cdot C(x) &= x \\
+    e^{-x^2} C'(x) &= x \\
+    C'(x) &= x e^{x^2} \\
+    C(x)  &= \frac{1}{2} e^{x^2} + K \\
+    \text{Zbývá dosadit }& C(x) \text{ do } y_H \\
+    y &= e^{-x^2} (\frac{1}{2} e^{x^2} + K) = \frac{1}{2} + e^{-x^2} K
+\end{align*}
+\end{example}
+
+\begin{example}[Bernoulliho rovnice]
+    Rovnice tvaru $y' + p(x)y = q(x)y^k$. Řešíme převodem na lineární
+    rovnici pomocí substituce $u = y^{1-k}$. Například následující.
+\begin{align*}
+    y' + y + y^2 e^x  &= 0 \\
+    y' + y          &= - e^x y^2 \\
+    (u = y^{1-2} = y^{-1} &\implies y = u^{-1}) \\
+    (u^{-1})' + u^{-1}    &= - e^x u^{-2} \\
+    -u^{-2} u' + u^{-1}   &= - e^x u^{-2} \\
+    u' - u          &= e^x  \text{ (nyní řešíme lineární rovnici)}  \\
+    u'_H - u        &= 0 \\
+    u_H             &= e^{\int 1 \; \text{d}x} = e^x C(x) \\
+    (e^{x} C(x))' - e^{x} C(x) &= e^x \\
+    e^x C(x) + e^x C'(x) - e^{x} C(x) &= e^x \\
+    e^x C(x) + e^x C'(x) - e^{x} C(x) &= e^x \\
+    C'(x) &= 1 \\
+    C(x)  &= x + K \\
+    u'    &= e^x (x + K) \\
+    y     &= \frac{1}{e^x (x + K)}
+\end{align*}
+Navíc se nezapomene ověřit možné (a skutečné) řešení $y = 0$, jelikož
+výpočet pracoval s výrazem $y^{-1}$.
+\end{example}
+
+\begin{example}[Exaktní rovnice]
+Rovnice tvaru
+$M(x,y) \diff{x} + N(x,y) \diff{y} = 0$,
+kde
+$\frac{\partial M(x,y)}{\partial y} = \frac{\partial N(x,y)}{\partial x}$.
+Hledáme kmenovou funkci $F(x,y)$, což je taková funkce, že
+$M = \frac{\partial F}{\partial x}$, $N = \frac{\partial F}{\partial y}$.
+Například následující.
+\begin{align*}
+    4x^3 e^y \diff{x} + (x^4e^y + 2y) \diff{y} &= 0
+        \text{ (nezapomene ověřit exaktnost)} \\
+    F(x,y) = \int M(x,y) \diff{x} &= x^4 e^y + C(y) \\
+    \frac{\partial F}{\partial y} = x^4 e^y + C'(y) &\boldsymbol{=} x^4e^y + 2y = N
+        \text{ (z exaktnosti)} \\
+    C'(y)  &= 2y \\
+    C(y)   &= y^2 + K \\
+    F(x,y) &= e^y x^4 + y^2 = K
+\end{align*}
+\end{example}
+
+\begin{example}[Lineární rovnice vyšších řádů]
+    % http://people.math.gatech.edu/~xchen/teach/ode/nth_ord_eq.pdf
+    Je-li rovnice tvaru
+    $a_n y^{(n)} + \ldots a_1 y' + a_0 y = 0$, tedy je
+    vyššího řádu a lineární s konstantními koeficienty,
+    potom se převede na {\em charakteristickou rovnici}
+    $a_n \lambda^{n} + \ldots a_1 \lambda + a_0 = 0$.
+    Každý kořen $\lambda$ s násobností $k$
+    zadává $k$ řešení tvaru
+    $e^{\lambda t},
+    \ldots
+    t^{k-1} e^{\lambda t}$.
+    Například následující.
+\begin{align*}
+    y'' + 16 y &= 0 \\
+    \lambda^2 + 16 &= 0 \\
+    \lambda &= \pm 4i \\
+    y_1 &= e^{4it} = \cos 4t + i \sin 4t \\
+    y_{11} &= \cos 4t \\
+    y_{12} &= \sin 4t \\
+    y_2 &= e^{-4it} \text{ (úprava je stejná až na znaménko)} \\
+    y  &= c_1 \cos 4t + c_2 \sin 4t
+\end{align*}
+\end{example}
+
+\subsection{Systémy diferenciálních rovnic}
+
+\begin{definition}
+    Soubor $n$ rovnic tvaru
+    $x'_i = \sum_{j=1}^{n} a_{i,j}(t) \cdot x_j + b_i(t)$,
+    kde $a_{i,j}, b_i$ jsou reálné funkce spojité na intervalu
+    $\mathcal{I}$ a $' = \dv{}{t}$,
+    se nazývá {\em systém lineárních diferenciálních rovnic 1. řádu}.
+
+    Systém rovnic lze zapsat jako
+    $x' = A(t) \cdot x + b(t)$
+    při zavedení značení $x(t)$, $b(t)$, $A(t)$
+    pro odpovídající vektory (matici) ze soustavy
+    a realizaci operací po složkách.
+
+    {\em Řešení} je každá vektorová funkce $\varphi(t)$
+    diferencovatelná na intervale $\mathcal{J} \subseteq \mathcal{I}$,
+    taková, že po dosazení za $x$ v systému je systém splněn.
+\end{definition}
+
+\subsubsection{Homogenní systémy}
+%\begin{theorem}
+    %Jsou-li $A(t), b(t)$ spojité na intervalu $\mathcal{I}$,
+    %potom $x' = A(t)x + b(t)$, $x(t_0) = \eta$
+    %má pro každé $t_0 \in \mathcal{I}$ a $\eta \in \mathbb{R}^n$
+    %právě jedno řešení, které existuje na celém $\mathcal{I}$.
+    %Toto řešení lze vyjádřit jako limitu určité posloupnosti aproximací.
+%\end{theorem}
+
+Nechť $A(t)$ je maticová funkce řádu $n$ spojitá na $\mathcal{I}$.
+Mějme homogenní systém $y' = A(t) y$.
+Pokud $y_1(t)$ a $y_2(t)$ jsou řešení (tedy např. $y_1' = A(t) y_1$,
+pak se snadno derivováním
+ověří, že i $y(t) = c_1 y_1(t) + c_2 y_2(t)$ je řešení. Tím dostáváme
+následující.
+
+\begin{theorem}
+    Množina všech řešení homogenního systému na intervalu $\mathcal{I}$
+    tvoří vektorový prostor nad tělesem reálných čísel.
+\end{theorem}
+
+Navíc platí (bez důkazu), že tento vektorový prostor má dimenzi $n$.
+
+\begin{definition}
+    Libovolná báze prostoru všech řešení na intervalu $\mathcal{I}$ se
+    nazývá {\em fundamentální systém řešení} rovnice $y' = A(t)y$.
+
+\end{definition}
+
+Pokud $y_1(t), \ldots, y_n(t)$ je fundamentální systém řešení, pak
+$y(t) = c_1 y_1(t) + \ldots + c_n y_n(t)$, je {\em všeobecným
+řešením} systému $y' = A(t) y$.
+
+S vektorovou rovnicí $y' = A(t) y$ můžeme uvažovat i
+{\em maticovou rovnici} $Y' = A(t) Y$.
+Pokud $Y(t)$ je maticové řešení na $\mathcal{I}$
+a $C \in \mathbb{R}^{n \times n}$ je konstantní matice, potom
+i $Y(t) C$ je řešením. Tento fakt opět snadno ověříme derivací
+$(YC)' = Y'C = AYC = A(YC)$.
+Maticové řešení $Y(t)$ nazýváme {\em fundamentální matice},
+pokud sloupce $Y(t)$ tvoří fundamentální systém řešení $y' = A(t)y$.
+Řešení $Y(t)$ je tedy fundamentální právě tehdy, když
+$det(Y) \neq 0$ pro každé $t \in \mathcal{I}$. (Navíc platí věta, která
+říká, že $det(Y) = 0$ buď pro všechny $t$ nebo pro žádné.)
+
+
+\begin{example}[Eliminační metoda]
+Derivováním jedné z rovnic a dosazením druhé dostaneme lineární
+diferenciální rovnici s konstantními koeficienty jedné proměnné.
+Ten vyřešíme a dosadíme zpět. Například následující.
+\begin{align*}
+    x' &= 7x + 6y \\
+    y' &= 2x + 6y \\
+    \\
+    x'' &= 7x'+6y' \\
+    x'' &= 7(7x+6y) + 6(2x+6y) = 61x+78y \\
+    y   &= \frac{x' - 7x}{6} \\
+    x'' &= 61x + 13x' - 91x = 13x' - 30x \\
+    \text{To je lineární rovnice.} \\
+    x &=  c_1 e^{3t} + c_2 e^{10t} \\
+    \text{Dosadíme zpět do výrazu pro } y \\
+    y &= -\frac{2}{3} c_1 e^{3t} + \frac{1}{2} c_2 e^{10t} \\
+    \text{Řešením je tedy}& \text{ fundamentální matice Y(t)} \\
+    \text{vynásobená}& \text{ vektorem konstant.} \\
+\end{align*}
+\vspace{-25pt}
+\[
+    \begin{pmatrix}
+        e^{3t} & e^{10t} \\
+        -\frac{2}{3}e^{3t} & \frac{1}{2} e^{10t} \\
+    \end{pmatrix}
+    \begin{pmatrix}
+        c_1 \\
+        c_2 \\
+    \end{pmatrix}
+\]
+\end{example}
+
+\pagebreak
+
+\subsubsection{Systémy s konstantními koeficienty}
+
+\begin{definition}
+    Nechť $M$ je komplexní matice řádu $n$. Pak $e^M$ nazveme
+    {\em exponenciála matice} $M$.
+\[
+    e^M = \sum_{k = 0}^{\infty} \frac{1}{k!} M^k
+\]
+\end{definition}
+
+\begin{theorem}
+    Nechť $A$ je konstantní matice řádu $n$.
+    Pak $e^{At}$ je fundamentální matice homogenního systému $y' = Ay$
+    na $(-\infty, \infty)$.
+\end{theorem}
+
+\begin{example}
+\end{example}
+
+\subsubsection{Partikulární řešení nehomogenních systémů}
+
+Budeme uvažovat nehomogenní systém $x' = A(t)x + b(t)$.
+Připomeneme, že $A(t), b(t)$ jsou maticová a vektorová funkce,
+definované a spojité na intervalu $\mathcal{I}$.
+
+\begin{theorem}
+    Nechť $Y' = A(t)Y$ a $x_0(t)$ je nějaké řešení nehomogenního systému
+    na $\mathcal{I}$. Potom vektorová funkce $x(t)$ je úplné řešení
+    nehomogenního systému na $\mathcal{I}$ právě tehdy,
+    když pro každé $t \in \mathcal{I}$
+    \[
+        x(t) = Y(t)c + x_0(t)
+    \]
+\end{theorem}
+
+\begin{example}
+    (Metodou variace konstant.)
+\end{example}
+
+\subsection{Křivkový integrál: Skálární}
+
+
+Křivku můžeme rozdělit na části a potom spočítat součet délek částí
+vážených hodnotou funkce v~nějakém bodě každé z~částí. Pokud je dělení
+dělení takové, že nejdelší z~jeho části je v~limitě (to jest když je
+dělení na $n\to \infty$ částí) délky 0, a potom posloupnost výše
+popsaných součtů konverguje pro každou volbu bodů z~částí, potom říkáme,
+že existuje křivokový integrál prvního druhu.
+
+
+\begin{theorem}[O vztahu k Riemannovu integrálu]
+Nechť $\varphi : [a,b] \to \mathbb{R}^m$ je po částech hladká křivka,
+a $f : \langle \varphi \rangle \to \mathbb{R}$ je ohraničená funkce.
+Potom (pokud Riemannův integrál na pravé straně existuje) platí
+\[
+ \int_\varphi f(x) ds = \int_a^b f(\varphi(t)) \, \lvert \varphi'(t) \rvert \, dt
+\]
+\end{theorem}
+
+\begin{example}
+\end{example}
+
+\pagebreak
+
+\subsection{Křivkový integrál: Vektorový}
+
+\subsubsection{Vztah k Riemannovu integrálu}
+
+\begin{theorem}[O vztahu k Riemannovu integrálu]
+Nechť $\varphi : [a,b] \to \mathbb{R}^m$ je po částech hladká
+orientovaná křivka,
+a $f : \langle \varphi \rangle \to \mathbb{R}^m$ je ohraničená funkce.
+Potom (pokud Riemannův integrál na pravé straně existuje) platí
+\[
+ \int_\varphi f(x) ds = \pm \int_a^b f(\varphi(t)) \, \varphi'(t) \, dt
+\]
+Kde $+$ se vyskytuje, jsou-li orientace křivky a parametrizace souhlasné,
+$-$ v případě, že jsou nesouhlasné.
+
+\end{theorem}
+
+\begin{example}
+\end{example}
+
+\subsubsection{Greenova věta}
+
+Greenova věta dává překvapivý vztah mezi křivkovým integrálem a dvojitým
+integrálem, který lze využít pro zjednodušení výpočtů.
+
+\begin{theorem}
+    Nechť $C$ je kladně orientovaná, po částech hladká, jednoduchá
+    uzavřená křivka v~rovině a $D$ nějaká oblast $C$ ohraničená.
+    Jestliže $L,M$ jsou funkce $(x,y)$ definované na otevřené oblasti
+    obsahující $D$ a se spojitými parciálními derivacemi, potom
+    \[
+    \oint_{C} (L\, dx + M\, dy) = \iint_{D} \left(\frac{\partial M}{\partial x} - \frac{\partial L}{\partial y}\right)\, dx\, dy
+\]
+\end{theorem}
+
+\begin{example}
+\end{example}

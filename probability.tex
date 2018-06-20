@@ -1,0 +1,685 @@
+\section{Pravděpodobnost}
+
+\subsection{Základní pojmy a vlastnosti pravděpodobnosti}
+
+\begin{definition}
+Pro daný experiment je diskrétní pravděpodobnostní prostor trojice
+$(\Omega, \mathcal{F}, P)$,
+kde
+\begin{itemize}
+    \item $\Omega$ je množina možných výsledků experimentu,
+    \item $\mathcal{F} \subseteq \powerset{\Omega}$ je množina možných události,
+    \item $P : \mathcal{F} \to [0,1]$ je pravděpodobnostní funkce, tedy
+        pro po párech disjunktní $\{A_i\}_{i=1}^\infty \subseteq \mathcal{F}$ platí
+        $P(\bigcup A_i) = \sum P(A_i)$ a $P(\Omega) = 1$.
+\end{itemize}
+\end{definition}
+
+\begin{example}
+    Můžeme například uvažovat experiment hodu dvěma kostkami.
+    $\Omega = \{1,\ldots,6\}^2$, pro diskrétní $\Omega$ platí
+    $\mathcal{F} = \powerset{\Omega}$ a z~uniformity kostek
+    $P((x,y)) = 1/\lvert \Omega \rvert, (x,y) \in \Omega$.
+\end{example}
+
+\begin{claim}
+    Nechť $A$ je událost a $\overline{A}$ její doplněk. Pak
+    $P(\overline{A}) = 1 - P(A)$.
+\end{claim}
+
+\begin{proof}
+    Víme $P(A \cup \overline{A}) = 1$, tedy $P(A) + P(\overline{A}) = 1$.
+\end{proof}
+
+\begin{definition}
+Podmíněnou pravděpodobnost výskytu události $A$ za předpokladu výskytu
+události $B$ definujeme
+\[
+    P(A \mid B) = \frac{P(A \cap B)}{P(B)}
+\]
+\end{definition}
+
+Jednoduchou intuici za definicí nabízí Vennův diagram.
+
+\begin{theorem}[Totální pravděpodobnosti]
+    \[
+        P(A) = \sum_i P(A \cap B_i) = \sum_i P(A \mid B_i) P(B_i)
+    \]
+\end{theorem}
+
+\begin{example}
+    Žárovky X svítí přes 5000 hodin v~99 \% případů.
+    Žárovky Y svítí přes 5000 hodin v~95 \% případů.
+    Žárovky X tvoří 60 \% dostupných žárovek.
+    Žárovky Y tvoří 60 \% dostupných žárovek.
+    Jaká je pravděpodobnost, že náhodně zvolená žárovka
+    bude svítit přes 5000 hodin?
+    \[
+{\displaystyle {\begin{aligned}\Pr(A)&=\Pr(A\mid B_{X})\cdot \Pr(B_{X})+\Pr(A\mid B_{Y})\cdot \Pr(B_{Y})\\[4pt]&={99 \over 100}\cdot {6 \over 10}+{95 \over 100}\cdot {4 \over 10}={{594+380} \over 1000}={974 \over 1000}\end{aligned}}}
+\]
+\end{example}
+
+\begin{theorem}[Bayes]
+    Pokud $P(B) \neq 0$, pak
+    \[
+    P(A \mid B) = \frac{P(B \mid A)P(A)}{P(B)}
+    \]
+\end{theorem}
+
+Věta vyplývá z~jednoduché úpravy definice podmíněné pravděpodobnosti.
+
+\begin{example}
+    % https://www.wikiskripta.eu/w/Bayesova_v%C4%9Bta
+Předpokládejme, že máme školu s~60~\% chlapců
+a 40~\% dívek. Všichni chlapci nosí kalhoty.
+Z~dívek nosí kalhoty polovina. Pozorovatel vidí z~dálky studenta v kalhotách.
+Jaká je pravděpodobnost, že tento student je dívka?
+Jako událost G označíme, že pozorovaný student je dívka. Jako událost T,
+že pozorovaný student nosí kalhoty. Chceme vypočíst $P(G \mid T)$.
+\[
+    P(G \mid T)
+    = \frac{P(T \mid G)P(G)}{P(T)}
+    = \frac{1/2 \cdot 4/10}{6/10 \cdot 1 + 4/10 \cdot 1/2}
+\]
+\end{example}
+
+\subsection{Náhodná proměnná a její charakteristiky}
+
+\begin{definition}
+    Pro diskrétní pravděpodobnostní prostor $(\Omega, \mathcal{F}, P)$
+    nazveme {\em náhodnou proměnnou} funkci $X : \Omega \to \mathbb{R}$.
+\end{definition}
+
+\begin{example}
+    Například pro
+    $(\{1,\ldots,6\}, \powerset{\{1,\ldots,6\}}, P(x) = 1/6)$
+    můžeme definovat náhodnou proměnnou
+    $X(x) = 0, x = 1,\ldots,5, X(6) = 1$.
+\end{example}
+
+\begin{definition}[Očekávaná (střední) hodnota]
+    Nechť $(\Omega, \mathcal{F}, P)$ je diskrétní pravděpodobnostní
+    prostor a $X$ náhodná proměnná. {\em Očekávaná hodnota} $X$
+    je
+    \[ \Expect(X) = \sum_{x \in \Image(X)} x \cdot P(X = x) \]
+\end{definition}
+
+\begin{theorem}
+    Nechť $(X_i)_{i=1}^{n}$, $n \in \mathbb{N}$, je posloupnost
+    náhodných proměnných \linebreak s~konečnou očekávanou hodnotou, potom
+    \[
+        E \big ( \sum X_i \big ) = \sum E(X_i)
+    \]
+\end{theorem}
+
+\begin{proof}
+    Indukcí k~počtu sčítanců. Bázový případ je triviální. Nechť $X$ je
+    náhodná proměnná a $Y$ je součtem nenulového počtu náhodných proměnných.
+
+    \begin{align*}
+        E(X + Y) &= \sum_i \sum_j (i+j) P((X = i) \cap (Y = j)) \\
+                 &= \sum_i \sum_j i P((X = i) \cap (Y = j))
+                  + \sum_i \sum_j j P((X = i) \cap (Y = j)) \\
+                 &= \sum_i i \sum_j P((X = i) \cap (Y = j))
+                  + \sum_j j \sum_i P((X = i) \cap (Y = j)) \\
+                 &= \sum_i i P(X = i)
+                  + \sum_j j P(Y = j) \\
+                 &= E(X) + E(Y)
+                   \qedhere
+    \end{align*}
+\end{proof}
+
+\pagebreak
+
+\begin{theorem}
+    \[
+        E(cX) = cE(X)
+    \]
+\end{theorem}
+
+\begin{proof}
+    Pro $c = 0$ je tvrzení zřejmé. Pro $c \neq 0$ platí
+
+    \begin{align*}
+        E(cX) &=   \sum_i i P(cX = i) \\
+              &= c \sum_i (i/c) P(X = i/c) \\
+              &= c \sum_j j P(X = j) \\
+              &= c E(X)
+                \qedhere
+    \end{align*}
+\end{proof}
+
+\begin{definition}
+    Proměnné $X,Y$ nazveme {\em nezávislé} pokud pro všechna $x,y$
+    \[
+        P(X = x \land Y = y) = P(X = y) P(Y = y)
+    \]
+\end{definition}
+
+Alternativně $P(X = x \mid Y = y) = P(X = x)$ pro každé $x,y$. (Tady by
+bylo dobré si rozmyslet, proč tomu tak je.)
+
+\begin{definition}[Rozptyl, variance]
+    Pro náhodnou proměnnou $X$ je {\em rozptyl}
+    \[ \Var(X) = \Expect( (X - \Expect(X))^2 ) \]
+\end{definition}
+
+Na rozptyl se tedy můžeme dívat jako na druhou mocninu očekávané
+vzdálenosti od očekávané hodnoty. Druhá odmocnina rozptylu je
+{\em standardní odchylka}.
+
+Následující tvrzení se snadným důkazem dává užitečný způsob výpočtu
+variance.
+
+\begin{claim}
+    $ Var(X) = \Expect( (X - \Expect(X))^2 ) = \Expect(X^2) - \Expect(X)^2 $
+\end{claim}
+
+\begin{definition}[Kovariance]
+    $ Cov(X,Y) = E((X - E(X))(Y - E(Y))) $
+\end{definition}
+
+Na kovarianci se můžeme dívat jako na míru společné variance dvou
+proměnných.
+
+\begin{claim}
+    $Var(X + Y) = Var(X) + Var(Y) + 2 Cov(X,Y)$
+\end{claim}
+
+\begin{theorem}
+    Jsou-li $X, Y$ nezávislé náhodné proměnné, potom
+    \[ E(X \cdot Y) = E(X) \cdot E(Y) \]
+\end{theorem}
+
+
+\begin{corollary}
+    Jsou-li $X, Y$ nezávislé náhodné proměnné, pak $Cov(X,Y) = 0$.
+\end{corollary}
+
+\begin{proof}
+    Jsou-li $X, Y$ nezávislé, potom i $X - E(X)$ a $Y - E(Y)$ jsou
+    nezávislé. Můžeme tedy použít větu o násobení nezávislých
+    očekávaných hodnot. Potom $E(Z - E(Z)) = E(Z) - E(E(Z)) = 0$.
+\end{proof}
+
+\subsection{Distribuce}
+
+\begin{definition}[Bernoulliho rozdělení]
+    Náhodná proměnná $X$ má {\em Bernoulliho distribuci} s~parametrem
+    $p$, pokud
+    \begin{align*}
+        P(X = 1) &= p  \\
+        P(X = 0) &= 1 - p
+    \end{align*}
+\end{definition}
+
+Z~definice vyplývá $E(X) = 1 \cdot p + 0 \cdot (1-p) = p$.
+
+\begin{definition}[Binomické rozdělení]
+    Náhodná proměnná $X$ má {\em binomickou distribuci} s parametry $(n, p)$,
+    pokud pro $0 \leq k \leq n$ platí
+\[
+    P(X = k) = {{n} \choose {k}} p^k (1 - p)^{n - k}
+\]
+\end{definition}
+
+\begin{theorem}
+    \[
+        X \sim Bin(n,p) \implies E(X) = np
+    \]
+\end{theorem}
+
+\begin{proof}
+    Uvažujme $n$ náhodných proměnných $X_i$ s~Bernoulliho distribucí
+    s~parametrem $p$.
+    Zřejmě $X \sim \sum X_i$, potom
+    \[
+        E(X) = E( \sum_{i = 1}^{n} X )
+             = \sum_{i = 1}^{n} E(X)
+             = \sum_{i = 1}^{n} p
+             = n p
+    \]
+\end{proof}
+
+\begin{example}
+    Příkladem náhodné proměnné s~binomickým rozdělením je
+    počet hlav, které padnou při $n$ hodech mincí ($p = 1/2$).
+    Podle věty získáme očekávanou hodnotu $n/2$.
+\end{example}
+
+\begin{definition}[Geometrické rozdělení]
+    Náhodná proměnná $X$ má {\em geometrickou distribuci} s~parametrem
+    $p$, pokud pro $1 \leq k$ platí
+\[
+    P(X = k) = (1-p)^{k-1} p
+\]
+\end{definition}
+
+\begin{claim}
+    Geometrické rozdělení nemá paměť, tedy
+    \[
+        P(X = n + k \mid X > k) = P(X = n)
+    \]
+\end{claim}
+
+\begin{theorem}
+    Nechť $X$ je náhodná proměnná s~náhodným rozdělením s~parametrem
+    $p$, potom
+    \[
+        E(X) = \frac{1}{p}
+    \]
+\end{theorem}
+
+\begin{example}
+    Novomanželé si plánují pořizovat děti, dokud se jim nenarodí dcera.
+    Pravděpodobnost, že se jim narodí jediné dítě (a tedy dcera) je $1/2$.
+    Pravděpodobnost, že se jim narodí dvě děti je $1/4$.
+    Pravděpodobnost, že se jim narodí tři děti je $1/8$.
+    Očekávaný počet dětí je $2$, tedy jeden syn a jedna dcera.
+
+    Tento příklad také demonstruje, že geometrické rozdělení nemá paměť.
+    Je jedno kolik dětí se dosud narodilo, pravděpodobnost narození
+    dalších to nijak neovlivňuje.
+\end{example}
+
+\begin{definition}[Uniformní rozdělení]
+    Náhodná proměnná $X$ má {\em uniformní distribuci},
+    pokud pro všech $K$ hodnot $k$ platí
+    \[
+        P(X = k) = 1/K
+    \]
+\end{definition}
+
+\subsection{Markovova a Čebyševova nerovnost}
+
+\begin{theorem}[Markovova nerovnost]
+    Nechť $X$ je náhodná proměnná, která nabývá pouze nezáporných
+    hodnot. Potom pro všechna $a > 0$,
+    \[
+       P(X \geq a) \leq \frac{E(X)}{a}
+\]
+\end{theorem}
+
+\begin{proof}
+    Pro $a \geq 0$ mějme
+    \[
+        I =
+        \begin{cases}
+            1, \quad \text{pokud } X \geq a, \\
+            0, \quad \text{jinak.}
+        \end{cases}
+    \]
+    Protože $I$ má Bernoulliho rozdělení, tak platí $E(I) = P(I = 1) = P(X \geq a)$.
+    Navíc protože $X \geq 0$, tak platí $I \leq \frac{X}{a}$, na což
+    aplikujeme $E$ a získáme
+    \[
+        P(X \geq a) = E(I) \leq E \big (\frac{X}{a} \big ) = \frac{E(X)}{a}
+        \qedhere
+    \]
+\end{proof}
+
+\begin{example}
+    Předpokládejme $n$-krát opakovaný experiment hodu mincí,
+    a $X_i = 1$ padla-li hlava, $X_i = 0$ jinak.
+    Potom $X = \sum X_i$ značí počet padlých hlav. Nyní můžeme snadno
+    spočítat horní odhad na pravděpodobnost, že padne více než $3n/4$
+    hlav.
+
+    \[
+        P(X \geq 3n/4) \leq \frac{n/2}{3n/4} = \frac{2}{3}
+    \]
+\end{example}
+
+\begin{theorem}
+    Pokud známe pouze $E(X)$ a fakt, že $X$ nenabývá záporných hodnot,
+    potom Markovova nerovnost je těsná.
+\end{theorem}
+
+\begin{proof}
+    Nechť $X = k$ s pravděpodobností $1$
+    a $X = 0$ s~pravděpodobností $0$.
+    Potom $P(X \geq k) = \frac{E(X)}{k}$.
+\end{proof}
+
+\begin{definition}
+    Pokud $\Expect(X^n)$ existuje a je konečná, pak ji nazveme $n$-tým
+    momentem $X$.
+\end{definition}
+
+Pro aplikaci Markovovy nerovnosti stačila znalost prvního momentu
+($\Expect(X)$). Se znalostí druhého momentu ($\Expect(X^2)$) můžeme
+odvodit podstatně silnější nerovnost.
+
+\pagebreak
+
+\begin{theorem}[Čebyševova nerovnost]
+    Pokud $a \geq 0$, pak
+    \[
+        P(\lvert X - \Expect(X) \rvert \geq a) \leq \frac{\Var(X)}{a^2}
+    \]
+\end{theorem}
+
+\begin{proof}
+    Nejprve pozoroujeme, že
+    \[
+        P(\lvert X - \Expect(X) \rvert \geq a)
+        = P((X - E(X))^2 \geq a^2)
+\]
+    potom pouze použijeme Markovovu nerovnost
+    \[
+        P((X - \Expect(X))^2 \geq a^2)
+        \leq \frac{\Expect((X - \Expect(X))^2)}{a^2}
+        = \frac{\Var(X)}{a^2}
+        \qedhere
+    \]
+\end{proof}
+
+\begin{example}
+    Analyzujeme znovu příklad s~pravděpodobností, že padne více než
+    $3n/4$ hlav z~$n$ hodů mincí. Nejprve ověříme, že
+    \[
+        \Expect((X_i)^2) = \Expect(X_i) = 1/2
+    \]\[
+        Var(X_i) = \Expect((X_i)^2) - \Expect(X_i)^2 = 1/4
+    \]
+    Nyní s~použítím linearity sčítání nekovariantních náhodných
+    proměnných
+    \[
+        \Var(X) = \Var(\sum X_i) = \sum \Var(X_i) = n/4
+    \]
+    Aplikujeme Čebyševovu nerovnost
+    \[
+        P(X \geq 3n/4 ) \leq P(\lvert X - \Expect(X) \rvert \geq n/4)
+                     \leq \frac{\Var(X)}{(n/4)^2}
+                     = \frac{n/4}{(n/4)^2}
+                    = \frac{4}{n}
+    \]
+
+    Protože nerovnost omezuje pravděpodobnost ze dvou stran (ze symetrie
+    dané absolutní hodnotou), získáváme ještě přesnější odhad $2/n$.
+\end{example}
+
+\subsection{Chernoffovy odhady}
+
+% http://math.mit.edu/~goemans/18310S15/chernoff-notes.pdf
+
+Se znalostí všech momentů náhodné proměnné můžeme odvodit ještě silnější
+odhady pravděpodobností.
+
+\begin{definition}
+    Funkci $M_X(s) = \Expect(e^{s X})$ nazveme {\em generátor momentů}.
+\end{definition}
+
+Důvodem pro název je Taylorův rozvoj
+$M_X(s)
+= \Expect( 1 + sX + \frac{1}{2!}s^2 X^2 + \frac{1}{3!}s^3 X^3 + \ldots )
+= \sum_{i = 0}^{\infty} \frac{1}{i!} s^i \Expect (X^i)$
+a z něj vyplývající tvrzení (za předpokladu, že $\Expect$ a derivace
+pro dané $X$ komutují) $\Expect(X^n) = M^{(n)}_X(0)$, kde $(n)$ značí $n$-tou
+derivaci.
+
+\begin{theorem}
+    Pokud $X, Y$ jsou nezávislé, pak
+    \[
+        M_{X+Y}(t) = M_X(t) M_Y(t)
+    \]
+\end{theorem}
+
+Důkaz je snadný z~definice.
+
+Obecně Chernoffovy odhady jsou získány aplikací Markovovy nerovnosti na
+$e^{tX}$ pro vhodně zvolené $t$. Z Markovovy nerovnosti pro každé $t >
+0$ platí
+\[
+    P(X \geq a) = P(e^{tX} \geq e^{ta}) \leq \frac{\Expect(e^{tX})}{e^{ta}}
+\]
+zejména tedy
+\[
+    P(X \geq a) \leq \min_{t > 0} \frac{\Expect(e^{tX})}{e^{ta}}
+\]
+Stejně tak platí opačná nerovnost pro $t < 0$.
+
+%Odvodíme Chernoffův odhad pro součet Poissonových pokusů\footnote{To je téměř
+%jako součet Bernoulliho pokusů, jen každý Poissonův pokus může mít jinou
+%pravděpodobnost, zatímco od Bernoulliho očekáváme stejnou ve všech
+%případech.}.
+
+Jeden z~Chernoffových odhadů je následující.
+
+\begin{theorem}
+    Nechť $X = \sum X_i$, kde $X_i$ je Possinovoa s~$p_i$,
+    všechny $X_i$ jsou nezávislé a nechť $\delta \in (0,1)$.
+    \[
+        P(X \geq (1 + \delta) \Expect(X)) \geq e^{- \Expect(X) \delta^2 / 3}
+    \]
+\end{theorem}
+
+\begin{proof}[Náčrt důkazu]
+% Slidy IV111
+% Probability and Computing (Mitzenmacher, Upfal)
+% https://www.cs.cmu.edu/afs/cs/academic/class/15859-f04/www/scribes/lec9.pdf
+% http://math.mit.edu/~goemans/18310S15/chernoff-notes.pdf
+
+Začneme výpočtem $M_X(t) = \Expect(e^{tX})$, na což
+ovšem potřebujeme $M_{X_i}(t)$.
+\begin{align*}
+    M_{X_i}(t) &= \Expect(e^{t X_i}) \\
+    &= p_i e^t + (1 - p_i) \\
+    &= 1 + p_i (e^t - 1) \\
+    &\leq e^{p_i(e^t - 1)}
+\end{align*}
+Opět jsme použili $1 + x \leq e^x$. V následujícím použijeme dříve
+uvedenou větu o součinu generátorů momentů.
+\begin{align*}
+    M_X(t) &= \prod M_{X_i}(t) \\
+    &\leq \prod e^{p_i(e^t - 1)} \\
+    &= \exp{\sum p_i(e^t - 1)} \\
+    &= e^{(e^t-1)\Expect(X)}
+\end{align*}
+Máme tedy
+\[
+    P(X \geq a) \leq \frac{e^{(e^t-1)\Expect(X)}}{e^{ta}}
+\]
+substitucí $a = (1+\delta)\Expect(X)$, $t = \ln(1 + \delta)$,
+\[
+    P(X \geq (1 + \delta) \Expect(X)) \leq
+    \frac{e^{\delta \Expect(X)}}{(1+\delta)^{(1+\delta)}}
+\]
+Že je výraz vpravo shora ohraničen $e^{- \Expect(X) \delta^2 / 3}$
+necháváme k~uvěření.
+\end{proof}
+
+\begin{example}
+    Opět uvážíme počet hlav spatřený během $n$ hodů mincí.
+    \[
+        P(X \geq \frac{3n}{4})
+        \leq 2 \exp \{ - \frac{1}{2} \frac{n}{2} (\frac{1}{2})^2 \}
+        = e^{-n/24}
+    \]
+    Získali jsme tedy exponenciální ohraničení pravděpodobnosti, že
+    počet spatřených hlav je více než $3n/4$, zatímco Markovova
+    nerovnost nám dala jen konstantní a Čebyševova lineární.
+\end{example}
+
+\subsection{Náhodné procesy}
+
+\begin{definition}
+    Nechť $S$ je spočetná množina a pro každé $u,v \in S$
+    existuje $0 \leq p_{u,v} \leq 1$.
+    Posloupnost náhodných proměnných $X_0, X_1, X_2, \ldots$
+    s~{\em Markovovou vlastností}
+    $P(X_n = a \mid X_{t-1} = b, \ldots, X_{0} = s)
+    = P(X_n = a \mid X_{t-1} = b)
+    = p_{b,a}$
+    nazýváme {\em diskrétní, časově homogenní, Markovovský proces}.
+\end{definition}
+
+Vybereme-li počáteční stav $X_0$, můžeme na Markov chain nahlížet jako na
+graf nebo automat. (Tady by se hodil příklad, ale spíš je to zřejmé.)
+
+Charakterizujeme stavy Markovovských řetězců.
+
+\begin{definition}
+    Stav $i$ Markovovského řetězce nazveme {\em absorbující}
+    právě tehdy, když $p_{i,i} = 1$.
+\end{definition}
+
+\begin{definition}
+    Stav $i$ Markovoského řetězce nazveme {\em rekurentní}
+    právě tehdy, když pravděpodobnost, že se ze stavů $i$ proces do něj
+    opět vrátí je $1$.
+\end{definition}
+
+\begin{definition}
+    Stav $i$ Markovoského řetězce nazveme {\em průchozí}
+    právě tehdy, když pravděpodobnost, že se ze stavů $i$ proces do něj
+    opět vrátí je menší než $1$ (tedy že se nevrátí je nenulová).
+\end{definition}
+
+(Tady by mohl být třeba obrázek, ale zase je to snad jasné.)
+
+Nyní se podíváme na pravděpodobnosti a časy dosažení stavů
+v~Markovovských řetězcích.
+
+% http://www.statslab.cam.ac.uk/~james/Markov/s13.pdf
+
+\begin{definition}
+    Nechť $(X_n)_{n \in \mathbb{N}}$ je Markovovský řetězec.
+    {\em Čas dosažení} stavů z~množiny $A \subseteq S$ je
+    náhodná proměnná $H^A : S \to \mathbb{N}_{\infty}$,
+    definovaná
+    \[
+        H^A(\omega) = \inf \{ n \geq 0 \mid X_n(\omega) \in A \}
+    \]
+    kde $\infty$ je infimum prázdné množiny.
+\end{definition}
+
+\begin{definition}
+    Ve stavu $i$ je
+    {\em pravděpodobnost dosažení} stavu z~množiny $A$
+    \[
+        h^A_i = P(H^A < \infty \mid X_0 = i)
+    \]
+    {\em Střední doba dosažení} stavu z~$A$ je
+    \[
+        k^A_i = \Expect(H^A \mid X_0 = i)
+        = \sum_{n < \infty} n \cdot P(H^A = n) + \infty \cdot P(H^A = \infty)
+    \]
+\end{definition}
+
+\begin{theorem}
+    Vektor pravděpodobností dosažení $(h^A_i)_{i \in S}$
+    je minimální nezáporné řešení systému rovnic
+    \begin{align*}
+        h^A_i &= 1 &\text{ pokud } i \in A, \\
+        h^A_i &= \sum_j p_{i,j} h^A_j &\text{ pokud } i \not \in A.
+    \end{align*}
+\end{theorem}
+
+\begin{example}
+\end{example}
+
+\begin{theorem}
+    Vektor střední doby dosažení $(k^A_i)_{i \in S}$
+    je minimální nezáporné řešení systému rovnic
+    \begin{align*}
+        k^A_i &= 0 &\text{ pokud } i \in A, \\
+        k^A_i &= 1 + \sum_{j \not \in A} p_{i,j} k^A_j &\text{ pokud } i \not \in A.
+    \end{align*}
+\end{theorem}
+
+\begin{example}
+\end{example}
+
+Jiné náhodné procesy než Markovovské řetězce jsou například martingales.
+
+\begin{definition}
+    Posloupnost náhodných proměnných $(X_i)_{i \in \mathbb{N}}$ nazveme
+    {\em martingale}, pokud pro každé $n$
+    \begin{itemize}
+        \item $\Expect(\lvert X_n \rvert) = 0$,
+        \item $\Expect(X_{n+1} \mid X_1, \ldots, X_n) = X_n$,
+            tedy očekávaná příští hodnota podmíněná předchozími
+            hodnotami je stejná jako současná hodnota.
+    \end{itemize}
+\end{definition}
+
+Příklady: náhodná procházka po mřízce; stav konta gamblera, který hraje
+fair hry.
+
+\subsection{Entropie a informace}
+
+Hledáme funkci pro popis entropie.
+Snažíme se vyjádřit průměrné množství informací, které můžeme extrahovat
+z~náhodného zdroje. Co bychom po takové funkci chtěli? Měla by
+\begin{itemize}
+    \item být spojitá,
+    \item nabývat maximální hodnoty pokud pravděpodobnost všech hodnot
+z~náhodného zdroje je stejná
+    \item a navíc pokud je výskyt dvou části informace
+nezávislý, potom entropie jejich současného výskytu by měla být rovna
+součtu jejich entropií.
+\end{itemize}
+
+Analyticky lze dokázat, že následující definice
+zachycuje právě takovou funkci.
+
+\pagebreak
+
+% https://math.stackexchange.com/questions/331103/intuitive-explanation-of-entropy
+
+\begin{definition}
+    \[ H(X) = - \sum P(X = x) \log_b P(X = x) \]
+\end{definition}
+
+Intuitivně entropie říká, kolik nové informace můžeme ze zdroje dostat.
+Například náhodný šum má velkou entropii, zatímco konstantní signál
+nulovou.
+
+\begin{example}
+    Mějme minci $X$ se stranami $0,1$ a $P(X = 0) = 1/2$, $P(X = 1) =
+    1/2$.
+    $H(X) = - 1/2 (-1) - 1/2 (-1) = 1$.
+\end{example}
+
+Entropie náhodné proměnné dává dolní odhad na množství dat, které jsou
+potřeba k~popisu jejich hodnot. Toho se hodí využít ke konstrukcí kódů.
+
+\begin{definition}
+    {\em Kód} $C$ pro náhodnou proměnnou $X$ je zobrazení
+    $C : \Im(X) \to D^*$, kde $D$ je abeceda s~$\lvert D \rvert = d$.
+    $l_C(x)$ značí délku kódového slova $C(x)$.
+    Dále definujeme {\em očekávanou délku} kódu $C$.
+    \[
+        L_C(X) = \sum_{x \in \Im(X)} P(X = x) l_C(X) = \Expect(l_C(X))
+    \]
+\end{definition}
+
+Huffmanovo kódování produkuje kódy, jejichž očekávaná délka je velice
+blízko entropii zdroje dat.
+
+\begin{example}
+    Pro kód s~daným rozdělením slov sestrojíme Huffmanův kód a porovnáme
+    jeho očekávanou délku s~entropií daného rozdělení.
+
+    Mějme náhodnou proměnnou $X$ s~pravděpodobností jednotlivých hodnot
+    $a,b,c,d,e$ po řadě
+    $0.10,0.15,0.30,0.16,0.29$. Sestrojíme binární kód tak, že
+    tvoříme odspodu strom spojením dvojic vrcholů, které dosud nemají
+    společného rodiče a zároveň je součet jejich hodnot nejmenší
+    z~takových dvojic. Do nově vzniklého vrcholu přiřadíme součet hodnot
+    jeho potomků.
+
+    Jakmile máme kořenový strom (nelze vybrat dva vrcholy, které nemají
+    společného rodiče), přiřadíme hranám čísla 0,1. Cesta od kořene ke
+    slovu potom zadává kód slova.
+
+    Můžeme například přiřadit $a \mapsto 010, b \mapsto 011, c\mapsto
+    11, d \mapsto 00, e \mapsto 10$.
+    Což dává $L(C) = 0.30+0.45+0.60+0.32+0.58 = 2.25$.
+    Naproti tomu $H(X) = 0.332+0.411+0.521+0.423+0.518 = 2.205$.
+\end{example}
+
+Poznamenejme, že Huffmanovy kódy jsou prefixové a tedy umožňují snadné
+dekódování. V~konstrukci může být potřeba pro $n$-ární, $n > 2$, přidat
+několik \uv{umělých} slov, aby kód vyšel s~optimální délkou.
