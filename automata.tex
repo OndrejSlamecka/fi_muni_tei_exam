@@ -132,9 +132,12 @@ stavu. Počítat $\epsilon$-uzávěr TODO
 
 \subsection{Pravděpodobnostní automaty}
 
-NFA, ve kterém jsou přechody nahrazeny přechodovou distribucí.
-Nebo MDP ve kterém jsou navíc povoleny $\varepsilon$ kroky a více akcí
-se stejným názvem v jednom stavu.
+Pravdepodobnostné automaty sú rozšírením nedeterministických
+automatov, kde je prechodová funkcia nahradená pravdepodobnostnou
+distribúciou.
+
+Jazyky rozhodované pravdepodobnostnými automatmi sa nazývajú stochastické
+a sú nadmnožinou regulárnych jazykov.
 
 % http://www.sciencedirect.com/science/article/pii/S0890540112001149
 
@@ -219,7 +222,7 @@ $L$ či $P$).
     $\{ a^m b^n c^n \mid m, n \in \mathbb{N} \}$,
     $\{ a^n b^m c^n \mid m, n \in \mathbb{N} \}$
     jsou bezkontextové, ale
-    jejich průnik už není (ukáže se pumping lemma pro CFL).
+    jejich průnik už není (ukáže se pomocí pumping lemma pro CFL).
 
     Z pozorování, že
     $A \cap B = \overline{\overline{A} \cup \overline{B}}$
