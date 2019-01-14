@@ -194,10 +194,10 @@ Potom $1 = 1 \cdot 1' = 1'$.
     je $(A, \cdot)$ monoid a splňuje rovnost $a \cdot a^{-1} = 1 = a^{-1} \cdot a$.
 \end{definition}
 
-Například $(\mathbb{Z}, +, -)$ tvoří grupu (kde $-$ je unární).
-Také $(\mathbb{Z}^*_n, \cdot, {^{-1}})$ pro dané $n \in \mathbb{N}$ tvoří grupu.
+Například $(\mathbb{Z}, +, 0, -)$ tvoří grupu (kde $-$ je unární operace negace).
+Také $(\mathbb{Z}^*_n, \cdot, 1, {^{-1}})$ pro dané $n \in \mathbb{N}$ tvoří grupu.
 
-V~každé grupě $(G, \cdot, {^{-1}})$ existuje pro každé $g \in G$ nejvýše
+V~každé grupě $(G, \cdot, 1, {^{-1}})$ existuje pro každé $g \in G$ nejvýše
 (a tedy právě) jeden inverzní prvek.
 Pro důkaz nechť $g$ má oboustranné inverze $x,y$.
 Potom $x = x \cdot e = x \cdot (g \cdot y) = (g \cdot x) \cdot y
@@ -219,11 +219,13 @@ prvku, důkaz existence nejvýše jedné inverze platí tedy i pro monoid.
 \end{definition}
 
 \begin{example}
-    $(\mathbb{R}, +, \cdot, 0, 1, -)$
+    $(\mathbb{R}, +, \cdot, 0, 1, -)$ je okruh na reálnych 
+	číslach s operáciami sčítania a násobenia.
 \end{example}
 
 \begin{example}
-$(\mathbb{R}[x], +, \cdot, 0, 1, -)$.
+	$(\mathbb{Z}[x], +, \cdot, 0, 1, -)$ je okruh na polynómoch
+	s~celočíselnými koeficientmi.
 \end{example}
 
 \begin{example}
@@ -511,9 +513,9 @@ svazů $(\mathcal{P}(A), \cup, \cap)$ pro konečné množiny $A$.
 \subsubsection{Modulární svazy}
 
 \begin{definition}[Modulární svaz]
-    Nechť $(L, \vee, \wedge)$ je svaz a pro všechny $a, b, c \in L$
+    Nechť $(L, \vee, \wedge)$ je svaz a pro všechny $a, b, c~\in~L$
     platí
-    $c \leq a \implies (a \wedge b) \vee c = a \wedge (b \vee c)$
+    $c \leq a \implies (a \wedge b) \vee c = a \wedge (b \vee c)$.
     Pak $(L, \vee, \wedge)$ nazýváme {\em modulární svaz}.
 \end{definition}
 
@@ -612,7 +614,7 @@ Přitom $a \wedge 0 = 0, a \vee 1 = 1$ plynou z~posledních dvou rovností.
 \end{proof}
 
 \begin{definition}[Homomorfismus]
-    {\em Homomorfismus} Booleových algeber $\varphi \colon L \to M$
+    {\em Homomorfismus} Booleových algeber $\varphi~\colon~L~\to~M$
     je homomorfismus svazů, pro který platí
     \[
     \varphi(0) = 0, \varphi(1) = 1

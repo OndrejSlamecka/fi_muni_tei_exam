@@ -28,7 +28,8 @@ kde
 \end{claim}
 
 \begin{proof}
-    Víme $P(A \cup \overline{A}) = 1$, tedy $P(A) + P(\overline{A}) = 1$.
+    Víme $P(A \cup \overline{A}) = 1$ a $P(A \cap \overline{A}) = 0$,
+	tedy $P(A) + P(\overline{A}) + P(A \cap \overline{A}) = P(A) + P(\overline{A}) = 1$.
 \end{proof}
 
 \begin{definition}
@@ -51,7 +52,7 @@ Jednoduchou intuici za definicí nabízí Vennův diagram.
     Žárovky X svítí přes 5000 hodin v~99 \% případů.
     Žárovky Y svítí přes 5000 hodin v~95 \% případů.
     Žárovky X tvoří 60 \% dostupných žárovek.
-    Žárovky Y tvoří 60 \% dostupných žárovek.
+    Žárovky Y tvoří 40 \% dostupných žárovek.
     Jaká je pravděpodobnost, že náhodně zvolená žárovka
     bude svítit přes 5000 hodin?
     \[
@@ -80,6 +81,7 @@ Jako událost G označíme, že pozorovaný student je dívka. Jako událost T,
     P(G \mid T)
     = \frac{P(T \mid G)P(G)}{P(T)}
     = \frac{1/2 \cdot 4/10}{6/10 \cdot 1 + 4/10 \cdot 1/2}
+	= \frac{1}{4}
 \]
 \end{example}
 
@@ -313,7 +315,7 @@ Z~definice vyplývá $E(X) = 1 \cdot p + 0 \cdot (1-p) = p$.
     Navíc protože $X \geq 0$, tak platí $I \leq \frac{X}{a}$, na což
     aplikujeme $E$ a získáme
     \[
-        P(X \geq a) = E(I) \leq E \big (\frac{X}{a} \big ) = \frac{E(X)}{a}
+        P(X \geq a) = E(I) \leq E \left(\frac{X}{a} \right) = \frac{E(X)}{a}
         \qedhere
     \]
 \end{proof}
