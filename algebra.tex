@@ -1,65 +1,45 @@
 \section{Algebra}
 
+\subsection{Úvod}
+Pri tejto téme by určite bolo vhodné ovládať
+okrem učiva predmetu MA009 Algebra~II aj učivo
+predmetov MB101/MB201 Lineární modely a MV008 Algebra~I, 
+najmä definície.
+
+\subsubsection{Znenie otázky}
+Algebra. Lineární algebra; vektorový a maticový počet; grupy, okruhy
+a pole a jejich základní vlastnosti; svazy a jejich základní vlastnosti;
+distributivní, modulární a Booleovy svazy; univerzální algebry (základní 
+pojmy, homomorfismy, kongruence a faktorové algebry), variety, Birkhoffova věta.
+
+\subsubsection{Pojmy}
+Matica, inverzná matica, invertibilná matica, transpozícia, determinant,
+vektorový priestor, lineárna závislosť/nezávislosť, vektorový podpriestor,
+generátor, báza, dimenzia, súradnice, skalárny súčin, veľkosť vektoru,
+normovaný vektor, ortogonálna/ortonormálna báza, vektorový súčin, lineárne
+zobrazenie, matica lineárneho zobrazenia, matica prechodu, vlastné číslo, 
+vlastný vektor, charakteristický polynóm matice, afinný priestor/podpriestor,
+parametrický popis, obecný popis; grupoid, pologrupa, monoid, grupa,
+komutatívna grupa, okruh, obor integrity, teleso, homomorfizmus, izomorfismus,
+podgrupa (normálna), pole, ideál, jadro zobrazenia; polosvaz, supremum, infimum,
+spojový, priesekový polosvaz, svaz, usporiadaná množina, izotónne zobrazenie,
+distributívny, modulárny svaz, komplementárny svaz, Booleova algebra, úplný
+svaz, atóm Booleovej algebry; typ algebry, algebra typu $\tau$, homomorfizmus,
+izomorfizmus, jadro homomorfizmu, kongruencia, faktorová algebra, podalgebra;
+identita typu $\tau$, modely teórie, množina identít, HSP, varieta, Birkhoffova veta.
+
 \subsection{Lineární algebra}
 
-\begin{definition}[Vektorový prostor]
-    Nechť $\mathbb{F}$ je pole
-    a $V$ je množina vektorů dané délky nad tímto polem.
-    $(\mathbb{F}, V, +, \cdot, 0, -, 1)$ nazveme {\em vektorový prostor}
-    nad $\mathbb{F}$,
-    pokud
-    \begin{enumerate}
-        \item $(V, +, 0, -)$ je komutativní grupa,
-        \item násobení $\mathbb{F}$ a $V$ je kompatibilní
-        ($a, b \in \mathbb{F}, \overline{v} \in V : a(b\overline{v}) = (ab)\overline{v}$),
-        \item $1$ je identita pro $\cdot$,
-        \item sčítání skalárů distribuuje přes násobení vektorem,
-        \item sčítání vektorů distribuuje přes násobení skalárem.
-    \end{enumerate}
-\end{definition}
+{\em Vektor} je usporiadaná postupnosť čísel. Vektor dĺžky $n$ obsahuje práve $n$ čísel
+a značíme ho ako $(a_1, a_2, \ldots, a_n)$. {\em Matica} o rozmeroch $m \times n$ je množina čísel
+usporiadaná pravidelne do $m$ riadkov a $n$ stĺpcov. Pre maticu~$A$ je 
+matica~$A^T$, ktorá vznikne vzájomnou výmenou riadkov a stĺpcov,
+nazývaná {\em transponovaná}.
 
 Vektor $u$ je {\em lineární kombinací} vektorů $v, w$, pokud existují
 $a,b \in \mathbb{F}$ takové, že $u = av + bw$.
 Množinu vektorů $M$ nazveme {\em lineárně nezávislou}, pokud žádný
 vektor z~$M$ není lineární kombinací jiných vektorů z~$M$.
-
-\begin{definition}[Báze prostoru]
-    Nechť $\mathcal{V}$ je vektorový prostor.
-    Množina vektorů $B = \{ b_i \}_{i \in I}$ je {\em báze} $\mathcal{V}$,
-    pokud $B$ je lineárně nezávislá
-    a každý vektor $v \in V$ lze vyjádřit jako lineární kombinaci
-    vektorů z $B$.
-\end{definition}
-
-\begin{definition}[Dimenze]
-    Dimenze prostoru je počet vektorů v~jeho bázi.
-\end{definition}
-
-\begin{definition}[Skalární součin]
-    Nechť $u, v$ jsou vektory v~nějakém vektorovém prostoru.
-    Skalární součin $u, v$ definujeme
-    $u \cdot v = \sum u_i \cdot v_i$.
-\end{definition}
-
-Geometricky můžeme skalární součin definovat jako
-$u \cdot v = \lvert u \rvert \cdot \lvert v \rvert \cdot \cos \theta$,
-kde $\theta$ je úhel svíraný $u,v$. Zejména pak kolmé
-vektory mají skalární součin 0, zatímco vektory se shodným směrem
-mají skalární součin roven součinu jejich délek.
-
-%\begin{definition}[Vektorový součin]
-
-%\end{definition}
-
-Nyní se zaměříme na matice. {\em Hodnost} (rank) matice je dimenze
-prostoru generovaného jejími sloupci.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=120pt]{matrix.png}
-    \caption{Matice a její rozměry, \href{https://commons.wikimedia.org/wiki/File:Matrix.svg}{zdroj}}
-\end{figure}
-
 
 \begin{definition}[Součin matic]
     Nechť $A$ je $n \times m$ matice a $B$ je $m \times p$ matice.
@@ -91,6 +71,21 @@ a pak použijeme
 kde $M_{ij}$ je determinant matice $A$ po odstranění řádku $i$ a sloupce
 $j$.
 
+\begin{definition}
+	Pre štvorcovú maticu $A$ o rozmeroch $n \times n$ definujeme jej determinant $|A|$ ako
+	\[
+		|A|= \sum_{\sigma \in S_n} sgn(\sigma) \prod_{i=1}^n a_{i, \sigma(i)}
+	\]
+\end{definition}
+
+{\em Jednotková matica} o veľkosti $n$, často značená ako $I$, prípadne $I_n$,
+je matica, ktorá na diagonále obsahuje samé $1$ a inde samé $0$.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=120pt]{matrix.png}
+    \caption{Matice a její rozměry, \href{https://commons.wikimedia.org/wiki/File:Matrix.svg}{zdroj}}
+\end{figure}
 
 \begin{definition}
     Nechť $A$ je $n \times n$ matice. Matici $B$ nazveme
@@ -160,15 +155,82 @@ proměnná).
 Se znalostí vlastních čísel najdeme vlastní vektory jako řešení rovnice
 $(A - \lambda I) v = 0$ (kde $\lambda$ je pevně zvolené vlastní číslo).
 
+\begin{definition}[Vektorový prostor]
+    Nechť $\mathbb{F}$ je pole
+    a $V$ je množina vektorů dané délky nad tímto polem.
+    $(\mathbb{F}, V, +, \cdot, 0, -, 1)$ nazveme {\em vektorový prostor}
+    nad $\mathbb{F}$,
+    pokud
+    \begin{enumerate}
+        \item $(V, +, 0, -)$ je komutativní grupa,
+        \item násobení $\mathbb{F}$ a $V$ je kompatibilní
+        ($a, b \in \mathbb{F}, \overline{v} \in V : a(b\overline{v}) = (ab)\overline{v}$),
+        \item $1$ je identita pro $\cdot$,
+        \item sčítání skalárů distribuuje přes násobení vektorem,
+        \item sčítání vektorů distribuuje přes násobení skalárem.
+    \end{enumerate}
+\end{definition}
+
+\begin{definition}[Báze prostoru]
+    Nechť $\mathcal{V}$ je vektorový prostor.
+    Množina vektorů $B = \{ b_i \}_{i \in I}$ je {\em báze} $\mathcal{V}$,
+    pokud $B$ je lineárně nezávislá
+    a každý vektor $v \in V$ lze vyjádřit jako lineární kombinaci
+    vektorů z $B$.
+\end{definition}
+
+\begin{definition}[Dimenze]
+    Dimenze prostoru je počet vektorů v~jeho bázi.
+\end{definition}
+
+\begin{definition}[Skalární součin]
+    Nechť $u, v$ jsou vektory v~nějakém vektorovém prostoru.
+    Skalární součin $u, v$ definujeme
+    $u \cdot v = \sum u_i \cdot v_i$.
+\end{definition}
+
+Geometricky můžeme skalární součin definovat jako
+$u \cdot v = \lvert u \rvert \cdot \lvert v \rvert \cdot \cos \theta$,
+kde $\theta$ je úhel svíraný $u,v$. Zejména pak kolmé
+vektory mají skalární součin 0, zatímco vektory se shodným směrem
+mají skalární součin roven součinu jejich délek.
+
+\begin{definition}[Vektorový součin]
+	Nech $a,b$ sú vektory v 3-dimenzionálnom priestore;
+	$a=(a_1, a_2, a_3)$, $b=(b_1, b_2, b_3)$. Potom
+	vektor $c = a \times b$ je ich vektorovým súčinom,
+	pokiaľ jeho zložky sú 
+	$c=(a_2 b_3 - a_3 b_2, a_3 b_1 - a_1 b_3, a_1 b_2 - a_2 b_1)$.
+\end{definition}
+
+Pre vektory $a,b$ platí, že vektor $a \times b$ je kolmý
+k~obom vektorom $a$ aj $b$ a jeho veľkosť je rovná ploche
+kosodlžníka, ktorý tieto vektory spolu tvoria.
+
+{\em Hodnost} (rank) matice je dimenze
+prostoru generovaného jejími sloupci.
+
+\begin{definition}
+	{\em Afinný priestor} TODO
+\end{definition}
+
+
+
 \subsection{Grupy, okruhy a pole}
 
 Pojmy jsou zavedeny pomocí jazyka univerzální algebry. V celé podsekci
 nechť $A$ je množina, $\cdot$ a $+$ jsou binární, $1$ a $0$ jsou
 nulární, ${^{-1}}$ a $-$ jsou unární operace.
 
+\begin{definition}[Grupoid]
+    Dvojica $(A, \cdot)$ je {\em grupoid},
+    pokiaľ je množina $A$ uzavrená
+	na operáciu $\cdot$.
+\end{definition}
+
 \begin{definition}[Pologrupa]
     Algebra $(A, \cdot)$ je {\em pologrupa},
-    pokud splňuje rovnost
+    pokud je $(A, \cdot)$ grupoid a splňuje rovnost
     $(x \cdot y) \cdot z = x \cdot (y \cdot z)$.
 \end{definition}
 
@@ -177,8 +239,7 @@ nebo množina matic s operací násobení.
 
 \begin{definition}[Monoid]
     Algebra $(A, \cdot, 1)$ je {\em monoid}, pokud
-    splňuje rovnosti
-    $(x \cdot y) \cdot z = x \cdot (y \cdot z)$,
+    je $(A, \cdot)$ pologrupa a obsahuje neutrální prvek, tj. splňuje rovnost
     $1 \cdot x = x = x \cdot 1$.
 \end{definition}
 
@@ -191,7 +252,8 @@ Potom $1 = 1 \cdot 1' = 1'$.
 
 \begin{definition}[Grupa]
     Algebra $(A, \cdot, 1, {^{-1}})$ je grupa, pokud
-    je $(A, \cdot)$ monoid a splňuje rovnost $a \cdot a^{-1} = 1 = a^{-1} \cdot a$.
+    je $(A, \cdot, 1)$ monoid a pro každý prvek existuje jeho 
+	inverze, tj. splňuje rovnost $a \cdot a^{-1} = 1 = a^{-1} \cdot a$.
 \end{definition}
 
 Například $(\mathbb{Z}, +, 0, -)$ tvoří grupu (kde $-$ je unární operace negace).
@@ -205,6 +267,35 @@ Potom $x = x \cdot e = x \cdot (g \cdot y) = (g \cdot x) \cdot y
 ($x = e \cdot x = (y \cdot g) \cdot x =\ldots$),
 tedy $x = y$. V~důkazu jsme použili pouze asociativity a neutrálního
 prvku, důkaz existence nejvýše jedné inverze platí tedy i pro monoid.
+
+\begin{definition}[Komutatívna grupa]
+    Grupa $(A, \cdot, 1, {^{-1}})$ je komutatívna, pokiaľ platí
+	$\forall a,b \in A.a\cdot b = b \cdot a$.
+\end{definition}
+
+\begin{definition}[Generovanie grupy]
+    Nech $(G, \cdot, 1, {^{-1}})$ je grupa a nech $A \subseteq G$ je množina.
+	Hovoríme, že množina $A$ {\em generuje} grupu $(G, \cdot, 1, {^{-1}})$,
+	pokiaľ pre všetky $g \in G$ existujú prvky $a_1, \ldots, a_n$ také, 
+	že $g=a_1 \cdot a_2 \cdot \ldots \cdot a_n$ a
+	$a_i \in A$ alebo $a_i^{-1} \in A$ pre všetky $1 \leq i \leq n$. 
+\end{definition}
+
+Neformálne vysvetlené, množina $A$ generuje grupu, pokiaľ každý
+jej prvok dokážem získať pomocou prvkov z $A$, funkcie inverzie a opakovanej
+aplikácie funkcie $\cdot$.
+
+\begin{definition}[Cyklická grupa]
+    Grupa je cyklická, pokiaľ sa dá vygenerovať pomocou jednoprvkovej množiny.
+\end{definition}
+
+\begin{example}
+	Príkladom cyklickej grupy môže byť napríklad $(\mathbb{Z}, +, 0, -)$.
+	Táto grupa sa dá vygenerovať napr. z množiny $\{1\}$ tak, že
+	inverziou získam prvok $-1$ a potom pomocou funkcie $+$
+	s~prvkami $1$ a $-1$ dokážem vygenerovať všetky kladné
+	a záporné čísla.
+\end{example}
 
 
 \begin{definition}[Okruh]
@@ -257,6 +348,16 @@ směr je zřejmý, v~druhém $a = 1 \cdot a = 0 \cdot a = 0$ pro lib. $a$).
     \]
 \end{definition}
 
+\begin{definition}[Teleso]
+    Okruh $(A, +, \cdot, 0, 1, -)$ sa nazýva {\em telesom}, pokiaľ
+	$(A, +, 0)$ je komutatívna grupa a $(A, \cdot, 1)$ je grupa.
+\end{definition}
+
+\begin{definition}[Homomorfizmus a izomorfizmus]
+    Zobrazenie $\varphi: (A,+) \to (B,\cdot)$ sa nazýva {\em homomorfizmom},
+	pokiaľ pre všetky $x,y \in A$ platí $\varphi(x+y)=\varphi(x) \cdot \varphi(y)$.
+	Pokiaľ je homomorfizmus bijekciou, nazýva sa {\em izomorfizmom}.
+\end{definition}
 
 \begin{definition}[Pole]
 Komutativní okruh $(A, +, \cdot, 0, 1, -)$ nazveme {\em pole}, pokud
@@ -268,6 +369,16 @@ pro každé $a \neq 0$ existuje $a^{-1}$ takové, že $a \cdot a^{-1} = 1$.
 \end{example}
 
 Každé pole je obor integrity. Pole již nelze zadefinovat rovnostmi.
+
+\begin{definition}[Ideál]
+	Množina $I \subseteq R$, kde $R$ je okruh, sa nazýva 
+	{\em ľavý (resp. pravý) ideál}, pokiaľ platí
+	\begin{itemize}
+		\item pre všetky $a,b \in I$ aj $a+b \in I$,
+		\item pre všetky $a \in I$ a $r \in R$ je aj $r \cdot a \in I$ (resp. $a \cdot r \in I$).
+	\end{itemize}
+	Pokiaľ je množina ľavým aj pravým ideálom, nazýva sa {\em ideálom}.
+\end{definition}
 
 \subsection{Teorie svazů}
 
@@ -283,6 +394,8 @@ Každé pole je obor integrity. Pole již nelze zadefinovat rovnostmi.
     pak jej nazveme {\em supremum}.
 \end{definition}
 
+{\em Infimum} sa definuje podobne, ako najväčšia z dolných závor.
+
 \begin{definition}[Polosvaz]
     $(A, \vee)$ nazveme {\em polosvaz}, je-li to komutativní a
     idempotentní pologrupa.
@@ -293,6 +406,14 @@ Každé pole je obor integrity. Pole již nelze zadefinovat rovnostmi.
 
 Výše uvedené definice jsou ekvivalentní, v~jednom směru platí
 $a \leq b \iff a \vee b = b$, v druhém se tak uspořádání definuje.
+
+Operácie $\vee$ a $\wedge$ v polosvazoch sa nazývajú aj 
+{\em spojením} ($\vee$) a {\em priesekom} ($\wedge$).
+
+\begin{definition}
+    Polosvaz nazveme {\em spojový} (resp. {\em priesekový}), 
+	pokiaľ pre každú dvojicu jeho prvkov existuje infimum (resp. supremum).
+\end{definition}
 
 \begin{definition}[Svaz]
     $(A, \vee, \wedge)$ nazveme {\em svaz}, jsou-li
@@ -360,7 +481,7 @@ izomorfismu svazů jakožto částečně uspořádaných množin se supremy a in
     Zobrazení $\varphi : A \to B$ částečně uspořádaných množin
     $(A, \leq)$, $(B, \prec)$ nazveme {\em izotonní},
     pokud $a \leq b \implies \varphi(a) \prec \varphi(b)$.
-    Bijekce $\varphi : L \to M$ je izomorfismus svazů
+    Bijekce $\varphi : L \to M$ je {\em izomorfismus svazů}
     $(L, \leq)$ a $(M, \prec)$, pokud $\varphi$ i $\varphi^{-1}$ jsou
     izotonní.
 \end{definition}
@@ -465,7 +586,7 @@ Pro další podsekce budeme potřebovat následující dva svazy.
         (c) -- (0)
         ;
 \end{tikzpicture}
-\caption{Svazy $M_5$ a $N_5$}
+\caption{Svazy $M_5$ (vlevo) a $N_5$ (vpravo)}
 \end{figure}
 
 \subsubsection{Distributivní svazy}
@@ -644,6 +765,26 @@ Každý prvek $\mathcal{P}(A)$ můžeme chápat jako pravdivostní tabulku
 nějakého tvrzení o prvcích množiny $A$. Potom $\cup$ odpovídá
 disjunkci, $\cap$ konjunkci, $0$ nepravdě, $1$ pravdě a komplement
 negaci.
+
+Operácia $\cdot$ sa nazýva idempotentnou, pokiaľ pre všetky $x$ platí
+$x \cdot x = x$.	
+
+\begin{definition}[Booleove okruhy]
+    {\em Booleov okruh} je okruh $(R,+,\cdot)$, kde operácia $\cdot$ 
+	je idempotentná.
+\end{definition}
+
+\begin{theorem}
+    Existuje bijekcia medzi Booleovými algebrami a Booleovými okruhmi.
+\end{theorem}
+\begin{proof}
+	$(BA \to BO)$: Definujme operáciu $+$ ako symetrický rozdiel množín,
+	tj. $a+b=(a \land b') \lor (a' \land b)$. Potom $(L, +, \land)$, kde
+	$\land$ je prienik množín, je Booleov okruh.\\
+	$(BO \to BA)$: Definujme operáciu zjednotenia $\lor$ pomocou symetrického
+	rozdielu a prieniku ako $a \lor b = a \cdot b + a + b$. Komplement definujme
+	ako $a'=a+1$. Potom $(R, \lor, \cdot, 0, 1, ')$ je Booleova algebra.
+\end{proof}
 
 \subsection{Univerzální algebra}
 
