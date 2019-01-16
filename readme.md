@@ -10,6 +10,8 @@ Použití textu je na vlastní nebezpečí, sám jsem si vědom mnoha chyb (od
 překlepů až po naprosté nepravdy), k jejichž opravení jsem se nedostal.
 
 K textu dále přispěli:
-*
+Matúš Bezek,
+Matúš Hlaváčik,
+Radovan Lapár
 
 
