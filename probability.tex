@@ -3,12 +3,12 @@
 \subsection{Základní pojmy a vlastnosti pravděpodobnosti}
 
 \begin{definition}
-Pro daný experiment je diskrétní pravděpodobnostní prostor trojice
+Pro daný náhodný experiment je diskrétní pravděpodobnostní prostor trojice
 $(\Omega, \mathcal{F}, P)$,
 kde
 \begin{itemize}
     \item $\Omega$ je množina možných výsledků experimentu,
-    \item $\mathcal{F} \subseteq \powerset{\Omega}$ je množina možných události,
+    \item $\mathcal{F} \subseteq \powerset{\Omega}$ je množina možných události (javov),
     \item $P : \mathcal{F} \to [0,1]$ je pravděpodobnostní funkce, tedy
         pro po párech disjunktní $\{A_i\}_{i=1}^\infty \subseteq \mathcal{F}$ platí
         $P(\bigcup A_i) = \sum P(A_i)$ a $P(\Omega) = 1$.
@@ -21,6 +21,27 @@ kde
     $\mathcal{F} = \powerset{\Omega}$ a z~uniformity kostek
     $P((x,y)) = 1/\lvert \Omega \rvert, (x,y) \in \Omega$.
 \end{example}
+
+Špeciálne prípady pri javoch sú istý jav (celá množina $\Omega$, určite nastane),
+nemožný jav (prázdna množina $\emptyset$, nikdy nenastane),
+elementárny jav (napr. to, že pri hode kockou padne práve 1,
+neelementárnym javom by bol napr. jav, že padne nepárne číslo,
+ktorý je zložený z troch elementárnych javov).
+
+\begin{definition}
+	Javy $A_1, \ldots, A_n$ nazývame {\em vzájomne disjunktné}, 
+	pokiaľ platí $\forall i \neq j.P(A_i \land A_j)=0$.
+\end{definition}
+
+\begin{definition}
+	Javy $A_1, \ldots, A_n$ nazývame {\em kolektívne vyčerpávajúce}, %spravny termin? 
+	pokiaľ platí $P(A_1 \lor \ldots \lor A_j)=1$.
+\end{definition}
+
+\begin{definition}
+	Javy $A_1, \ldots, A_n$ sú {\em rozkladom} základného priestoru,
+	pokiaľ sú vzájomne disjunktné a kolektívne vyčerpávajúce.
+\end{definition}
 
 \begin{claim}
     Nechť $A$ je událost a $\overline{A}$ její doplněk. Pak
@@ -43,6 +64,7 @@ události $B$ definujeme
 Jednoduchou intuici za definicí nabízí Vennův diagram.
 
 \begin{theorem}[Totální pravděpodobnosti]
+	Nech javy $B_i$ sú rozkladom základného priestoru. Potom
     \[
         P(A) = \sum_i P(A \cap B_i) = \sum_i P(A \mid B_i) P(B_i)
     \]
@@ -85,11 +107,27 @@ Jako událost G označíme, že pozorovaný student je dívka. Jako událost T,
 \]
 \end{example}
 
+Keď je základný priestor $S$ spojitý, dá sa miesto neho
+v určitých prípadoch použiť $\sigma$-field.
+
+\begin{definition}
+	Nech $S$ je spojitý základný priestor. Potom $\mathscr{F} \subseteq 2^S$
+	je $\sigma$-field, pokiaľ
+	\begin{itemize}
+		\item $\emptyset \in \mathscr{F}$
+		\item $A,B \in \mathscr{F} \Rightarrow A \cup B \in \mathscr{F}$
+		\item $A \in \mathscr{F} \Rightarrow \overline{A} \in \mathscr{F}$
+	\end{itemize}
+\end{definition}
+
+Poznamenajme, že vďaka De Morganovym zákonom je $\sigma$-field uzavretý
+aj na prienik.
+
 \subsection{Náhodná proměnná a její charakteristiky}
 
 \begin{definition}
-    Pro diskrétní pravděpodobnostní prostor $(\Omega, \mathcal{F}, P)$
-    nazveme {\em náhodnou proměnnou} funkci $X : \Omega \to \mathbb{R}$.
+    Pro (diskrétní) pravděpodobnostní prostor $(\Omega, \mathcal{F}, P)$
+    nazveme {\em (diskrétní) náhodnou proměnnou} funkci $X : \Omega \to \mathbb{R}$.
 \end{definition}
 
 \begin{example}
@@ -98,6 +136,34 @@ Jako událost G označíme, že pozorovaný student je dívka. Jako událost T,
     můžeme definovat náhodnou proměnnou
     $X(x) = 0, x = 1,\ldots,5, X(6) = 1$.
 \end{example}
+
+\begin{definition}
+    Pravdepodobnostná funkcia (alebo pravdepodobnostná distribúcia)
+	náhodnej premennej $X$ je funkcia $p_X: \mathbb{R} \to [0,1]$ definovaná ako
+	\[
+    p_X(x) = P(X=x) = \sum_{s:X(s)=x}P(s)
+    \]
+\end{definition}
+
+\begin{definition}
+    Distribučná funkcia
+	náhodnej premennej $X$ je funkcia $F_X: \mathbb{R} \to [0,1]$ definovaná ako
+	\[
+    F_X(x) = P(X\leq x) = \sum_{t \leq x}p_X(t)
+    \]
+\end{definition}
+
+Pre distribučnú funkciu platí:
+\begin{enumerate}
+	\item pre $-\infty < x < \infty$ platí $0 \leq F(x) \leq 1$
+	\item F(x) je neklesajúca funkcia
+	\item $lim_{x \to -\infty}F(x) = 0$ a $lim_{x \to \infty}F(x) = 1$
+	\item TODO
+\end{enumerate}
+
+V prípade spojitej distribúcie nemá zmysel hovoriť o pravdepodobnostnej
+funkcii. V tomto prípade sa používa {\em hustota}, ktorá je definovaná
+ako derivácia distribučnej funkcie.
 
 \begin{definition}[Očekávaná (střední) hodnota]
     Nechť $(\Omega, \mathcal{F}, P)$ je diskrétní pravděpodobnostní
@@ -161,6 +227,12 @@ Jako událost G označíme, že pozorovaný student je dívka. Jako událost T,
 Alternativně $P(X = x \mid Y = y) = P(X = x)$ pro každé $x,y$. (Tady by
 bylo dobré si rozmyslet, proč tomu tak je.)
 
+\begin{definition}[Momenty]
+    Pre náhodnú premennú $X$ je $k$-ty {\em moment}
+	definovaný ako $\Expect(X^k)$ a $k$-ty {\em centrálny moment}
+	ako $\Expect((X-\Expect(X))^k)$.
+\end{definition}
+
 \begin{definition}[Rozptyl, variance]
     Pro náhodnou proměnnou $X$ je {\em rozptyl}
     \[ \Var(X) = \Expect( (X - \Expect(X))^2 ) \]
@@ -169,6 +241,8 @@ bylo dobré si rozmyslet, proč tomu tak je.)
 Na rozptyl se tedy můžeme dívat jako na druhou mocninu očekávané
 vzdálenosti od očekávané hodnoty. Druhá odmocnina rozptylu je
 {\em standardní odchylka}.
+
+Všimnime si, že rozptyl je druhým centrálnym momentom.
 
 Následující tvrzení se snadným důkazem dává užitečný způsob výpočtu
 variance.
@@ -206,6 +280,14 @@ proměnných.
 
 \subsection{Distribuce}
 
+\begin{definition}[Uniformní rozdělení]
+    Náhodná proměnná $X$ má {\em uniformní distribuci},
+    pokud pro všech $K$ hodnot $k$ platí
+    \[
+        P(X = k) = 1/K
+    \]
+\end{definition}
+
 \begin{definition}[Bernoulliho rozdělení]
     Náhodná proměnná $X$ má {\em Bernoulliho distribuci} s~parametrem
     $p$, pokud
@@ -216,6 +298,11 @@ proměnných.
 \end{definition}
 
 Z~definice vyplývá $E(X) = 1 \cdot p + 0 \cdot (1-p) = p$.
+
+\begin{example}
+    Príkladom náhodnej premennej s Bernoulliho distribúciou
+	je hod nevyváženou mincou, kde hlava padne s pravdepodobnosťou $p$.
+\end{example}
 
 \begin{definition}[Binomické rozdělení]
     Náhodná proměnná $X$ má {\em binomickou distribuci} s parametry $(n, p)$,
@@ -284,13 +371,54 @@ Z~definice vyplývá $E(X) = 1 \cdot p + 0 \cdot (1-p) = p$.
     dalších to nijak neovlivňuje.
 \end{example}
 
-\begin{definition}[Uniformní rozdělení]
-    Náhodná proměnná $X$ má {\em uniformní distribuci},
-    pokud pro všech $K$ hodnot $k$ platí
+\begin{definition}[Spojité uniformné rozdelenie]
+    Spojitá náhodná premenná $X$ má {\em uniformnú distribúciu},
+    pokiaľ pre jej hustotu platí
     \[
-        P(X = k) = 1/K
+        f(x) = 
+			\begin{cases}
+				\frac{1}{b-a} &\quad x \text{ leží v intervale }[a,b]\\
+				0 &\quad\text{inak}
+			\end{cases}
     \]
 \end{definition}
+
+Pre distribučnú funkciu spojitej náhodnej premennej teda platí
+	\[
+        F(x) = 
+			\begin{cases}
+				0 &\quad x < a \\
+				\frac{x-a}{b-a} &\quad x \text{ leží v intervale }[a,b)\\
+				1 &\quad x \geq b
+			\end{cases}
+    \]
+
+\begin{definition}[Exponenciálne rozdelenie]
+    Spojitá náhodná premenná $X$ má {\em exponenciálnu distribúciu}
+    s parametrom $\lambda$, pokiaľ pre jej hustotu platí
+    \[
+        f(x) = \lambda e^{-\lambda x}
+    \]
+\end{definition}
+
+Pre distribučnú funkciu exponenciálnej náhodnej premennej platí
+	\[
+        F(x) = 1-e^{-\lambda x}
+    \]
+
+\begin{definition}[Normálne rozdelenie]
+    Spojitá náhodná premenná $X$ má {\em normálnu distribúciu}
+    s parametrami $\mu$ (priemer) a $\sigma$ (rozptyl), pokiaľ pre jej hustotu platí
+    \[
+        f(x) = \frac{1}{\sqrt{2 \pi \sigma^2}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}
+    \]
+\end{definition}
+
+Pre distribučnú funkciu normálnej náhodnej premennej platí
+	\[
+        F(x) = \frac{1}{2} \left( 1+ \text{erf}(\frac{x-\mu}{\sigma \sqrt{2}}) \right),
+    \]
+kde erf značí error function.
 
 \subsection{Markovova a Čebyševova nerovnost}
 
@@ -343,16 +471,9 @@ Z~definice vyplývá $E(X) = 1 \cdot p + 0 \cdot (1-p) = p$.
     Potom $P(X \geq k) = \frac{E(X)}{k}$.
 \end{proof}
 
-\begin{definition}
-    Pokud $\Expect(X^n)$ existuje a je konečná, pak ji nazveme $n$-tým
-    momentem $X$.
-\end{definition}
-
 Pro aplikaci Markovovy nerovnosti stačila znalost prvního momentu
 ($\Expect(X)$). Se znalostí druhého momentu ($\Expect(X^2)$) můžeme
 odvodit podstatně silnější nerovnost.
-
-\pagebreak
 
 \begin{theorem}[Čebyševova nerovnost]
     Pokud $a \geq 0$, pak
@@ -626,7 +747,6 @@ součtu jejich entropií.
 Analyticky lze dokázat, že následující definice
 zachycuje právě takovou funkci.
 
-\pagebreak
 
 % https://math.stackexchange.com/questions/331103/intuitive-explanation-of-entropy
 
