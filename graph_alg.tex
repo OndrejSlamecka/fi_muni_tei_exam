@@ -1,10 +1,52 @@
 \section{Grafy a grafové algoritmy}
 
+\subsection{Úvod}
+\subsubsection{Znenie otázky}
+Grafy a grafové algoritmy. Základní pojmy a způsoby reprezentace
+a prohledávání; stromy a jejich reprezentace a prohledávání; planární 
+grafy a jejich vlastnosti, algoritmy pro konstrukci minimální kostry, 
+pro hledání nejkratší cesty; pro optimální párování; pro maximální 
+toky atd.; datové struktury pro grafové algoritmy; náhodné grafy a 
+jejich použití; náhodnostní grafové algoritmy.
+
+\subsubsection{Pojmy}
+Graf (jednoduchý, orientovaný), cyklus, cesta, kompletný graf,
+bipartitný graf, reprezentácia grafu, BFS, DFS, Best FS; strom,
+koreňový strom, binárny vyhľadávací strom, in order, pre order,
+post order, les; arc, slučka, planárny graf, izomorfizmus planárnych
+grafov, rotačný systém, duálny graf, polygoniálny planárny graf,
+Eulerova formula, triangulácia, obmedzenie počtu hrán, Kuratowski theorem;
+kostra, minimálna kostra, cut/cycle property, Kruskal, Jarník, 
+Borůvka, Fredman-Tarjan, Gabow et al., Karger-Klein-Tarjan;
+relaxácia hrany, Bellman-Ford, Dijkstra, Floyd-Warshall, Johnson;
+matching (perfektné, maximálne), M-alternating/augmenting path,
+bipartitný matching, blossom, Edmonds' blossom algorithm;
+tok, reziduálna sieť, Ford-Fulkerson, Edmonds-Karp, level graph,
+Dinitz, MPM; minimálny rez, Gomory trees, globálny minimálny rez,
+legal ordering, Naganochi-Iniečo-Karger;
+union-find, Fibonacciho halda; náhodné grafy a grafové algoritmy,
+Kargerov algoritmus
+
 \subsection{Základní pojmy, reprezentace a prohledávání}
 
-Struktura $G = (V, E)$, kde $E \subseteq V^2$, se nazývá graf.
-Cesta délky $n$ je posloupnost $v_1,e_1,v_2,\ldots,v_n$ taková, že $e_i
-= (v_i, v_{i+1}) \in E$.
+Struktura $G = (V, E)$, kde $E \subseteq V^2$, se nazývá (neorientovaný) graf.
+Pridaním orientácie k hranám (tj. $E \subseteq V \times V$) vznikne orientovaný graf.
+
+Cesta $P_n$ délky $n$ je posloupnost $v_1,e_1,v_2,\ldots,v_n,e_n,v_{n+1}$ 
+taková, že $e_i = (v_i, v_{i+1}) \in E$. Cyklus $C_n$ dĺžky $n$ vznikne
+pridaním hrany $(v_n, v_1)$ k ceste dĺžky $n-1$. Cyklus dĺžky~$n$ má 
+teda $n$~hrán a $n$~vrcholov, zatiaľ čo cesta dĺžky~$n$ má $n$~hrán a $n+1$~vrcholov.
+
+Úplný graf $K_n$ má o veľkosti~$n$ má $n$~vrcholov, pričom každá dvojica
+vrcholov je spojená hranou. V bipartitnom grafe sa vrcholy dajú
+rozdeliť do dvoch množín $A,B$ tak, že $A \cap B = \emptyset$ a 
+$A \cup B = V$, a pre každú hranu $(u,v)$ platí, že jeden z~jej
+koncových vrcholov je v~množine $A$, zatiaľ čo druhý je v~množine $B$.
+
+Graf reprezentuje reláciu $R \subseteq V \times V$ tak, že pokiaľ
+$(a,b) \in R$, tak tieto vrcholy sú spojené hranou. Pokiaľ ide 
+o~neorientovaný graf, táto relácia musí byť symetrická a antireflexívna.
+Pri neorientovanom grafe nie sú na reláciu kladené žiadne obmedzenia.
 
 V paměti graf reprezentujeme maticí (polem polí, hodí se pro hustý
 graf), seznamem následníků (polem seznamů, hodí se pro řídký graf), či
@@ -87,13 +129,22 @@ $(\lvert V \rvert + \lvert E \rvert)$.
 
 Nechť $G$ je graf. $G$ nazveme {\em strom}, pokud mezi každými dvěma
 vrcholy existuje právě jedna cesta. Ekvivalentně je to souvislý graf
-s~$\lvert V \rvert - 1$ hranami.
+s~$\lvert V \rvert - 1$ hranami, prípadne o súvislý graf bez~cyklov. 
+Nesúvislý graf bez cyklov sa nazýva {\em les}. 
+
+O~strome (resp. lese) hovoríme, že je {\em koreňový}, pokiaľ jeden 
+z~jeho vrcholov (v~prípade lesu je to jeden z každej jeho komponenty)
+je vybraný ako koreň. O~vrchole hovoríme, že je v hĺbke $l$, pokiaľ 
+jeho vzdialenosť od koreňa je~$l$. Pri dvoch vrcholoch spojených
+hranou hovoríme, že ten s nižšou hĺbkou je {\em rodičom} toho druhého.
+Z~tranzitívneho uzáveru tejto relácie vznikajú pojmy {\em predok} a 
+{\em potomok}.
 
 Stromy v paměti často reprezentujeme jako datové struktury se seznamem
 následníků. V~mnoha aplikacích potřebujeme ukládat ve vrcholech hodnoty.
 Pro stromy s~hodnotami a s~pevnou aritou můžeme použít pole.
-Například pro binární strom indexovaný od 0 máme na pozici $0$ kořen,
-každý vrchol na pozici $i$ má levého potomka na indexu $2i+1$, pravého
+Například pro binární strom indexovaný od 0 máme na pozici~$0$ kořen,
+každý vrchol na pozici~$i$ má levého potomka na indexu~$2i+1$, pravého
 na indexu $2i+2$ a rodiče na indexu $\lfloor (i - 1) / 2 \rfloor$.
 
 Stejně jako u obecných grafů můžeme použít DFS nebo BFS. Pro binární
@@ -145,6 +196,22 @@ a získáme $e \leq 3v - 6$.
 
 \subsection{Konstrukce minimální kostry}
 
+Kostra $T$ grafu $G$ je spanning podgrafom ($V(T)=V(G)$) grafu $G$ takým,
+že $T$ je stromom. Minimálna kostra pri ohodnotenom grafe je takou kostrou,
+že súčet hodnôt hrán, ktoré obsahuje, je minimálny.
+
+\begin{theorem}[Cut property]
+	Pokiaľ $e$ je nahľahšou v nejakom reze grafu $G$, táto hrana musí
+	byť v minimálnej kostre.
+\end{theorem}
+
+\begin{theorem}[Cycle property]
+	Pokiaľ $e$ je najťažšou v nejakom cykle grafu $G$, táto hrana nemôže
+	byť v minimálnej kostre.
+\end{theorem}
+
+\subsubsection{Kruskalův algoritmus}
+
 Ukážeme Kruskalův algoritmus. Přidává hrany v pořadí od nejlehčí tak,
 aby nikdy nevytvořil cyklus.
 Algoritmus udržuje informaci o komponentách grafu v datové struktuře
@@ -167,6 +234,98 @@ Union Find, která je je popsána v
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
+
+Zložitosť Kruskalovho algoritmu je $\mathcal{O}(m \log(n))$, pričom
+časovo najnáročnejšie je zoradenie hrán.
+
+\subsubsection{Jarníkov algoritmus}
+
+V Jarníkovom (niekedy nazývaným aj Primovom) algoritme sa začne
+náhodným výberom jedného vrcholu z grafu a jeho vložením do kostry.
+Algoritmus pokračuje tak, že vyberie najľahšiu hranu opúšťajúcu
+aktuálnu kostru, a pridá daný vrchol do kostry. Toto sa opakuje,
+dokým kostra neobsahuje všetky vrcholy grafu.
+
+Zložitosť Jarníkovho algoritmu je $\mathcal{O}(n^2)$, pretože
+v~každej z $n-1$~iterácií je potrebný čas $\mathcal{O}(n)$ na výber
+najbližšieho vrcholu a aktualizovanie vzdialeností.
+
+\subsubsection{Borůvkov algoritmus}
+
+Borůvkov algoritmus začne tým, že graf berie ako les obsahujúci
+$n$ jedno-vrcholových komponent. Pokračuje sa tak, že pre každú
+komponentu sa nájde najľahšia hrana, ktorá ju opúšťa, a komponenty
+spájané touto hranou sa spoja. Opakuje sa, dokým neostane jediná 
+komponenta, ktorá bude minimálnou kostrou.
+
+V Borůvkovom algoritme sa vykoná najviac $\log(n)$~fáz, pričom
+každá fáza sa vykoná v čase $\mathcal{O}(m)$. Celková zložitosť
+je teda $\mathcal{O}(m \log(n))$.
+
+\subsubsection{Fredman-Tarjan}
+
+V tomto algoritme sa simuluje Jarníkov algoritmus s~haldou s~obmedzenou
+veľkosťou najviac~$k$. Keď sa táto veľkosť prekoná, náš budovaný strom má 
+viac ako $k$~susedov. Vtedy začneme budovať kostru z nového vrcholu. Týmto
+spôsobom dostaneme les, ktorý stiahneme\footnote{contract; nie som si istý 
+prekladom. Princípom je, že z každého stromu sa stane v novom grafe jeden
+vrchol.} a znova spustíme algoritmus.
+
+Zložitosť Fredman-Tarjan algoritmu je $\mathcal{O}(m \cdot \beta(m,n))$, kde
+funkcia $\beta(m,n)$ je definovaná ako $\beta(m,n)= \min\{ i | \log^{(i)}n \leq m/n \}$.
+Tento algoritmus je v každom prípade aspoň tak rýchly, ako Jarník, pričom
+je lepší najmä v~prípade riedkych grafov.
+
+\subsubsection{Gabow et al.}
+
+Základnou myšlienkou tohto algoritmu je, že sa vytvorí $2m/p$ paketov,
+kde každý z~nich obsahuje $p$ hrán. Každý paket má váhu svojej najľahšej
+hrany. Potom sa simuluje Fredman-Tarjan algoritmus, ktorý používa pakety
+miesto hrán.
+
+Za použitia Fibonacciho haldy je zložitosť tohto algoritmu 
+$\mathcal{O}(m \cdot \log\beta(m,n))$.
+
+\subsubsection{Karger-Klein-Tarjan}
+
+Tento algoritmus využíva princíp $F$-ľahkých a $F$-ťažkých hrán.
+Nech $F\subseteq G$ je podgraf grafu $G$, ktorý je lesom. Pre
+každú hranu $e=(u,v) \in E(G)$ nech $w_F(e)$ je váha najťažšej hrany
+na ceste medzi vrcholmi $u,v$ v lese $F$, prípadne $\infty$ pokiaľ
+dané vrcholy v lese $F$ nie sú v rovnakej komponente. Hrana $e$
+sa nazýva {\em $F$-ťažkou}, pokiaľ jej váha je väčšia ako $w_F(e)$, 
+{\em $F$-ľahkou} inak.
+
+Pre pochopenie tohto algoritmu najskôr ukážeme prvý pokus o~náhodnostný
+algoritmus, na ktorom budeme ilustrovať kocepty, ktoré sa potom 
+použíjú v Karger-Klein-Tarjan algoritme. Začneme tak, že z grafu $G$ náhodne
+vytvoríme pomocný graf $H$, v~ktorom je každá hrana s~pravdepodobnosťou~$1/2$. 
+V grafe $H$ rekurzívne nájdeme minimálnu kostru $F$ (aj keď v tomto prípade
+táto kostra nemusí byť spojitá, keďže graf $H$ nemusí byť spojitý).
+V kostre $F$ nájdeme všetky $F$-ťažké hrany, tieto v minimálej 
+kostre grafu $G$ nemôžu byť, kvôli cycle property. Tieto $F$-ťažké
+hrany teda z grafu $F$ odobereme. Na zvyšku tohto grafu $F$ budeme
+opäť rekurzívne hľadať minimálnu kostru a tento postup budeme opakovať, kým
+nedostaneme minimálnu kostru grafu $G$.
+
+\begin{algorithm}
+\caption{Karger-Klein-Tarjan}
+\begin{algorithmic}[1]
+\Function{RandomizedMSF}{$G$}
+    \State \textbf{if} {$E = \emptyset$} \textbf{then} \Return $\emptyset$
+    \State $(G_1, F_1) \gets \text{BoruvkaPhase}(G)$
+	\State $(G_2, F_2) \gets \text{BoruvkaPhase}(G_1)$
+	\State $H \gets \text{náhodný podgraf }G_2\text{, kde každá hrana je s pravdepodobnosťou }1/2$
+	\State $F' \gets RandomizedMSF(H)$
+	\State $E' \gets F'\text{-ľahké hrany z }G_2$
+	\State $H' \gets G[E']$
+	\State $F_3 \gets RandomizedMSF(H')$
+    \State \Return $F_1 \cup F_2 \cup F_3$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+Zložitosť Karger-Klein-Tarjan algoritmu je $\mathcal{O}(m+n)$.
 
 \subsection{Hledání nejkratší cesty}
 
