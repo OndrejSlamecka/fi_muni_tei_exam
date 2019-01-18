@@ -22,7 +22,7 @@ relaxácia hrany, Bellman-Ford, Dijkstra, Floyd-Warshall, Johnson;
 matching (perfektné, maximálne), M-alternating/augmenting path,
 bipartitný matching, blossom, Edmonds' blossom algorithm;
 tok, reziduálna sieť, Ford-Fulkerson, Edmonds-Karp, level graph,
-Dinitz, MPM; minimálny rez, Gomory trees, globálny minimálny rez,
+Dinic, MPM; minimálny rez, Gomory trees, globálny minimálny rez,
 legal ordering, Naganochi-Iniečo-Karger;
 union-find, Fibonacciho halda; náhodné grafy a grafové algoritmy,
 Kargerov algoritmus
@@ -329,11 +329,38 @@ Zložitosť Karger-Klein-Tarjan algoritmu je $\mathcal{O}(m+n)$.
 
 \subsection{Hledání nejkratší cesty}
 
-V neohodnoceném grafu pomocí BFS.
-V ohodnoceném grafu cestu z jednoho vrcholu do druhého pomocí Dijkstrova
-algoritmu, cestu mezi každými dvěma pomocí Floydova-Warshallova
-algoritmu.
+V probléme hľadania najkratšej cesty ide o to nájsť takú cestu
+medzi vrcholmi, že súčet váh hrán na nej je minimálny. V prípade
+neohodnotených grafov predpokladáme, že váha každej hrany je~$1$.
 
+Existujú rôzne varianty tohto problému, a to najmä hľadanie najkratšej
+cesty medzi dvomi konkrétnymi vrcholmi, hľadanie najkratšej cesty
+z~konkrétneho vrcholu do všetkých ostatných, a hľadanie najkratšej
+cesty medzi všetkými dvojicami vrcholov. Venovať sa budeme
+hlavne posledným dvom variantám.
+
+Algoritmy pre tento problém často využívajú pojem {\em relaxácia hrany}.
+Majme hranu $e=(u,v)$ s váhou $w(e)$ a pre vrcholy $u,v$ majme nejakú
+ich vzdialenosť $d(u), d(v)$ od vrcholu~$s$. Potom relaxácia tejto
+hrany je proces, kde skúsime, či sa pomocou tejto hrany dá
+vylepšiť minimálne vzdialenosť vrcholu $v$ od $s$, tj. nastavíme
+$d(v)$ na $min(d(v),d(u)+w(e)$.
+
+\subsubsection{Bellman-Ford}
+Tento algoritmus počíta najkrašiu vzdialenosť z jedného vrcholu
+(nazvime ho~$s$) do všetkých ostatných. Na rozdiel od Dijkstrovho
+algoritmu funguje aj na grafoch so záporne hodnotenými hranami.
+
+V jednej iterácii Bellman-Ford algoritmus relaxuje každú hranu.
+Takúto iteráciu algoritmus opakuje $n$ krát, a tým končí. 
+
+Nakoniec ešte posledný krát zopakuje relaxáciu všetkých hrán,
+a pokiaľ je ešte nejaká relaxácia úspešná, graf obsahuje 
+záporný cyklus a algoritmus končí s chybou.
+
+Zložitosť tohto algoritmu sa dá triviálne odvodiť a je to $\mathcal{O}(mn)$.
+
+\subsubsection{Dijkstra}
 Dijkstrův algoritmus udržuje jednoduchý invariant:
 Pro každý navštívený vrchol $v$, je $dist[v]$ nejkratší cesta z $s$ do
 $v$. Pro každý nenavštívený vrchol $u$, je $dist[u]$ nejkratší cesta z
@@ -361,6 +388,13 @@ $s$ do $u$ přes dosud navštívené vrcholy.
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
+
+Za použitia Fibonacciho haldy je zložitosť algoritmu $\mathcal{O}(m + n \log n)$
+
+\subsubsection{Floyd-Warshall}
+
+Algoritmus Floyd-Warshall počíta najkrašiu cestu medzi všetkými
+dvojicami vrcholov.
 
 Floydův-Warshallův algoritmus postupně napočítává nejkratší cestu z $i$
 do $j$, vždy zváží cestu přes vrchol $k$, takže v $k$-tém kroce
@@ -391,24 +425,71 @@ Floyd-Warshallův algoritmus se dá také použít k detekci záporných cyklů.
 \end{algorithmic}
 \end{algorithm}
 
-\subsection{Maximální tok}
+V každej z $n$~iterácií pre každú dvojicu vrcholov skúsi,
+či sa ich vzdialenosť dá znížiť cez práve prechádzaný vrchol. 
+Zložitosť algoritmu je teda $\mathcal{O}(n^3)$.
 
-Funkce $c : E \to \mathbb{R}$ přiřazuje každé hraně její maximální
-možnou kapacitu. Definujeme reziduální graf
-$G_{f}(V,E_{f})$ s~kapacitou $c_{f}(u,v)=c(u,v)-f(u,v)$ a bez toku.
+\subsubsection{Algoritmus A*}
+Algoritmus A* je modifikáciou Dijkstrovho algoritmu s~tým,
+že váhy hrán sa modifikujú, aby ovplyvnili rýchlosť výpočtu.
+Napríklad v mapovej navigácii sa do váhy zakomponuje Euklidovská
+vzdialenosť od cieľa, aby sa cesty, ktoré vedú správnym smerom,
+vyhodnocovali s~väčšou váhou, ako cesty, ktoré idú opačne.
+
+Nech váha hrany $e=(u,v)$ je $w(e)$. Potom modifikovaná
+váha hrany bude $w'(e) = w(e) + p(v) - p(u)$, kde $p(x)$
+pre vrchol $x$ je potenciálová funkcia pre daný vrchol.
+
+\subsection{Maximální tok}
+Máme orientovaný graf, kde každá hrana má priradenú kapacitu.
+Naším cieľom je vypočítať maximálny tok, ktorý môže
+grafom prúdiť z vrcholu $s$ do vrcholu $t$.
 
 V~průběhu algoritmu udržujeme čtyři invarianty:
 $f(u,v) = -f(v,u)$, tok nepřevyšuje kapacitu,
 do každého vrcholu (kromě $s,t$) vteče stejně jako z~něj vyteče,
 kolik vyteče z~$s$, tolik doteče do $t$.
 
+Funkce $c : E \to \mathbb{R}$ přiřazuje každé hraně její maximální
+možnou kapacitu. Definujeme {\em reziduální graf}
+$G_{f}(V,E_{f})$ s~kapacitou $c_{f}(u,v)=c(u,v)-f(u,v)$ a bez toku.
+Reziduálny graf teda obsahuje hrany s ohodnoteniami, ako sa tok
+cez danú hranu môže zmeniť. Keď je napr. v sieti hrana $(x,y)$
+s naplnenou kapacitou $8/10$, tak v reziduálnom grafe je
+hrana $(x,y)$ s kapacitou $2$ a hrana $(y,x)$ s kapacitou $8$.
+
+{\em Augmentujúca cesta} je ľubovoľná cesta z $s$ do $t$
+v~reziduálnom grafe. {\em Bottleneck kapacita} je augmentujúcej
+cesty je minimálna kapacita z~jej hrán.
+
+\begin{theorem}
+Hodnota maximálního toku je zároveň váhou minimálního řezu.
+\end{theorem}
+
+\subsubsection{Ford-Fulkerson}
+Algoritmus udržiava reziduálny graf. Dokým v~tomto grafe
+existuje augmentujúca cesta, tak nejakú nájdeme a 
+augmentujeme ju\footnote{Pri augmentovaní cesty ju naplníme 
+a aktualizujeme reziduálny graf}.
+
+Časová zložitosť jednej iterácie je $\mathcal{O}(m)$, pretože
+toľko trvá nájdenie augmentujúcej cesty. Predpokladáme, že 
+kapacity hrán sú celočíselné, inak by nebolo zaručené, že algoritmus skončí. 
+Nech $C$ je maximálna kapacita. Zložitosť algoritmu je potom $\mathcal{O}(nm \cdot C)$.
+
+\subsubsection{Edmonds-Karp}
+
+Tento algoritmus je takou modifikáciou Ford-Fulkerson algoritmu,
+že v každej iterácii vyberie takú augmentujúcu cestu, ktorá obsahuje
+minimálny počet hrán.
+
 Hledání cesty na řádku 3 se provede algoritmem BFS. S DFS by algoritmus
 neměl zaručenou konvergenci. Pro cesty délky $k$
-může být až $\lvert E \rvert$ zlepšujících cest, délka cesty je nejvýše
-$\lvert V \rvert$, celkem $\lvert E \rvert \lvert V \rvert$
-počtů nalezení zlepšujících čas a zlepšení trvá $\lvert E \rvert$
+může být až $m$ zlepšujících cest, délka cesty je nejvýše
+$n$, celkem $mn$
+počtů nalezení zlepšujících čas a zlepšení trvá $m$
 kroků -- složitost algoritmu je
-$\mathcal{O}(\lvert V \rvert \lvert E \rvert ^2)$.
+$\mathcal{O}(nm^2)$.
 
 \begin{algorithm}[H]
 \caption{Edmonds-Karp}
@@ -426,9 +507,40 @@ $\mathcal{O}(\lvert V \rvert \lvert E \rvert ^2)$.
 \end{algorithmic}
 \end{algorithm}
 
-\begin{theorem}
-Hodnota maximálního toku je zároveň váhou minimálního řezu.
-\end{theorem}
+\subsubsection{Dinic}
+Dinicov algoritmus využíva dva pojmy, ktoré si najprv definujeme.
+
+Nech $L_i$ je množina vrcholov, ktoré sú vo vzdialenosti~$i$ od
+vrcholu $s$. {\em Level graf} $L_G$ pre graf $G$ je jeho podgrafom
+takým, že obsahuje iba hrany $(u,v)$ také, že $u \in L_i$ a 
+$v \in L_{i+1}$ pre nejaké prirodzené číslo $i$.
+
+Pre graf $G$ sa jeho level graf dá vypočítať v čase $\mathcal{O}(m)$.
+
+Hovoríme, že prúd je blokujúci, pokiaľ každá $s-t$ cesta v~danom
+prúde obsahuje aspoň jednu blokujúcu hranu. 
+
+\begin{lemma}
+	Každý maximálny prúd je blokujúci, avšak nie každý blokujúci prúd
+	je maximálny.
+\end{lemma}
+
+Myšlienkou Dinicovho algoritmu je to, že všetky jeho minimálne augmentujúce
+cesty augmentujeme naraz. Keďže dĺžka najkratšej augmentujúcej cesty
+nemôže klesnúť, toto nám zaručí najviac $n$ iterácií.
+
+V každej iterácii musíme nájsť level graf aktuálneho reziduálneho grafu,
+v ňom nájsť blokujúci prúd, tento potom augmentovať, a nakoniec 
+aktualizovať reziduálny graf.
+
+Každá iterácia sa dá implementovať so zložitosťou $\mathcal{O}(mn)$, takže
+zložitosť celého algoritmu je $\mathcal{O}(mn^2)$.
+
+\subsubsection{MPM algoritmus}
+Modifikácia Dinicovho algoritmu, ktorá každú iteráciu vykoná v čase $\mathcal{O}(n^2)$.
+Jeho zložitosť je teda $\mathcal{O}(n^3)$.
+
+Popis TODO
 
 \subsection{Optimální párování}
 
@@ -491,9 +603,7 @@ jedno a potom zlepšující cesta neexistuje.
 
 \subsection{Datové struktury pro grafové algoritmy}
 \label{subsec:data_structures}
-
-Pro implementaci Dijkstrova algoritmu lze použít Fibonacciho haldu
-(popis neuvádíme, je poměrně složitý). Pro implementaci Kruskalova
+Pro implementaci Kruskalova
 algoritmu používáme strukturu Union Find.
 
 Struktura \textsc{Union Find} ukládá vrcholy do stromů.
@@ -503,7 +613,7 @@ Spojení komponent probíhá přidáním jednoho stromu k druhému -- to se
 řídí podle hodnoty $rank$ každého stromu tak, aby hloubka zůstala nízká.
 
 V \autoref{alg:union_find} proměnnou $self$ používáme ve smyslu jako v
-Pythonu. Funkce \textsc{Initialze} je konstruktor.
+Pythonu. Funkce \textsc{Initialize} je konstruktor.
 
 \begin{algorithm}[H]
 \caption{Union Find}
@@ -537,6 +647,44 @@ Pythonu. Funkce \textsc{Initialze} je konstruktor.
 
 \end{algorithmic}
 \end{algorithm}
+
+Pre implementáciu viacerých algoritmov sa využíva Fibonacciho halda.
+Fibonacciho halda je modifikáciou binomiálnej haldy, ktorá umožňuje
+efektívne realizovať operácie union, insert a decrease-key.
+Keďže táto halda je pomerne zložitá, jej popis popíšeme iba zjednodušene.
+
+Každý vrchol má v sebe uložený kľúč, binárny príznak, počet synov
+a ukazetele na otca, ľavého a pravého brata a jedného zo synov.
+Halda sama o sebe obsahuje počet prvkov a ukazateľ na najmenší z nich.
+
+Pri vkladaní sa vrchol iba vloží na prvú úroveň (do koreňového zoznamu), 
+a pokiaľ je jeho kľúč menší ako prechádzajúce minimum, ukazateľ
+na minimum sa nastaví na nový vrchol. Zložitosť tejto operácie je konštantná.
+
+Nájdenie minimálneho prvku je triviálne a konštantné.
+
+Pri zjendnotení dvoch háld proste spojíme koreňové zoznamy. Zložitosť
+tejto operácie je teda opäť konštantná.
+
+Pri odstránení minimálneho prvku všetkých jeho synov presunieme do 
+koreňového zoznamu. Pomocou funkcie \textsc{Consolidate} upravíme haldu,
+aby neobsahovala dva stromy rovnakého stupňa. Nový minimálny 
+prvok nájdeme prechádzaním koreňového zoznamu.
+
+Funkcia \textsc{Consolidate} nájde dva vrcholy $x,y$ s rovnakým stupňom,
+$x.key \leq y.key$, a urobí $y$ synom vrcholu $x$. Táto operácia
+sa robí opakovane.
+
+Amortizovaná zložitosť odstránenia minimálneho prvku je logaritická.
+
+Ak sa pri znížovaní kľúča poruší vlastnosť minimovej haldy,
+celý podstrom sa odreže a presunie sa do koreňového zoznamu.
+Pokiaľ sa nejakému vrcholu odreže druhý syn, tak aj tento vrchol
+sa presunie do koreňového zoznamu. Toto môže viezť ku kaskádovému
+odrezávaniu smerom ku koreňu.
+
+Amortizovaná zložitosť znižovania kľúča je opäť konštantná.
+
 
 
 \subsection{Náhodné grafy a jejich použití}
