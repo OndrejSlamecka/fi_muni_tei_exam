@@ -1,18 +1,83 @@
 \section{Automaty}
 
+\subsection{Úvod}
+\subsubsection{Znenie otázky}
+Automaty. Konečné deterministické, nedeterministické a pravděpodobnostní 
+automaty a jejich vlastnosti (minimalizace, ekvivalence, rozhodovací problémy); 
+regulární jazyky a jejich vlastnosti; pumping lemma, zásobníkové 
+automaty a jejich vlastnosti; bezkontextové jazyky a jejich vlastnosti; 
+Chomského gramatiky a jejich normální formy a vztah k modelům automatů. 
+Syntaktická analýza nejpoužívanějších modelů bezkontextových gramatik; 
+konečné automaty nad nekonečnými slovy; Turingovy stroje a jejich vlastnosti 
+(rekurzivní a rekurzivně spočetné množiny, univerzalita a halting problem); 
+RAM a PRAM modely a jejich kategorie. Celulární automaty.
+
+\subsubsection{Pojmy}
+Abeceda, jazyk, gramatika, pravidlá; deterministický/nedeterministický konečný automat, 
+minimálny automat; regulárne jazyky, uzavretosť regulárnych jazykov, rozhodnuteľné
+problémy, pumping lemma; zásobníkové automaty, syntaktická analýza, pumping lemma
+pre bezkontextové jazyky, bezkontextová gramatika, derivačný strom,
+viacznačná/jednoznačná gramatika, redukovaná gramatika, gramatika
+bez $\epsilon$ pravidiel, jednoduchých pravidiel, necyklická, vlastná,
+neľavorekurzívna, uzavretosť, rozhodnuteľné problémy;
+Chomského gramatiky, normálne formy (CNF, GNF);
+First, Follow, SLL, LL, LR, SLR, LALF, vzťahy;
+$\omega$ automaty, Büchiho automaty, uzáverové vlastnosti, 
+Müllerove automaty; Turingove stroje, konfigurácia, výpočet,
+rekurzívne/rekurzívne spočetné jazyky, rozhodnuteľné/semirozhodnuteľné/nerozhodnuteľné problémy,
+Turingove stroje s $k$-páskou, obojstranne nekonečnou páskou, 
+s viac páskami, NTM/DTM, uzavretosť, rozhodnuteľné problémy,
+rec., RE, gramatika typu $0$, r.e. jazyk, lineárne ohraničený automat,
+univerzálny Turingov stroj, diagonalizácia, problémy, redukcia;
+RAM, PRAM, cululárne automaty.
+
+\subsection{Základné pojmy}
+
+{\em Abeceda} $\Sigma$ je množinou {\em znakov}. {\em Slovo} 
+nad konkrétnou abecedou je konečná postupnosť znakov.
+Dĺžka slova $v$ sa značí $|v|$, počet výskytov písmena~$a$
+v~slove~$v$ zas $\#_a(v)$. Prázdne slovo sa značí $\epsilon$
+a má dĺžku $|\epsilon|=0$.
+
+Pre abecedu $\Sigma$ je $\Sigma^*$ množina všetkých slov,
+$\Sigma^+$ množina všetkých neprázdnych slov. Pre dve slová
+$u,v$ je $.$ operáciou zreťazenia; $u.v=uv$.
+
+{\em Jazyk} nad abecedou $\Sigma$ je ľubovoľná podmnožina $\Sigma^*$.
+
+Zreťazenie jazykov $K$ a $L$ je jazyk $K.L=\{ uv | u \in K, v \in L\}$.
+Pre jazyk $L$ je jeho $i$-tá mocnina $L^0=\{\epsilon\}$; $L^{i+1}=L.L^i$.
+Iterácia jazyka $L^*=\bigcup_{i=0}^{\infty} L^i$, pozitívna
+iterácia $L^+=\bigcup_{i=1}^{\infty} L^i$. Doplnok
+jazyka $L$ je $co-L=\Sigma^* \setminus L$.
+
+\begin{definition}
+	{\em Gramatika} je štvorica $(N, \Sigma, P, S)$, kde
+	\begin{itemize}
+		\item $N$ je množina neterminálov,
+		\item $\Sigma$ je množina terminálov, $N \cap \Sigma = \emptyset$, $N \cup \Sigma = V$,
+		\item $P \subseteq V^*NV^* \times V^*$ je množina pravidiel,
+		\item $S \in N$ je počiatočný neterminál.
+	\end{itemize}
+\end{definition}
+
+Viac o gramatikách a Chomského hierarchií v sekcií o nich.
+
 \subsection{Deterministické automaty}
 
 \begin{definition}
-    Deterministický konečný automat (DFA) je zadán
-    pracovní abecedou $\Sigma$,
-    množinou stavů $S$,
-    počátečním stavem $s_0$,
-    množinou koncových stavů $F$,
-    a přechodovou funkcí $\delta : S \times \Sigma \to S$.
+    Deterministický konečný automat (DFA) je pätica $(Q, \Sigma, \delta, q_0, F)$, kde
+    \begin{itemize}
+		\item $Q$ je množina stavov,
+		\item $\Sigma$ je vstupná abeceda,
+		\item $\delta: Q \times \Sigma \to Q$ je prechodová funkcia,
+		\item $q_0 \in Q$ je počiatočný stav,
+		\item $F \subseteq Q$ je množina koncových stavov.
+	\end{itemize}
 \end{definition}
 
 Není-li přechodová funkce totální, snadno získáme ekvivalentní automat
-s~totální prechodovou funkcí tak, že přidáme nový stav, kam pošleme
+s~totální prechodovou funkcí tak, že přidáme nový stav (tzv. peklo), kam pošleme
 všechny dosud nedefinované přechody. Od teď pracujeme pouze s~úplnými
 automaty.
 
@@ -189,17 +254,17 @@ platí, že existují $x,y,z \in \Sigma^*$ tak, že $w = xyz$ a zároveň
 \subsection{Zásobníkové automaty a bezkontextové jazyky}
 
 \begin{definition}
-    Zásobníkový automat (PDA) je zadán
-    pracovní abecedou $\Sigma$,
-    zásobníkovou abecedou $\Gamma$,
-    množinou stavů $S$,
-    počátečním stavem $s_0$,
-    počátečním zásobníkovým symbolem,
-    množinou koncových stavů $F$,
-    přechodovou funkcí
-    $\delta : S \times (\Sigma \cup \{ \varepsilon \}) \times \Gamma \to
-    \finpowerset{S \times \Gamma^*}$
-    a navíc informací o způsobu akceptování: buď koncovým stavem, nebo
+    Zásobníkový automat (PDA) je sedmica $(Q, \Sigma, \Gamma, \delta, q_0, Z_0,F)$, kde
+	\begin{itemize}
+		\item $Q$ je množina stavov,
+		\item $\Sigma$ je vstupná abeceda,
+		\item $\Gamma$ je zásobníková abeceda,
+		\item $\delta : Q \times (\Sigma \cup \epsilon) \times \Gamma \to \finpowerset{Q \times \Gamma^*}$ je prechodová funkcia,
+		\item $q_0 \in Q$ je počiatočný stav,
+		\item $Z_0 \in \Gamma$ je počiatočný symbol v zásobníku,
+		\item $F \subseteq Q$ je množina koncových stavov.
+	\end{itemize}
+    Naviac musí obsahovať informaci o způsobu akceptování: buď koncovým stavem, nebo
     zásobníkem.
 \end{definition}
 
@@ -229,7 +294,6 @@ $L$ či $P$).
     vyplývá, že CFL nejsou uzavřené ani na doplněk.
 \end{example}
 
-\pagebreak
 \subsection{Gramatiky}
 
 % https://en.wikipedia.org/wiki/Chomsky_hierarchy#The_hierarchy
@@ -432,7 +496,6 @@ Přechodová tabulka má řádek pro neterminál $A$,
 pod symbolem $a$ je pravidlo $A \to aAb$, pod $b$ není nic a pod $c$ je
 $A \to c$.
 
-\pagebreak
 
 Mějme vstup \verb|aacbb$|, analýza probíhá takto:
 
@@ -661,16 +724,19 @@ právě tehdy, když je limitním jazykem nějakého regulární jazyka.
 \subsection{Turingovy stroje}
 
 \begin{definition}
-    Turingův stroj (TM) je zadán
-    páskovou abecedou $\Gamma$,
-    symbolem prázdného políčka $b \in \Gamma$,
-    vstupní abecedou $\Sigma \subseteq \Gamma \setminus \{b\}$,
-    množinou stavů $S$,
-    počátečním stavem $s_0$,
-    množinou koncových stavů $F$,
-    a přechodovou funkcí \linebreak
-    $\delta : (S \setminus F) \times \Gamma
-        \to S \times \Gamma \times \{L,R\}$.
+    Turingov stroj (TM) je devätica $(Q, \Sigma, \Gamma, \triangleright,
+	\sqcup, \delta, q_0, q_{accept}, q_{reject})$, kde
+	\begin{itemize}
+		\item $Q$ je množina stavov,
+		\item $\Sigma$ je vstupná abeceda,
+		\item $\Gamma$ je množina páskových pracovných symbolov, $\Sigma \subseteq \Gamma$,
+		\item $\triangleright \in \Gamma \setminus \Sigma$ je symbol ľavého konca pásky,
+		\item $\sqcup \in \Gamma \setminus \Sigma$ je symbol označujúci prázdne políčko,
+		\item $\delta : (Q \setminus \{q_{accept}, q_{reject} \}) \times \Gamma \to Q \times \Gamma \times \{L,R \}$ je prechodová funkcia,
+		\item $q_0 \in Q$ je počiatočný stav,
+		\item $q_{accept} \in Q$ je akceptujúci stav,
+		\item $q_{reject} \in Q$ je zamietajúci stav.
+	\end{itemize}
 \end{definition}
 
 \begin{definition}[Univerzální TS]
