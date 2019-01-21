@@ -43,13 +43,20 @@ Pre abecedu $\Sigma$ je $\Sigma^*$ množina všetkých slov,
 $\Sigma^+$ množina všetkých neprázdnych slov. Pre dve slová
 $u,v$ je $.$ operáciou zreťazenia; $u.v=uv$.
 
-{\em Jazyk} nad abecedou $\Sigma$ je ľubovoľná podmnožina $\Sigma^*$.
+{\em Jazyk} nad abecedou $\Sigma$ je ľubovoľná podmnožina $L \subseteq\Sigma^*$.
 
 Zreťazenie jazykov $K$ a $L$ je jazyk $K.L=\{ uv | u \in K, v \in L\}$.
-Pre jazyk $L$ je jeho $i$-tá mocnina $L^0=\{\epsilon\}$; $L^{i+1}=L.L^i$.
+Pre jazyk~$L$ je jeho $i$-tá mocnina $L^0=\{\epsilon\}$; $L^{i+1}=L.L^i$.
 Iterácia jazyka $L^*=\bigcup_{i=0}^{\infty} L^i$, pozitívna
 iterácia $L^+=\bigcup_{i=1}^{\infty} L^i$. Doplnok
 jazyka $L$ je $co-L=\Sigma^* \setminus L$.
+
+Majme abecedy $\Sigma$ a $\Delta$. {\em Substitúcia} $f : \Sigma \to \powerset{\Delta^*}$
+je zobrazenie, ktoré každému znaku z abecedy $\Sigma$ priradí
+jazyk nad abecedou $\Delta$.
+
+Substitúcia $h$ je {\em homomorfizmom}, keď pre každý znak $a \in \Sigma$,
+$h(a)$ obsahuje iba jediný prvok.
 
 \begin{definition}
 	{\em Gramatika} je štvorica $(N, \Sigma, P, S)$, kde
@@ -82,21 +89,21 @@ všechny dosud nedefinované přechody. Od teď pracujeme pouze s~úplnými
 automaty.
 
 \begin{definition}
-    Pro daný $\mathcal{M} = (\Sigma, S, s_0, F, \delta)$
+    Pro daný $\mathcal{M} = (Q, \Sigma, \delta, q_0, F)$
     induktivně definujeme přechodovou funkci
-    $\delta^* : S \times \Sigma^* \to S$.
-    Pro libovolný stav $s \in S$, písmeno $a \in \Sigma$ a
+    $\delta^* : Q \times \Sigma^* \to Q$.
+    Pro libovolný stav $q \in Q$, písmeno $a \in \Sigma$ a
     slovo $aw \in \Sigma^*$ (tedy začínající písmenem $a$).
 \begin{align*}
-    \delta^*(s, \epsilon) &= s \\
-    \delta^*(s, aw) &= \delta^*(\delta(s,a), w)
+    \delta^*(q, \epsilon) &= q \\
+    \delta^*(q, aw) &= \delta^*(\delta(q,a), w)
 \end{align*}
 \end{definition}
 
 \begin{definition}[Jazyk rozpoznávaný automatem]
     Funkce $L$ přiřazuje automatu jazyk. Tedy
-    $L(\mathcal{M}) = \{ w \mid \delta^*(s_0, w) \in F \}$
-    pro $\mathcal{M} = (\Sigma, S, s_0, F, \delta)$.
+    $L(\mathcal{M}) = \{ w \mid \delta^*(q_0, w) \in F \}$
+    pro $\mathcal{M} = (Q, \Sigma, \delta, q_0, F)$.
     %Definujeme funkci $L : \mathfrak{M} \to \powerset{\Sigma^*}$.
 \end{definition}
 
@@ -133,7 +140,7 @@ skončí stejně pro libovolné slovo.
 \begin{algorithm}
 \caption{Minimalizace DFA bez nedosažitelných stavů}
 \begin{algorithmic}[1]
-\Function{MinDFA}{$\mathcal{M} = (\Sigma, S, s_0, F, \delta)$}
+\Function{MinDFA}{$\mathcal{M} = (Q, \Sigma, \delta, q_0, F)$}
     \State ${\equiv} \gets \{(p,q) \mid p \in F \iff q \in F \}$
     \While{${\equiv}$ changes}
         \State ${\equiv} \gets
@@ -180,6 +187,9 @@ nekonečně mnoho delších slov.
     množinou koncových stavů $F$,
     a přechodovou funkcí $\delta : S \times \Sigma \to \powerset{S}$.
 \end{definition}
+
+Oproti definícii deterministického konečného automatu sa mení iba
+typ prechodovej funkcie $\delta$.
 
 Narozdíl od NFA se může vyskytovat ve více stavech zároveň. Každé NFA
 však lze snadno převést na ekvivalentní DFA. Řešení dříve uvažovaných
@@ -607,7 +617,7 @@ $\emptyset^* = \{ \varepsilon \}$.
     Dále $(a+b)^\omega$ značí jazyk nekonečně dlouhých slov z~písmen
     $a,b$;
     $(a+b)^*b^\omega$ značí jazyk $\omega$-slov s konečně mnoha $a$;
-    $(a+b)*ab)^\omega$ je jazyk slov obsahujících nekonečně mnoho $a$ i $b$.
+    $(a+b)*(ab)^\omega$ je jazyk slov obsahujících nekonečně mnoho $a$ i $b$.
 \end{example}
 
 \begin{definition}
@@ -828,6 +838,9 @@ zápisu. Viz
 
 \subsection{Celulární automaty}
 
+Všeobecne model celulárnych automatov je na $n$-rozmernej nekonečnej
+mriežke, kde každá bunka je v jednom z konečného počtu stavov.
+
 Například {\em Game of Life}, celulární automat na dvourozměrné, nekonečné
 mřížce, kde každá buňka nabývá stavu {\em live} nebo {\em dead}.
 
@@ -847,3 +860,4 @@ chaotičnosti jejich vývoje. Již pro jednorozměrné
 mřížky existují pravidla, která demonstrují jak chaotické chování
 (pravidlo 30), tak částečně pravidelné a částečně chaotické (pravidlo
 110).
+
