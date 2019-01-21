@@ -60,7 +60,7 @@ prozkoumat malou část).
 často pro jednoduchost
 $\forall v \in V \subseteq \mathbb{N} : 0 \leq v < \lvert V \rvert$.
 Je-li graf ohodnocený, pak je navíc definována funkce $w : E \to
-\mathbb{R}$.
+\mathbb{R}$. Pri analýze zložitosti občas používame $|V|=n$ a $|E|=m$.
 
 \subsubsection*{Depth-First Search}
 
@@ -129,7 +129,7 @@ $(\lvert V \rvert + \lvert E \rvert)$.
 
 Nechť $G$ je graf. $G$ nazveme {\em strom}, pokud mezi každými dvěma
 vrcholy existuje právě jedna cesta. Ekvivalentně je to souvislý graf
-s~$\lvert V \rvert - 1$ hranami, prípadne o súvislý graf bez~cyklov. 
+s~$\lvert V \rvert - 1$ hranami, prípadne súvislý graf bez~cyklov. 
 Nesúvislý graf bez cyklov sa nazýva {\em les}. 
 
 O~strome (resp. lese) hovoríme, že je {\em koreňový}, pokiaľ jeden 
@@ -197,7 +197,7 @@ a získáme $e \leq 3v - 6$.
 \subsection{Konstrukce minimální kostry}
 
 Kostra $T$ grafu $G$ je spanning podgrafom ($V(T)=V(G)$) grafu $G$ takým,
-že $T$ je stromom. Minimálna kostra pri ohodnotenom grafe je takou kostrou,
+že $T$~je stromom. Minimálna kostra pri ohodnotenom grafe je takou kostrou,
 že súčet hodnôt hrán, ktoré obsahuje, je minimálny.
 
 \begin{theorem}[Cut property]
@@ -300,11 +300,11 @@ Pre pochopenie tohto algoritmu najskôr ukážeme prvý pokus o~náhodnostný
 algoritmus, na ktorom budeme ilustrovať kocepty, ktoré sa potom 
 použíjú v Karger-Klein-Tarjan algoritme. Začneme tak, že z grafu $G$ náhodne
 vytvoríme pomocný graf $H$, v~ktorom je každá hrana s~pravdepodobnosťou~$1/2$. 
-V grafe $H$ rekurzívne nájdeme minimálnu kostru $F$ (aj keď v tomto prípade
+V grafe~$H$ rekurzívne nájdeme minimálnu kostru $F$ (aj keď v tomto prípade
 táto kostra nemusí byť spojitá, keďže graf $H$ nemusí byť spojitý).
 V kostre $F$ nájdeme všetky $F$-ťažké hrany, tieto v minimálej 
 kostre grafu $G$ nemôžu byť, kvôli cycle property. Tieto $F$-ťažké
-hrany teda z grafu $F$ odobereme. Na zvyšku tohto grafu $F$ budeme
+hrany teda z grafu $F$ odobereme. Na zvyšku tohto grafu~$F$ budeme
 opäť rekurzívne hľadať minimálnu kostru a tento postup budeme opakovať, kým
 nedostaneme minimálnu kostru grafu $G$.
 
@@ -336,8 +336,7 @@ neohodnotených grafov predpokladáme, že váha každej hrany je~$1$.
 Existujú rôzne varianty tohto problému, a to najmä hľadanie najkratšej
 cesty medzi dvomi konkrétnymi vrcholmi, hľadanie najkratšej cesty
 z~konkrétneho vrcholu do všetkých ostatných, a hľadanie najkratšej
-cesty medzi všetkými dvojicami vrcholov. Venovať sa budeme
-hlavne posledným dvom variantám.
+cesty medzi všetkými dvojicami vrcholov.
 
 Algoritmy pre tento problém často využívajú pojem {\em relaxácia hrany}.
 Majme hranu $e=(u,v)$ s váhou $w(e)$ a pre vrcholy $u,v$ majme nejakú
@@ -362,7 +361,7 @@ Zložitosť tohto algoritmu sa dá triviálne odvodiť a je to $\mathcal{O}(mn)$
 
 \subsubsection{Dijkstra}
 Dijkstrův algoritmus udržuje jednoduchý invariant:
-Pro každý navštívený vrchol $v$, je $dist[v]$ nejkratší cesta z $s$ do
+Pro každý navštívený vrchol~$v$, je $dist[v]$ nejkratší cesta z $s$ do
 $v$. Pro každý nenavštívený vrchol $u$, je $dist[u]$ nejkratší cesta z
 $s$ do $u$ přes dosud navštívené vrcholy.
 
@@ -443,7 +442,7 @@ pre vrchol $x$ je potenciálová funkcia pre daný vrchol.
 \subsection{Maximální tok}
 Máme orientovaný graf, kde každá hrana má priradenú kapacitu.
 Naším cieľom je vypočítať maximálny tok, ktorý môže
-grafom prúdiť z vrcholu $s$ do vrcholu $t$.
+grafom prúdiť z vrcholu $s$ do vrcholu~$t$.
 
 V~průběhu algoritmu udržujeme čtyři invarianty:
 $f(u,v) = -f(v,u)$, tok nepřevyšuje kapacitu,
@@ -510,15 +509,19 @@ $\mathcal{O}(nm^2)$.
 \subsubsection{Dinic}
 Dinicov algoritmus využíva dva pojmy, ktoré si najprv definujeme.
 
+\begin{definition}[Level graf]
 Nech $L_i$ je množina vrcholov, ktoré sú vo vzdialenosti~$i$ od
 vrcholu $s$. {\em Level graf} $L_G$ pre graf $G$ je jeho podgrafom
 takým, že obsahuje iba hrany $(u,v)$ také, že $u \in L_i$ a 
-$v \in L_{i+1}$ pre nejaké prirodzené číslo $i$.
+$v \in L_{i+1}$ pre nejaké prirodzené číslo~$i$.
+\end{definition}
 
 Pre graf $G$ sa jeho level graf dá vypočítať v čase $\mathcal{O}(m)$.
 
-Hovoríme, že prúd je blokujúci, pokiaľ každá $s-t$ cesta v~danom
+\begin{definition}[Blokujúci prúd]
+Hovoríme, že prúd je {\em blokujúci}, pokiaľ každá $s-t$ cesta v~danom
 prúde obsahuje aspoň jednu blokujúcu hranu. 
+\end{definition}
 
 \begin{lemma}
 	Každý maximálny prúd je blokujúci, avšak nie každý blokujúci prúd
@@ -603,6 +606,8 @@ jedno a potom zlepšující cesta neexistuje.
 
 \subsection{Datové struktury pro grafové algoritmy}
 \label{subsec:data_structures}
+
+\subsubsection{Union Find}
 Pro implementaci Kruskalova
 algoritmu používáme strukturu Union Find.
 
@@ -647,6 +652,8 @@ Pythonu. Funkce \textsc{Initialize} je konstruktor.
 
 \end{algorithmic}
 \end{algorithm}
+
+\subsubsection{Fibonacciho halda}
 
 Pre implementáciu viacerých algoritmov sa využíva Fibonacciho halda.
 Fibonacciho halda je modifikáciou binomiálnej haldy, ktorá umožňuje
