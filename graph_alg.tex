@@ -14,7 +14,7 @@ Graf (jednoduchý, orientovaný), cyklus, cesta, kompletný graf,
 bipartitný graf, reprezentácia grafu, BFS, DFS, Best FS; strom,
 koreňový strom, binárny vyhľadávací strom, in order, pre order,
 post order, les; arc, slučka, planárny graf, izomorfizmus planárnych
-grafov, rotačný systém, duálny graf, polygoniálny planárny graf,
+grafov, rotačný systém, duálny graf, polygonálny planárny graf,
 Eulerova formula, triangulácia, obmedzenie počtu hrán, Kuratowski theorem;
 kostra, minimálna kostra, cut/cycle property, Kruskal, Jarník, 
 Borůvka, Fredman-Tarjan, Gabow et al., Karger-Klein-Tarjan;
@@ -154,8 +154,64 @@ relativně k~jeho potomkům.
 
 \subsection{Planární grafy a jejich vlastnosti}
 
+\begin{definition}
+	{\em Oblúk} v rovine je spojitý obraz intervalu $[0,1]$ pod spojitým
+	jednoduchým zobrazením $\varphi: [0,1] \to \mathbb{R}^2$. 
+	{\em Smyčka} je oblúk, kde $\varphi(0)=\varphi(1)$.
+\end{definition}
+Neformálne je oblúk spojitou čiarou medzi dvomi bodmi takou, že sa
+nikde nepretína. Smyčka sa nikde nepretína, ale má spoločný začiatočný
+a konečný bod.
+
 Graf je planární, pokud ho lze zakreslit do roviny tak, že se žádné dvě
 hrany nekříží. Příklad $C_4$, nepříklad $K_{3,3}$ (lze na torusu).
+
+{\em Rovinne nakreslený graf} je konkrétny nákres planárneho grafu v rovine.
+
+\begin{definition}
+	Pre rovinne nakreslený graf, nech $\Pi$ je množinou permutácií $\pi_v$
+	pre každý vrchol $v$, kde $\pi_v$ je permutácia hrán incidentných 
+	k~vrcholu~$v$ v~smere proti hodinovým ručičkám. $\Pi$~sa nazýva {\em rotačným
+	systémom} nakresleného grafu.
+	
+	Dve nakreslenia sú {\em ekvivalentné}, pokiaľ medzi nimi existuje izomorfizmus,
+	ktorý zachováva rotačný systém, až na možný zrkadlový obraz (kde všetky permutácie
+	sú opačné).
+\end{definition}
+
+\begin{definition}[Stena]
+	V rovinne nakreslenom grafe, oblúkovo súvislé regióny roviny (vrátane vonkajšieho),
+	rozdelené nákresom grafu, sa nazývajú stenami grafu.
+	
+	Hranice každej steny tvoria uzatvorený sled\footnote{walk}, ktorý sa pre
+	danú stenu nazýva stenovou prechádzkou. Jej dĺžka sa nazýva veľkosťou steny.
+\end{definition}
+
+\begin{definition}[Duálny multigraf]
+	Pre graf $G=(V,E,\epsilon)$ je graf $H=(F,E,\phi)$ {\em duálnym multigrafom}, pokiaľ
+	\begin{itemize}
+		\item $F$ je množina stien v $G$,
+		\item $\phi$ je reláciou, ktorá pre každú $e \in E$ spája steny, ktoré táto hrana rozdeľuje.
+	\end{itemize}
+	$G$ sa v tomto prípade nazýva {\em primálnym grafom} multigrafu $H$.
+\end{definition}
+
+\begin{definition}[Polygonálny planárny rovinne nakreslený graf]
+	{\em Lomená čiara} je konečná postupnosť bodov $(p_0, p_1, \ldots,
+	p_k) \subseteq \mathbb{R}^2$ spolu s rovnými čiarami $p_0p_1, p_1p_2, 
+	\ldots, p_{k-1}p_k$ takými, že žiadne dve nemajú spoločný prienik
+	(okrem možného prieniku keď $p_0=p_k$ v tomto bode).
+	
+	{\em Polygonálny planárny rovinne nakreslený graf} je planárne rovinne
+	nakreslený graf, ktorého všetky hrany sú lomené čiary.
+\end{definition}
+
+Pre každý planárny rovinne nakreslený graf existuje ekvivalentný polygonálny
+rovinne nakreslený graf.
+
+Pokiaľ sa v stenovej prechádzke jedna hrana nachádza dva krát, táto hrana
+sa nazýva {\em mostom}. Vrchol, ktorý sa v nej nachádza dva krát sa nazýva
+{\em cutvertex}.
 
 \begin{theorem}[Kuratowski]
 Graf je planární právě tehdy, když nemá jako podgraf
@@ -168,6 +224,7 @@ Dále uvažujme zakreslení grafů bez křížení v~rovině a s~$f$
 stěnami.
 
 \begin{theorem}[Euler]
+Pre planárny spojitý graf platí 
 $v - e + f = 2$.
 \end{theorem}
 
@@ -235,7 +292,7 @@ Union Find, která je je popsána v
 \end{algorithmic}
 \end{algorithm}
 
-Zložitosť Kruskalovho algoritmu je $\mathcal{O}(m \log(n))$, pričom
+Zložitosť Kruskalovho algoritmu je $\mathcal{O}(m \log(m))=\mathcal{O}(m \log(n))$, pričom
 časovo najnáročnejšie je zoradenie hrán.
 
 \subsubsection{Jarníkov algoritmus}
@@ -246,9 +303,8 @@ Algoritmus pokračuje tak, že vyberie najľahšiu hranu opúšťajúcu
 aktuálnu kostru, a pridá daný vrchol do kostry. Toto sa opakuje,
 dokým kostra neobsahuje všetky vrcholy grafu.
 
-Zložitosť Jarníkovho algoritmu je $\mathcal{O}(n^2)$, pretože
-v~každej z $n-1$~iterácií je potrebný čas $\mathcal{O}(n)$ na výber
-najbližšieho vrcholu a aktualizovanie vzdialeností.
+Zložitosť Jarníkovho algoritmu pomocou Fibonacciho haldy
+ je $\mathcal{O}(m + n \log n)$.
 
 \subsubsection{Borůvkov algoritmus}
 
@@ -428,6 +484,16 @@ V každej z $n$~iterácií pre každú dvojicu vrcholov skúsi,
 či sa ich vzdialenosť dá znížiť cez práve prechádzaný vrchol. 
 Zložitosť algoritmu je teda $\mathcal{O}(n^3)$.
 
+\subsubsection{Johnson}
+Tento algoritmus hľadá najkrajšiu cestu medzi všetkými dvojicami vrcholov.
+V tomto algoritme skúsime nájsť záporný cyklus - v tom prípade
+končíme s chybou. Inak modifikujeme hrany tak, aby už neobsahovali
+záporné hrany, a spustíme Dijkstru z každého vrcholu.
+
+Zložitosť tohto algoritmu je súčet zložitosti Bellman-Ford (pre detekciu
+záporných cyklov) + $n$ krát Dijkstra. Teda celková zložitosť
+je $\mathcal{O}(n^2 \log(n) + mn)$.
+
 \subsubsection{Algoritmus A*}
 Algoritmus A* je modifikáciou Dijkstrovho algoritmu s~tým,
 že váhy hrán sa modifikujú, aby ovplyvnili rýchlosť výpočtu.
@@ -544,6 +610,27 @@ Modifikácia Dinicovho algoritmu, ktorá každú iteráciu vykoná v čase $\mat
 Jeho zložitosť je teda $\mathcal{O}(n^3)$.
 
 Popis TODO
+
+\subsubsection{Push-relabel}
+Tento algoritmus bude využívať pseudotok, ktorý spĺňa kapacitné
+ohraničenie, avšak tok prichádzajúci do vrcholu môže byť väčší, 
+ako tok odchádzajúci z tohto vrcholu (tj. vrchol môže určitú časť
+toku ukladať do rezervnej nádrže). Každý vrchol má v priebehu 
+algoritmu svoju výšku, ktorá sa iba zväčšuje. Zdroj má fixovanú
+výšku $n$, stok má fixovanú výšku $0$, ostatné vrcholy majú na začiatku
+algoritmu výšku $0$.
+
+Na začiatku algoritmu sa zo zdroja pretlačí maximálny tok
+do všetkých možných hrán. Tok, ktorý pritečie do vnútorného vrcholu
+siete sa uloží do rezervnej nádrže; odtiaľ sa potom postupne pretláča
+do vrcholov s menšou výškou (\textsc{Push}). Keď nastane situácia, že 
+rezervná nádrž nie je prázdna, ale všetky nenasýtené hrany, ktoré z~vrchola
+odchádzajú, vedú do vrcholov s~väčšou výškou, zvýšime výšku vrchola
+(\textsc{Relabel}). Výpočet končí, keď už nie je možné pretlačiť viac
+toku do stoku.
+
+Pokiaľ sa v priebehu algoritmu vyberá ako aktívny vrchol vždy ten
+s~maximálnou výškou, zložitosť algoritmu je $\mathcal{O}(n^3)$.
 
 \subsection{Optimální párování}
 
