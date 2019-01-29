@@ -285,8 +285,25 @@ Neformálne vysvetlené, množina $A$ generuje grupu, pokiaľ každý
 jej prvok dokážem získať pomocou prvkov z $A$, funkcie inverzie a opakovanej
 aplikácie funkcie $\cdot$.
 
+\begin{definition}[Podgrupa]
+    Grupa $(H,\cdot_H)$ je {\em podgrupou} grupy $(G, \cdot)$, pokiaľ 
+	$(H \subseteq G)$, a $\cdot_H$ je podmnožinou operácie $\cdot$.
+\end{definition}
+
+\begin{definition}[Normálna podgrupa]
+    {\em Normálna podgrupa} $\mathcal{H}=(H,\cdot)$ grupy 
+	$\mathcal{G}=(G, \cdot)$ je takou podgrupou, že platí
+	\[
+		\forall g \in \mathcal{G}. g \cdot \mathcal{H} \equiv \{ g \cdot h | h \in \mathcal{H} \} = \{ h \cdot g | h \in \mathcal{H} \} \equiv \mathcal{H} \cdot g
+	\]
+\end{definition}
+
+\begin{example}
+	Každá komutatívna podgrupa je normálna.
+\end{example}
+
 \begin{definition}[Cyklická grupa]
-    Grupa je cyklická, pokiaľ sa dá vygenerovať pomocou jednoprvkovej množiny.
+    Grupa je {\em cyklická}, pokiaľ sa dá vygenerovať pomocou jednoprvkovej množiny.
 \end{definition}
 
 \begin{example}
@@ -297,6 +314,10 @@ aplikácie funkcie $\cdot$.
 	a záporné čísla.
 \end{example}
 
+Každá cyklická grupa je homomorfným obrazom grupy celých čísel
+uvedenej v príklade vyššie. Každá konečná grupa, ktorá má prvočíselný
+počet prvkov, je cyklická. Pokiaľ dve cyklické grupy majú rovnaký počet
+prvkov, sú izomorfné.
 
 \begin{definition}[Okruh]
     Algebra $(A, +, \cdot, 0, 1, -)$ je {\em okruh}, pokud
@@ -341,12 +362,17 @@ směr je zřejmý, v~druhém $a = 1 \cdot a = 0 \cdot a = 0$ pro lib. $a$).
     $C$ je dokonce {\em hlavní ideál}, což je ideál generovaný jediným prvkem.
 \end{example}
 
-\begin{definition}
+\begin{definition}[Obor integrity]
     {\em Obor integrity} nazveme okruh $\mathcal{R}$, ve kterém platí
     \[
         \forall a,b \in R, a \neq 0, b \neq 0, a \cdot b \neq 0
     \]
 \end{definition}
+
+Ekvivalentne, v obore integrity platí pre každé $a \neq 0$:
+\[
+	ab = ac \implies b = c.
+\]
 
 \begin{definition}[Teleso]
     Okruh $(A, +, \cdot, 0, 1, -)$ sa nazýva {\em telesom}, pokiaľ
@@ -359,10 +385,21 @@ směr je zřejmý, v~druhém $a = 1 \cdot a = 0 \cdot a = 0$ pro lib. $a$).
 	Pokiaľ je homomorfizmus bijekciou, nazýva sa {\em izomorfizmom}.
 \end{definition}
 
+\begin{definition}[Jadro homomorfizmu]
+    Pre homomorfizmus $\varphi: (A,+,0) \to (B,\cdot,1)$ je jeho {\em jadrom}
+	množina $Ker(\varphi)=\{ a \in A  | \varphi(a) = 1\}$.
+\end{definition}
+
+Jadro homomorfizmu grúp teda obsahuje všetky také prvky, ktoré sa daným
+homomorfizmom premietnu na neutrálny prvok.
+
 \begin{definition}[Pole]
 Komutativní okruh $(A, +, \cdot, 0, 1, -)$ nazveme {\em pole}, pokud
 pro každé $a \neq 0$ existuje $a^{-1}$ takové, že $a \cdot a^{-1} = 1$.
 \end{definition}
+
+Ekvivalentne, okruh $(A, +, \cdot, 0, 1, -)$ je poľom, pokiaľ je telesom
+a zároveň $(A, \cdot, 1)$ je komutatívna grupa.
 
 \begin{example}
     $\mathbb{Q}, \mathbb{R}, \mathbb{C}, \mathbb{Z}_n.$
@@ -422,11 +459,11 @@ Operácie $\vee$ a $\wedge$ v polosvazoch sa nazývajú aj
     \[ a \vee (a \wedge b) = a \wedge (a \vee b) = a \]
 
     Stejně tak částečně uspořádanou množinu $(A, \leq)$ nazveme
-    {\em svaz}, pokud pro každou dvouprvkovou podmnožinu existuje
-    supremum i infimum.
+    {\em svazovo usporiadanou množinou}, pokud pro každou dvouprvkovou
+	podmnožinu existuje supremum i infimum. 
 \end{definition}
 
-Opět platí, že obě definice jsou ekvivalentní.
+Tieto pojmy sú ekvivalentné.
 
 \begin{figure}[h!]
 \centering
@@ -471,6 +508,8 @@ Opět platí, že obě definice jsou ekvivalentní.
 \caption{
 Příklad svazu a dvou uspořádaných množin, které nejsou svazy.}
 \end{figure}
+
+Pojem podsvazov funguje intuitívne rovnako, ako v iných algebrách.
 
 Pojmy morfismů algebraicky definovaných svazů získáváme
 z~pojmu homomorfismus (zachovává výsledky operací)
@@ -549,8 +588,6 @@ V~praxi informatiky je důležité následující tvrzení o pevných bodech.
     zobrazení,
     potom množina pevných bodů $\varphi$ tvoří úplný svaz.
 \end{claim}
-
-\pagebreak
 
 Pro další podsekce budeme potřebovat následující dva svazy.
 
@@ -884,7 +921,7 @@ Pozorování se vztahem jádra homomorfismu a kongruencí platí obecně.
 
 Zbývá nám toto pozorování zadefinovat.
 
-\begin{definition}
+\begin{definition}[Faktorová algebra]
     Je-li $\sim$ kongruence $\tau$-algebry $\mathcal{A}$, můžeme na
     množině $A/{\sim} = \{ [a]_\sim \mid a \in A \}$,
     kde $[a]_\sim = \{ a' \in A \mid a' \sim a \}$,
