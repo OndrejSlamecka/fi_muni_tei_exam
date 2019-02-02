@@ -2,7 +2,7 @@
 
 \subsection{Úvod}
 
-\subsubsection{Znenie otázky}
+\subsubsection*{Znenie otázky}
 Výpočetní, komunikační a Kolmogorovova složitost. Časové a paměťové 
 složitosti a jejich vlastnosti; Třídy složitosti pro deterministické, 
 nedeterministické a náhodnostní výpočty a vztahy mezi nimi; 
@@ -13,7 +13,7 @@ zero-knowledge dokazovací systémy; komunikační složitost a její aplikace;
 metody dokazování dolních odhadů komunikační složitosti; 
 třídy komunikační složitosti, základní pojmy a vlastnosti Kolmogorovovy složitosti. 
 
-\subsubsection{Pojmy}
+\subsubsection*{Pojmy}
 $\mathcal{O}$-notácia, časová/priestorová zložitosť, determinizmus/nedeterminizmus,
 linear speedup, vzťahy; uzavretosť tried na doplnky, nek. hierarchia tried, 
 hierarchia (ostré inklúzie), randomizované triedy; redukcia (p, T, log), 
@@ -145,8 +145,8 @@ $\mathcal{O}((\log 2^{S(n)})^2) = \mathcal{O}((S(n))^2)$.
 
 \subsection{Triedy zložitosti pre náhodnostné výpočty}
 
-Nie som si istý, či je potrebné vedieť aj orákulové Turingove stroje
-a polynomiálnu hierarchiu, ale keďže nižšie sú spomenutá, aspoň ich spomeniem.
+(Nie som si istý, či je potrebné vedieť aj orákulové Turingove stroje
+a polynomiálnu hierarchiu, ale keďže nižšie je spomenutá, aspoň ich spomeniem.)
 
 Pre definovanie polynomiálnej hierarchie je potrebné zhrnúť princíp
 orákulových Turingových strojov. Uveďme na príklade - jazyk je v~triede
@@ -170,7 +170,7 @@ orákulum rozhodnúť samo, tj. $\P^{\NP} = \NP$.
 	Triedu $PH$ definujeme ako $PH=\bigcup_{i=0}^{\infty} \Sigma_i^\P \cup \Pi_i^\P$.
 \end{definition}
 
-Povolíme-li navíc pásku s~náhodnými bity získáváme pravděpodobnostní
+Povolíme-li k deterministickým TS navíc pásku s~náhodnými bity získáváme pravděpodobnostní
 Turingovy stroje (PTS) a třídy složitosti.
 
 \begin{definition}
@@ -198,6 +198,8 @@ Turingovy stroje (PTS) a třídy složitosti.
 Platí například
 \begin{itemize}
     \item $\ZPP = \RP \cap \coRP$,
+	\item $\ZPP \subseteq \RP$, $\ZPP \subseteq \coRP$
+	\item $\RP \subseteq \NP$, $\coRP \subseteq \coNP$
     \item $\P \subseteq \ZPP$,
     \item vztah $\BPP$ a $\NP$ není znám,
     \item $\BPP \subseteq \Sigma_2 \cap \Pi_2$ (důkaz není snadný).
@@ -556,8 +558,6 @@ schová název funkce pro tisk a závorky.
 V opačném případě by všech nekonečně mnoho možných řetězců bylo možné
 generovat (konečně mnoha) programy kratší než $n$ bitů (pro nějaké $n$).
 \end{proof}
-
-\pagebreak
 
 \begin{theorem}
     $K$ není totálně vyčíslitelná.

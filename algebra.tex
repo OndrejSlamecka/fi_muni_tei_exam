@@ -6,13 +6,13 @@ okrem učiva predmetu MA009 Algebra~II aj učivo
 predmetov MB101/MB201 Lineární modely a MV008 Algebra~I, 
 najmä definície.
 
-\subsubsection{Znenie otázky}
+\subsubsection*{Znenie otázky}
 Algebra. Lineární algebra; vektorový a maticový počet; grupy, okruhy
 a pole a jejich základní vlastnosti; svazy a jejich základní vlastnosti;
 distributivní, modulární a Booleovy svazy; univerzální algebry (základní 
 pojmy, homomorfismy, kongruence a faktorové algebry), variety, Birkhoffova věta.
 
-\subsubsection{Pojmy}
+\subsubsection*{Pojmy}
 Matica, inverzná matica, invertibilná matica, transpozícia, determinant,
 vektorový priestor, lineárna závislosť/nezávislosť, vektorový podpriestor,
 generátor, báza, dimenzia, súradnice, skalárny súčin, veľkosť vektoru,
@@ -49,7 +49,7 @@ vektor z~$M$ není lineární kombinací jiných vektorů z~$M$.
 
 
 Důležitou charakteristikou matice $A$ o rozměru $n \times n$ je {\em
-determinant}, značený $\lvert A \rvert$. Geometricky se můžeme na matici
+determinant}, značený~$\lvert A \rvert$. Geometricky se můžeme na matici
 dívat jako vektory, které zadávají strany nějakého pravidelného
 geometrického útvaru (třeba čtverce). Determinant je potom orientovaný
 obsah tohoto obrazce.
@@ -74,7 +74,7 @@ $j$.
 \begin{definition}
 	Pre štvorcovú maticu $A$ o rozmeroch $n \times n$ definujeme jej determinant $|A|$ ako
 	\[
-		|A|= \sum_{\sigma \in S_n} sgn(\sigma) \prod_{i=1}^n a_{i, \sigma(i)}
+		|A|= \sum_{\sigma \in S_n} \left(\text{sgn}(\sigma) \prod_{i=1}^n a_{i, \sigma(i)} \right)
 	\]
 \end{definition}
 
@@ -348,20 +348,6 @@ V~okruhu platí vlastnosti, které dědí z~příslušné grupy a monoidu.
 Navíc například v~okruhu platí, že 0 = 1 právě když je triviální (jeden
 směr je zřejmý, v~druhém $a = 1 \cdot a = 0 \cdot a = 0$ pro lib. $a$).
 
-\begin{definition}
-    Nechť $R$ je okruh.
-    $\emptyset \neq I \subseteq R$ nazveme {\em levý ideál} v~$R$
-    pokud pro každé $x,y \in I$ a $r \in R$ platí
-    $x + y, rx \in I$.
-\end{definition}
-
-\begin{example}
-    Nechť $R = \mathbb{Z}_2[x] / (x^n - 1)$ je okruh polynomů
-    a $C$ je nějaký cyklický kód zadaný polynomy v~$R$.
-    Potom $C$ je ideál v~$R$.
-    $C$ je dokonce {\em hlavní ideál}, což je ideál generovaný jediným prvkem.
-\end{example}
-
 \begin{definition}[Obor integrity]
     {\em Obor integrity} nazveme okruh $\mathcal{R}$, ve kterém platí
     \[
@@ -416,6 +402,20 @@ Každé pole je obor integrity. Pole již nelze zadefinovat rovnostmi.
 	\end{itemize}
 	Pokiaľ je množina ľavým aj pravým ideálom, nazýva sa {\em ideálom}.
 \end{definition}
+
+%\begin{definition}
+%    Nechť $R$ je okruh.
+%    $\emptyset \neq I \subseteq R$ nazveme {\em levý ideál} v~$R$
+%    pokud pro každé $x,y \in I$ a $r \in R$ platí
+%    $x + y, rx \in I$.
+%\end{definition}
+
+\begin{example}
+    Nechť $R = \mathbb{Z}_2[x] / (x^n - 1)$ je okruh polynomů
+    a $C$ je nějaký cyklický kód zadaný polynomy v~$R$.
+    Potom $C$ je ideál v~$R$.
+    $C$ je dokonce {\em hlavní ideál}, což je ideál generovaný jediným prvkem.
+\end{example}
 
 \subsection{Teorie svazů}
 
@@ -942,8 +942,8 @@ Mezi homomorfismy a kongruencemi je tedy korespondence.
 
 Součin množin $A_i$ pro $i \in I$ definujeme
 \[
-    \prod_{i \in I} A_i = \{ \alpha : I \to \bigcup_{i \in I} A_i
-    \mid \forall i \in I : \alpha(i) \in A_i \}
+    \prod_{i \in I} A_i = \left\{ \alpha : I \to \bigcup_{i \in I} A_i
+    \mid \forall i \in I : \alpha(i) \in A_i \right\}
 \]
 přičemž prvek $\alpha \in \prod_{i \in I} A_i$ takový, že $\alpha(i) =
 a_i, i \in I$ obvykle zapisujeme $(a_i)_{i \in I}$.
@@ -953,8 +953,8 @@ Pomocí množinového součinu definujeme součin algeber.
     Nechť $\mathcal{A}_i = (A_i, (f^{\mathcal{A}_i})_{f \in \tau})$ pro
     $i \in I$ jsou $\tau$-algebry. Jejich přímý součin je
     \[
-        \prod_{i \in I} \mathcal{A}_i = (\prod_{i \in I} A_i,
-        (f^{\prod_{i \in I} \mathcal{A}_i})_{f \in \tau})
+        \prod_{i \in I} \mathcal{A}_i = \left(\prod_{i \in I} A_i,
+        \left(f^{\prod_{i \in I} \mathcal{A}_i}\right)_{f \in \tau}\right)
     \]
     kde pro $n$-ární $f \in \tau$, $a_i \in A_i, i \in I$
     a $k = 1,\ldots,n$ je

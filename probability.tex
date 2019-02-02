@@ -1,9 +1,15 @@
 \section{Pravděpodobnost}
 
 \subsection{Úvod}
-Dobrým zdrojom sú materiály z predmetu IV111 Probability in Computer Science.
+Dobrým zdrojom sú materiály z predmetu \verb|IV111| Probability in Computer Science.
 
-\subsubsection{Znenie otázky}
+Čo sa týka poslednej odrážky v otázke (\uv{aplikace v informace}), tu pôjde
+zrejme najmä o~pravdepodobnostné algoritmy, ktoré popisujeme hlavne v~sekcii
+{\uv{Algoritmy pro těžké problémy} (čiastočne aj v~sekciách \uv{Složitost} 
+a \uv{Grafy a grafové algoritmy}).
+
+
+\subsubsection*{Znenie otázky}
 Pravděpodobnost. Základní pojmy a vlastnosti pravděpodobnosti; 
 náhodná proměnná a její charakteristiky (střední hodnota, rozptyl, momenty, ....) 
 a jejich použití; binomická, geometrická a další distribuce a jejich charakteristiky. 
@@ -11,7 +17,7 @@ Markovova a Čebyševova nerovnost a jejich použití; Černoffovy odhady a jeji
 náhodné, zejména Markovovy, procesy a jejich vlastnosti; entropie a informace 
 a jejich vlastnosti; aplikace v informatice.
 
-\subsubsection{Pojmy}
+\subsubsection*{Pojmy}
 Náhodný pokus, základný priestor (konečný, spočetný, nespočetný); hod mincou, kockou;
 jav (nemožný, istý, elementárny, opačný), de Morganove zákony, nezávislé 
 javy (vzájomne, kolektívne), rozklad základného priestoru, 
@@ -65,14 +71,10 @@ ktorý je zložený z troch elementárnych javov).
 \begin{definition}
 	Javy $A_1, \ldots, A_n$ nazývame {\em vzájomne disjunktné}, 
 	pokiaľ platí $\forall i \neq j.P(A_i \land A_j)=0$.
-\end{definition}
-
-\begin{definition}
+	
 	Javy $A_1, \ldots, A_n$ nazývame {\em kolektívne vyčerpávajúce}, %spravny termin? 
 	pokiaľ platí $P(A_1 \lor \ldots \lor A_j)=1$.
-\end{definition}
-
-\begin{definition}
+	
 	Javy $A_1, \ldots, A_n$ sú {\em rozkladom} základného priestoru,
 	pokiaľ sú vzájomne disjunktné a kolektívne vyčerpávajúce.
 \end{definition}
@@ -84,7 +86,7 @@ ktorý je zložený z troch elementárnych javov).
 
 \begin{proof}
     Víme $P(A \cup \overline{A}) = 1$ a $P(A \cap \overline{A}) = 0$,
-	tedy $P(A) + P(\overline{A}) + P(A \cap \overline{A}) = P(A) + P(\overline{A}) = 1$.
+	tedy $P(A) + P(\overline{A}) - P(A \cap \overline{A}) = P(A) + P(\overline{A}) = 1$.
 \end{proof}
 
 \begin{definition}
@@ -415,7 +417,7 @@ Z~definice vyplývá $E(X) = 1 \cdot p + 0 \cdot (1-p) = p$.
     \]
 \end{definition}
 
-Pre distribučnú funkciu spojitej náhodnej premennej teda platí
+Pre distribučnú funkciu spojitej uniformnej náhodnej premennej teda platí
 	\[
         F(x) = 
 			\begin{cases}
@@ -448,7 +450,7 @@ Pre distribučnú funkciu exponenciálnej náhodnej premennej platí
 
 Pre distribučnú funkciu normálnej náhodnej premennej platí
 	\[
-        F(x) = \frac{1}{2} \left( 1+ \text{erf}(\frac{x-\mu}{\sigma \sqrt{2}}) \right),
+        F(x) = \frac{1}{2} \left( 1+ \text{erf}\left(\frac{x-\mu}{\sigma \sqrt{2}}\right) \right),
     \]
 kde erf značí error function.
 
@@ -602,7 +604,7 @@ Stejně tak platí opačná nerovnost pro $t < 0$.
 Jeden z~Chernoffových odhadů je následující.
 
 \begin{theorem}
-    Nechť $X = \sum X_i$, kde $X_i$ je Possinovoa s~$p_i$,
+    Nechť $X = \sum X_i$, kde $X_i$ je Poissonovo s~$p_i$,
     všechny $X_i$ jsou nezávislé a nechť $\delta \in (0,1)$.
     \[
         P(X \geq (1 + \delta) \Expect(X)) \geq e^{- \Expect(X) \delta^2 / 3}
@@ -647,8 +649,8 @@ necháváme k~uvěření.
 \begin{example}
     Opět uvážíme počet hlav spatřený během $n$ hodů mincí.
     \[
-        P(X \geq \frac{3n}{4})
-        \leq 2 \exp \{ - \frac{1}{2} \frac{n}{2} (\frac{1}{2})^2 \}
+        P\left(X \geq \frac{3n}{4}\right)
+        \leq 2 \exp \left\{ - \frac{1}{2} \frac{n}{2} \left(\frac{1}{2}\right)^2 \right\}
         = e^{-n/24}
     \]
     Získali jsme tedy exponenciální ohraničení pravděpodobnosti, že

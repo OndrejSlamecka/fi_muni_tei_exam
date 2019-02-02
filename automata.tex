@@ -1,7 +1,7 @@
 \section{Automaty}
 
 \subsection{Úvod}
-\subsubsection{Znenie otázky}
+\subsubsection*{Znenie otázky}
 Automaty. Konečné deterministické, nedeterministické a pravděpodobnostní 
 automaty a jejich vlastnosti (minimalizace, ekvivalence, rozhodovací problémy); 
 regulární jazyky a jejich vlastnosti; pumping lemma, zásobníkové 
@@ -12,7 +12,7 @@ konečné automaty nad nekonečnými slovy; Turingovy stroje a jejich vlastnosti
 (rekurzivní a rekurzivně spočetné množiny, univerzalita a halting problem); 
 RAM a PRAM modely a jejich kategorie. Celulární automaty.
 
-\subsubsection{Pojmy}
+\subsubsection*{Pojmy}
 Abeceda, jazyk, gramatika, pravidlá; deterministický/nedeterministický konečný automat, 
 minimálny automat; regulárne jazyky, uzavretosť regulárnych jazykov, rozhodnuteľné
 problémy, pumping lemma; zásobníkové automaty, syntaktická analýza, pumping lemma
@@ -239,7 +239,7 @@ regulárních gramatik.
 	značená $RE(\Sigma)$, je induktívne definovaná nasledovne:
 	\begin{itemize}
 		\item $\epsilon, \emptyset, a \in RE(\Sigma)$, pre každé $a \in \Sigma$,
-		\item ak $E,F \in RE(\Sigma)$, tak aj $E+F, E.F, E^* a E^+ \in RE(\Sigma)$.
+		\item ak $E,F \in RE(\Sigma)$, tak aj $E+F, E.F, E^*, E^+ \in RE(\Sigma)$.
 	\end{itemize}
 \end{definition}
 
@@ -267,6 +267,11 @@ platí, že existují $x,y,z \in \Sigma^*$ tak, že $w = xyz$ a zároveň
     \item $xy^nz \in L$ pro každé $n \geq 0$ (lze libovolně pumpovat).
 \end{itemize}
 \end{theorem}
+
+Ideou dôkazu je, že pre dostatočne dlhé slovo musí existovať v~automate 
+stav, v~ktorom sa ocitne viac krát (inak by slovo muselo byť kratšie,
+ako je počet stavov automatu). Potom výpočet automatu medzi viacerými
+návštevami tohto stavu sa môže opakovať ľubovoľne veľa krát.
 
 \begin{example}
     Mějme jazyk $L = \{ a^n b^n \mid n \in \mathbb{N} \}$,
@@ -480,6 +485,7 @@ které se opakují:
 \begin{example}
 \end{example}
 
+\pagebreak
 
 \subsubsection{CYK algoritmus}
 

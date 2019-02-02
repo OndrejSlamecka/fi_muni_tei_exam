@@ -1,5 +1,224 @@
 \section{Matematická analýza}
 
+\subsection{Úvod}
+Okrem učiva predmetu \verb|MA002| Matematická analýza by asi bolo
+vhodné vedieť aj základy, najmä definície, tj. učivo predmetov
+\verb|MB102/MB202| Diferenciální a integrální počet a 
+\verb|MB103/MB203| Spojité modely a statistika.
+
+\subsubsection*{Znenie otázky}
+Matematická analýza. Systémy lineárních diferenciálních rovnic a 
+metody jejich řešení; křivkový integrál.
+
+\subsubsection*{Pojmy}
+Diferenciálna rovnica, DR 1. rádu (separovateľná, lineárna homogénna,
+lin. nehomogénna), Bernoulliho DR, LDR vyšších rádov, použitie DR;
+krivkový integrál, krivka (jednoduchá, uzavretá, Jordanova), 
+ekvivalentné krivky, súčet kriviek, opačná krivka, rozdiel kriviek,
+derivácia krivky, dotyčnica, hladká krivka, orientácia krivky,
+dĺžka krivky, krivkový integrál I. druhu + výpočet, krivkový
+integrál II. druhu + výpočet, použitie krivkového integrálu,
+Greenova veta.
+
+\subsection{Základy}
+{\em Postupnosť} reálnych čísel je zobrazenie $a: \mathbb{N} \to \mathbb{R}$,
+ktorej prvky sa značia~$a_i$. Ľubovoľný interval obsahujúci 
+bod~$x_0 \in \mathbb{R}$ sa nazýva okolím bodu~$x_0$ a značí~$\mathcal{O}(x_0)$.
+Inteval $(A, \infty)$ (resp. $(-\infty, A)$) pre nejaké $A \in \mathbb{R}$
+sa nazýva okolím bodu~$\infty$ (resp.~$-\infty$). Špeciálnymi prípadmi
+je $\delta$-okolie bodu $\mathcal{O}_{\delta}(x_0)=(x_0 - \delta, x_0 + \delta)$,
+prestencové okolie $\mathcal{P}(x_0)$, ktoré neobsahuje samotný bod, ľavé a pravé okolia.
+
+\begin{definition}[Limita]
+	{\em Limita} postupnosti sa pomocou okolia definuje nasledovne:
+	\[
+		\lim_{n \to \infty} a_n = a \in \mathbb{R}^*: \forall \mathcal{O}(a)~\exists n_0 \in \mathbb{N}~\forall n \geq n_0: a_n \in \mathcal{O}(a).
+	\]
+
+	Funkcia $f$ má {\em limitu} v bode $x_0 \in \mathbb{R}^*$ rovnú
+	$L \in \mathbb{R}^*$, pokiaľ $\forall \epsilon > 0~\exists \delta > 0$
+	také, že $\forall x \in mathcal{P}_{\delta}(x_0)$ platí
+	$|f(x) - L| < \epsilon$.
+	
+	Limita sa nazýva {\em nevlastnou}, pokiaľ $L = \pm \infty$, 
+	{\em vlastnou} inak. Je {\em limitou v~nevlastnom bode}, pokiaľ
+	$x_0 = \pm \infty$, inak je {\em limitou vo~vlastnom bode}.
+	
+	{\em Limita zprava} (resp. {\em limita zľava}) sa definuje jednoducho
+	nahradením okolia bodu~$x_0$ príslušným jednostranným okolím.
+\end {definition}
+
+\begin{definition}[Derivácia]
+	Funkcia~$f$ má {\em deriváciu} vo~vnútornom bode $x_0$ rovnú danej 
+	limite, pokiaľ existuje
+	\[
+		f'(x_0) = \lim_{x \to x_0} \frac{f(x)-f(x_0)}{x-x_0}.
+	\]
+	
+	Pokiaľ je táto derivácia rovná $\pm \infty$, hovoríme
+	o~{\em nevlastnej} derivácii, inak o~{\em vlastnej}.
+	
+	Ak má funkcia deriváciu v~každom bode nejakého intervalu,
+	funkcia $f'$ sa nazýva {\em deriváciou} funkcie $f$.
+\end{definition}
+
+\begin{theorem}[L'Hospitalovo pravidlo]
+	Nech $x_0 \in \mathbb{R}^*$ a nech je splnená jedna z~podmienok
+	\begin{enumerate}
+		\item $\lim_{x \to x_0}f(x) = \lim_{x \to x_0}g(x) = 0$,
+		\item $\lim_{x \to x_0}g(x)=\pm\infty$
+	\end{enumerate}
+	Potom platí
+	\[
+		\lim_{x \to x_0}\frac{f(x)}{g(x)} = \lim_{x \to x_0}\frac{f'(x)}{g'(x)},
+	\]
+	pokiaľ druhá limita existuje. Ak druhá limita existuje, existuje aj prvá.
+\end{theorem}
+
+\begin{definition}[Prírastok]
+	Nech je funkcia $f$ definovaná v~$\mathcal{O}(x_0)$ a pre 
+	$h \in \mathbb{R}$ platí $x_0 + h \in \mathcal{O}(x_0)$.
+	Potom číslo $h$ nazývame {\em prírastok nezávisle premennej}
+	a $\Delta f(x_0)=f(x_0+h)-f(x_0)$ nazývame {\em prírastok 
+	závisle premennej}.
+\end{definition}
+
+\begin{definition}[Diferenciál]
+	Funkcia~$f$ je {\em diferencovateľná} v bode~$x_0 \in \mathbb{R}$,
+	pokiaľ existuje $\mathcal{O}(x_0)$ také, že
+	\[
+		f(x_0+h)-f(x_0)=A \cdot h + \tau(h),
+	\]
+	kde $A \in \mathbb{R}$ je vhodné číslo a $\tau(h)$ je funkcia taká, že
+	\[
+		\lim_{h \to 0} \frac{\tau(h)}{h} = 0.
+	\]
+	Ak je $f$ v $x_0$ diferencovateľná, výraz $A \cdot h$ sa nazýva 
+	{\em diferenciál} funkcie~$f$ a značí $\partial f(x_0)$.
+\end{definition}
+
+\begin{theorem}[Eulerova identita]
+	\[
+		\cos(\varphi) + i \sin(\varphi) = e^{i \varphi}
+	\]
+\end{theorem}
+
+\begin{definition}[Neurčitý integrál]
+	Funkcia~$F$ je na intervale~$I$ {\em primitívnou funkciou}
+	funkcie~$f$, pokiaľ pre všetky $x \in I$ platí $F'(x)=f(x)$.
+	
+	Množina primitívnych funkcií k~funkcii~$f$ sa nazýva 
+	{\em neurčitý integrál} funkcie~$f$ a značí sa $\int f(x) dx$.
+\end{definition}
+
+\begin{theorem}[Metóda per partes]
+	\[
+		\int uv' dx = uv - \int u'v dx
+	\]
+\end{theorem}
+
+\begin{example}
+	\[
+		\int x \sin x dx = 
+		\left|{\begin{array}{cc}
+		  u=x & u'=1 \\
+		  v'=\sin x & v = -\cos x
+		  \end{array} } \right|
+	\]
+	\[
+		= x \cdot (-\cos x) - \int 1 \cdot (-\cos x)dx = -x \cos x + \int \cos x dx = -x \cos x + \sin x + c
+	\]
+\end{example}
+
+\begin{theorem}[Substitučná metóda]
+	\[
+		\int f(\varphi(x))\varphi'(x) dx =
+		\left|{\begin{array}{c}
+		  t = \varphi(x) \\
+		  dt = \varphi'(x)dx
+		  \end{array} } \right|
+		= \int f(t) dt 
+	\]
+	\[
+		\int f(x) dx  =
+		\left|{\begin{array}{c}
+		  x = \varphi(t) \\
+		  dx = \varphi'(t)dt
+		  \end{array} } \right|
+		= \int f(\varphi(t))\varphi'(t) dt 
+	\]
+\end{theorem}
+
+\begin{example}
+	\[
+		\int x e^{x^2} dx = 
+		\left|{\begin{array}{c}
+		  t = x^2 \\
+		  dt = 2x dx \\
+		  \frac{1}{2} dt = x dx
+		  \end{array} } \right|
+		  = \int e^t \frac{1}{2} dt = \frac{1}{2} e^t + c = \frac{1}{2} e^{x^2} + c
+	\]
+\end{example}
+
+\begin{definition}[Riemannov integrál]
+	Nech funkcia~$f$ je ohraničená na intervale $[a,b]$, $D=\{x_0, \cdots, x_n \}$
+	je delenie intervalu $[a,b]$. Potom nech $m_i=\inf{\{ f(x) | x \in [x_{i-1},x_i] \}}$
+	a $M_i=\sup{\{ f(x) | x \in [x_{i-1},x_i] \}}$.
+	
+	{\em Dolný súčet} príslušný deleniu $D$ je $s(D,f)=\sum_{i=1}^n m_i(x_i-x_{i-1}$
+	a {\em horný súčet} príslušný deleniu $D$ je $S(D,f)=\sum_{i=1}^n M_i(x_i-x_{i-1}$.
+	
+	Nech $\mathcal{D}$ je množina všetkých delení intervalu $[a,b]$. Potom
+	{\em dolný Riemannov integrál} funkcie~$f$ na intervale $[a,b]$ je
+	\[
+		\int_{\overline{a}}^b f(x) dx = \sup \{ s(D,f) | D \in \mathcal{D} \}.
+	\]
+	{\em Horný Riemannov integrál} funkcie~$f$ na intervale $[a,b]$ je
+	\[
+		\int_a^{\underline{b}} f(x) dx = \inf \{ S(D,f) | D \in \mathcal{D} \}.
+	\]
+	
+	Pokiaľ sa tieto integrály rovnajú, tak táto funkcia je na intervale $[a,b]$
+	{\em Riemannovsky integrovateľná} a 
+	\[
+		\int_a^b f(x) dx = \int_{\overline{a}}^b f(x) dx = \int_a^{\underline{b}} f(x) dx.
+	\]
+\end{definition}
+
+\begin{theorem}[Newton-Leibnitzov vzorec]
+	Nech funkcia~$f$ je integrovateľná na intervale $[a,b]$ a funkcia~$F$
+	je k~nej primitívna na danom intervale, tj. $F'=f$. Potom platí
+	\[
+		\int_a^b f(x) dx = F(b) - F(a).
+	\]
+\end{theorem}
+
+\begin{example}
+	\[
+		\int_{-2}^5 x^2 dx = \left[ \frac{x^3}{3} \right]_{-2}^5 = \frac{5^3}{3} - \frac{(-2)^3}{3} = \frac{133}{3}
+	\]
+\end{example}
+
+\begin{definition}[Nevlastný integrál]
+	Nech funkcia~$f$ je definovaná na intervale $[a,\infty)$ a na
+	každom intervale $[a,b]$, kde $b > a$ je integrovateľná. 
+	Funkciu~$F$ na intervale $[a, \infty)$ definujme ako 
+	$F(b) = \int_a^b f(x) dx$. 
+	
+	Ak existuje vlastná limita $\lim_{b \to \infty} F(b)$, hovoríme
+	že nevlastný integrál konverguje a kladieme
+	\[
+		\int_a^{\infty} f(x) dx = \lim_{b \to \infty} F(b) = \lim_{b \to \infty} \int_a^b f(x) dx.
+	\]
+	
+	Ak táto vlastná limita neexistuje, hovoríme, že integrál diverguje.
+	Pokiaľ existuje nevlastná limita, hovoríme, že určite diverguje,
+	inak osciluje.
+\end{definition}
+
+Rovnako sa dá definovať nevlastný integrál z~druhej strany.
+
 \subsection{Obyčejné diferenciální rovnice}
 
 \begin{definition}
@@ -8,7 +227,7 @@ Na $y, y'$ můžeme nahlížet také jako na {\em závislé proměnné}
 v $\mathbb{R}$. Nechť $F : M \subseteq \mathbb{R}^3 \to \mathbb{R}$
 je daná funkce. Pak rovnice
 \[
-    F(x,y,y',\ldots,y^{(n-1)}) = 0
+    F(x,y,y') = 0
 \]
 se nazývá {\em obyčejná diferenciální rovnice prvního řádu}.
 
@@ -100,7 +319,7 @@ Například následující.
 \begin{example}[Lineární rovnice vyšších řádů]
     % http://people.math.gatech.edu/~xchen/teach/ode/nth_ord_eq.pdf
     Je-li rovnice tvaru
-    $a_n y^{(n)} + \ldots a_1 y' + a_0 y = 0$, tedy je
+    $a_n y^{(n)} + \ldots + a_1 y' + a_0 y = 0$, tedy je
     vyššího řádu a lineární s konstantními koeficienty,
     potom se převede na {\em charakteristickou rovnici}
     $a_n \lambda^{n} + \ldots a_1 \lambda + a_0 = 0$.
@@ -261,7 +480,100 @@ definované a spojité na intervalu $\mathcal{I}$.
     (Metodou variace konstant.)
 \end{example}
 
-\subsection{Křivkový integrál: Skálární}
+\subsection{Krivkový integrál}
+\begin{definition}[Krivka]
+	Nech $m \in \mathbb{N}$ a $\mathcal{I} \subseteq \mathbb{R}$
+	je interval.
+	{\em Krivkou} v $\mathbb{R}^m$ je každá vektorová
+	funkcia $\varphi: \mathcal{I} \to \mathbb{R}^m$, 
+	ktorá je na $\mathcal{I}$ spojitá.
+	
+	Množina $\langle \varphi \rangle = \varphi(\mathcal{I})=
+	\{ \varphi(t) | t \in \mathcal{I} \} \subseteq \mathbb{R}^m$
+	je {\em geometrickým obrazom (trajektóriou) krivky} $\varphi$. Funkcia~$\varphi$
+	sa potom nazýva {\em parametrizáciou množiny} $\langle \varphi \rangle$.
+\end{definition}
+
+Krivka je {\em jednoduchá}, ak je na intervale $[a,b]$ prostá,
+{\em uzavretá}, ak $\varphi(a)=\varphi(b)$ a {\em Jordanova}, ak
+je jednoduchá a uzavretá.
+
+\begin{definition}
+	Majme krivky $\varphi: [a,b] \to \mathbb{R}^m$ a 
+	$\psi : [\alpha, \beta] \to \mathbb{R}^m$. Tieto krivky
+	sú {\em ekvivalentné} ($\varphi \sim \psi$), ak existuje 
+	spojito diferencovateľné
+	zobrazenie $w : [\alpha, \beta] \to [a,b]$ také, že
+	$w'(t) \neq 0$ pre každé $t$ a platí
+	$\varphi(w(t)) = \psi(t)$ pre každé $t \in [\alpha, \beta]$.
+\end{definition}
+
+\begin{definition}[Operácie na krivkách]
+	Majme krivky $\varphi: [a,b] \to \mathbb{R}^m$ a 
+	$\psi : [\alpha, \beta] \to \mathbb{R}^m$ také, že platí
+	$\varphi(b)=\psi(\alpha)$.
+	
+	Ich {\em súčet} definujeme ako 
+	\[
+		(\varphi \oplus \psi)(t) =
+		\begin{cases}
+			\varphi(t) & t \in [a,b] \\
+			\psi(t+\alpha-b) & t \in [b, b + \beta - \alpha]
+		\end{cases}
+	\]
+	
+	{\em Opačnú krivku } definujeme ako
+	\[
+		(\ominus \varphi)(t) = \varphi(-t), t \in [-b, -a].
+	\]
+\end{definition}
+
+\begin{definition}[Derivácia krivky]
+	Majme krivku $\varphi=(\varphi_1, \ldots, \varphi_m)$ na intervale
+	$[a,b]$. Deriváciou krivky v~bode $t \in [a,b]$ je vektor
+	$\varphi'(t) = (\varphi_1'(t), \ldots, \varphi_m'(t))$, pričom pre $t=a$
+	a $t=b$ sa uvažujú jednostranné derivácie.
+\end{definition}
+
+\begin{definition}[Hladká krivka]
+	Krivka $\varphi$ sa nazýva {\em hladká}, ak funkcia $\varphi$
+	je na $[a,b]$ spojito diferencovateľná a pre každé $t \in [a,b]$
+	platí $\varphi'(t) \neq 0$.
+	
+	Krivka je {\em po častiach hladká} ak sa dá rozdeliť na konečný 
+	súčet hladkých kriviek.
+\end{definition}
+
+Orientácia krivky je nejaké usporiadanie množiny $\langle \varphi \rangle$.
+Môže byť súhlasné alebo nesúhlasné s~parametrizáciou.
+
+\begin{definition}[Delenie krivky]
+	Nech $\varphi : [a,b] \to \mathbb{R}^m$ je krivka orientovaná
+	súhlasne s~parametrizáciou. Uvažujme konečné delenie intervalu [a,b] také, že
+	$a=t_0 < t_1 < \cdots < t_n = b$. 
+	
+	Body $P_i = \varphi(t_i)$ sa nazývajú {\em delením krivky} $\varphi$.
+	
+	Množinu $\langle \varphi \rangle$ aproximujeme lomenou čiarou~$L$
+	tvorenou úsečkami medzi bodmi $P_i$. Jej dĺžka $m_1(L)$ je potom 
+	súčtom dĺžok daných úsečiek.
+\end{definition}
+
+\begin{definition}[Dĺžka krivky]
+	Ak existuje $M \in \mathbb{R}$ také, že pre každú lomenú čiaru~$L$
+	platí $m_1(L) \leq M$, krivka $\varphi$ má konečnú dĺžku. Najmenšie 
+	takéto $M$ nazývame {\em dĺžkou} krivky $\varphi$, značíme 
+	$m_1(\langle \varphi \rangle)$.
+\end{definition}
+
+\begin{theorem}
+	Každá regulárna krivka má konečnú dĺžku a platí
+	\[
+		m_1(\langle \varphi \rangle) = \int_a^b ||\varphi'(t)|| dt = \int_a^b \sqrt{(\varphi_1'(t))^2 + \cdots + (\varphi_m'(t))^2} dt
+	\]
+\end{theorem}
+
+\subsubsection{Křivkový integrál I. druhu}
 
 
 Křivku můžeme rozdělit na části a potom spočítat součet délek částí
@@ -284,11 +596,10 @@ Potom (pokud Riemannův integrál na pravé straně existuje) platí
 \begin{example}
 \end{example}
 
-\pagebreak
+Krivkový integrál I. druhu sa dá použiť na výpočet dĺžky krivky,
+hmotnosti krivky s~nejakou hustotou, či obsahu valcovej plochy.
 
-\subsection{Křivkový integrál: Vektorový}
-
-\subsubsection{Vztah k Riemannovu integrálu}
+\subsubsection{Křivkový integrál II. druhu}
 
 \begin{theorem}[O vztahu k Riemannovu integrálu]
 Nechť $\varphi : [a,b] \to \mathbb{R}^m$ je po částech hladká
@@ -305,6 +616,9 @@ $-$ v případě, že jsou nesouhlasné.
 
 \begin{example}
 \end{example}
+
+Krivkový integrál II. druhu sa dá použiť na výpočet obsahu vnútra uzavretej
+krivky v $\mathbb{R}^2$, či práce silového poľa pozdĺž krivky.
 
 \subsubsection{Greenova věta}
 
