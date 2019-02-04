@@ -196,6 +196,8 @@ a vynásobí generátorem $g(x)$.
 
 Každý binární Hammingův kód je cyklický.
 
+\pagebreak
+
 \subsection{Turbo kódy a low-density kódy}
 
 (Profesor Gruska tuto látku na přednášce naznačil jen pár schématy, takže
@@ -357,7 +359,7 @@ Transpozičné šifry nemenia znaky, iba menia ich poradie v slove.
 	Dekóduje sa potom $d_{a,b}(y) = a^{-1}(y-b)\mod 26$.
 \end{example}
 
-\subsection{DES a AES}
+\subsubsection{DES a AES}
 
 DES rozdělí zprávu do 64-bitových bloků
 a v~šestnácti krocích provádí nad každým blokem operace, které mají jako
@@ -444,7 +446,7 @@ Výhodou eliptických křivek je,
 $\mathbb{Z}_n$) stačí použít podstatně menších klíčů.
 
 Eliptická křivka je graf bodů v~rovině splňujících
-$y^2 = x + ax + b \bmod n$, kde $a,b,n$ jsou celá čísla,
+$y^2 = x^3 + ax + b \bmod n$, kde $a,b,n$ jsou celá čísla,
 spolu s {\em bodem v nekonečnu}. Uvažujeme pouze křivky, kde neexistují
 násobné kořeny (ekvivalentně $4a^3 + 27b^2 \neq 0$).
 
@@ -586,7 +588,7 @@ Takový je například následující protokol:
         Bobovi.
     \item Bob ověří, jestli zaslaný kořen je kongruentní $x$. Pokud ano,
         nic se nedozvěděl. Pokud ne, má dva různé kořeny modulo $n$ a
-        může tak faktorizovat $n$. Alice se nic nedozvěděla.
+        může tak faktorizovat~$n$. Alice se nic nedozvěděla.
 \end{enumerate}
 
 Můžeme také navrhnout protokol, ve kterém Alice pošle dvě zprávy a Bob
@@ -664,7 +666,7 @@ Pokúsim sa to tu nejako popísať, avšak za správnosť a úplnosť informáci
 neručím.
 
 Kvantová kryptografia je teoreticky absolútne bezpečná, fyzikálne
-zákonu zaručujú, že sa (v~istých prípadoch) nedá prelomiť. Kvantová
+zákony zaručujú, že sa (v~istých prípadoch) nedá prelomiť. Kvantová
 informácia sa ťažko ukladá a posiela, nie je možné ju skopírovať
 a meraním sa zničí. Tento fakt prakticky znemožňuje man-in-the-middle
 útoky, keďže pokiaľ by útočník informáciu získal, táto sa zničila

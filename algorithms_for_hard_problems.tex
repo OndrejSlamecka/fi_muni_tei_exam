@@ -88,7 +88,7 @@ pre silne NP-ťažký celočíselný problém neexistuje žiadny pseudopolynomi�
 
 \subsubsection{Parametrizované algoritmy}
 Parametrizované algoritmy sú také, ktoré bežia v polynomiálnom čase
-voči veľkosti vstupy, avšak môžu byť exponenciálne voči nejakému parametru vstupu.
+voči veľkosti vstupu, avšak môžu byť exponenciálne voči nejakému parametru vstupu.
 
 Parametrizáciou problému je funkcia $P$, ktorá je polynomiálne vypočítateľná
 a platí, že pre nekonečne veľa hodnôt $k \in \mathbb{N}$ je $k$-parametrizovaná
@@ -187,7 +187,7 @@ Příkladem Las Vegas algoritmu, který nevrací
 	reťazec počítaču~$X$. $X$~porovná dané reťazce, pokiaľ sa rovnajú, 
 	vráti \textsc{Áno}, ak nie, vráti \verb|?|.
 	
-	Tento algoritmus je zjavne Las Vegas algoritmus s~možnou chybou.
+	Tento algoritmus je zjavne Las Vegas algoritmus s~možnou odpoveďou \verb|?|.
 \end{example}
 
 Každý Las Vegas algoritmus, který vrací \verb|?| lze převést na
@@ -286,8 +286,8 @@ kvality v~porovnání s~optimálním řešením.
 Pro problém $L$ a jeho vstup $x$ definujeme aproximativní poměr
 algoritmu $A$ jako
 \[
-    R_A(x) = \max \big \{ \frac{Opt_A(x)}{cena(A(x))},
-    \frac{cena(A(x))}{Opt_A(x)} \big \}
+    R_A(x) = \max \left\{ \frac{Opt_A(x)}{cena(A(x))},
+    \frac{cena(A(x))}{Opt_A(x)} \right\}
 \]
 Algoritmus $A$ nazveme $\delta$-aproximativní pro $L$ pro
 nějaké $\delta > 1$ pokud $R_A(x) < \delta$ pro všechna $x \in L$.
