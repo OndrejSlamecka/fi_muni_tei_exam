@@ -409,7 +409,7 @@ Algoritmy pre tento problém často využívajú pojem {\em relaxácia hrany}.
 Majme hranu $e=(u,v)$ s váhou $w(e)$ a pre vrcholy $u,v$ majme nejakú
 ich vzdialenosť $d(u), d(v)$ od vrcholu~$s$. Potom relaxácia tejto
 hrany je proces, kde skúsime, či sa pomocou tejto hrany dá
-vylepšiť minimálne vzdialenosť vrcholu $v$ od $s$, tj. nastavíme
+vylepšiť minimálna vzdialenosť vrcholu $v$ od $s$, tj. nastavíme
 $d(v)$ na $min(d(v),d(u)+w(e))$.
 
 \subsubsection*{Bellman-Ford}
@@ -515,6 +515,63 @@ vyhodnocovali s~väčšou váhou, ako cesty, ktoré idú opačne.
 Nech váha hrany $e=(u,v)$ je $w(e)$. Potom modifikovaná
 váha hrany bude $w'(e) = w(e) + p(v) - p(u)$, kde $p(x)$
 pre vrchol $x$ je potenciálová funkcia pre daný vrchol.
+
+\subsection{Optimální párování}
+
+% https://en.wikipedia.org/wiki/Matching_(graph_theory)#Maximal_matchings
+% https://ksp.mff.cuni.cz/encyklopedie/parovani.html
+% https://is.muni.cz/auth/el/1433/podzim2015/MA015/um/04-matchings.pdf
+
+\begin{definition}
+    {\em Párování} $M \subseteq E$ grafu $G$ jsou hrany takové, že
+    žádné dvě nesdílí vrchol.
+
+    Párování je {\em maximální}, pokud je maximální vzhledem k inkluzi.
+
+    Párování je {\em největší}, pokud má nejvyšší možnou velikost.
+
+    Párování je {\em perfektní} pokud pokrývá všechny vrcholy.
+\end{definition}
+
+Problém maximálního párování je triviálně řešitelný hladovým
+algoritmem.
+
+Problém hledání největšího párování v bipartitním grafu je řešitelný
+jednoduchým algoritmem na bázi toků. Mějme bipartitní graf
+$G = (A \cup B, E)$. Přidáme vrcholy $s, t$,
+hrany $(s, a), a \in A, (b, t), b \in B$ a každé hraně přiřadíme
+kapacitu $1$. Hrany maximálního $s-t$ toku tvoří maximální párování.
+
+%Alternativní algoritmus opakovaně hledá pomocí DFS {\em zlepšující
+%cestu}\footnote{{\em Zlepšující cesta} pro dané párování je taková, ve které
+%se po řadě alternuje příslušnost hran do párování a navíc první a
+%poslední hrana v párování nejsou.}, když ji najde, tak příslušnost hran do
+%párování prohodí a proces opakuje. Když ji nenajde skončí, protože
+%nalezl maximální párování\footnote{Důkaz:
+%\href{https://ksp.mff.cuni.cz/encyklopedie/parovani.html}{https://ksp.mff.cuni.cz/encyklopedie/parovani.html}}.
+
+Problém největšího párování v~obecných grafech řeší Edmondsův blossom
+algoritmus, jehož myšlenky pouze nastíníme.
+Algoritmus opakovaně hledá pomocí {\em zlepšující
+cestu} (cesta ve které
+se po řadě alternuje příslušnost hran do párování a navíc první a
+poslední hrana v párování nejsou), když ji najde, tak příslušnost hran do
+párování prohodí a proces opakuje. Když ji nenajde skončí, protože
+nalezl maximální párování.
+
+Nyní stručně popíšeme jak funguje algoritmus pro hledání zlepšujících
+cest. Vrchol nazveme {\em odhalený}, pokud žádná přilehlá hrana není v~párování.
+Nejprve založí strom $F$, do kterého přidá všechny vrcholy odhalené
+v~$M$. Každý strom se potom nějakým (?) průchodem buduje, až je v~něm nalezena zlepšující
+cesta (ta je vrácena), blossom (cyklus s~$2k+1$ vrcholy, z~nichž $k$ je
+v~párování; ten je kontrahován a algoritmus pokračuje), případně ani
+jedno a potom zlepšující cesta neexistuje.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=300pt]{blossom_contraction.png}
+    \caption{Kontrakce květu, \href{https://en.wikipedia.org/wiki/Blossom_algorithm}{zdroj}}
+\end{figure}
 
 \subsection{Maximální tok}
 Máme orientovaný graf, kde každá hrana má priradenú kapacitu.
@@ -642,63 +699,6 @@ toku do stoku.
 
 Pokiaľ sa v priebehu algoritmu vyberá ako aktívny vrchol vždy ten
 s~maximálnou výškou, zložitosť algoritmu je $\mathcal{O}(n^3)$.
-
-\subsection{Optimální párování}
-
-% https://en.wikipedia.org/wiki/Matching_(graph_theory)#Maximal_matchings
-% https://ksp.mff.cuni.cz/encyklopedie/parovani.html
-% https://is.muni.cz/auth/el/1433/podzim2015/MA015/um/04-matchings.pdf
-
-\begin{definition}
-    {\em Párování} $M \subseteq E$ grafu $G$ jsou hrany takové, že
-    žádné dvě nesdílí vrchol.
-
-    Párování je {\em maximální}, pokud je maximální vzhledem k inkluzi.
-
-    Párování je {\em největší}, pokud má nejvyšší možnou velikost.
-
-    Párování je {\em perfektní} pokud pokrývá všechny vrcholy.
-\end{definition}
-
-Problém maximálního párování je triviálně řešitelný hladovým
-algoritmem.
-
-Problém hledání největšího párování v bipartitním grafu je řešitelný
-jednoduchým algoritmem na bázi toků. Mějme bipartitní graf
-$G = (A \cup B, E)$. Přidáme vrcholy $s, t$,
-hrany $(s, a), a \in A, (b, t), b \in B$ a každé hraně přiřadíme
-kapacitu $1$. Hrany maximálního $s-t$ toku tvoří maximální párování.
-
-%Alternativní algoritmus opakovaně hledá pomocí DFS {\em zlepšující
-%cestu}\footnote{{\em Zlepšující cesta} pro dané párování je taková, ve které
-%se po řadě alternuje příslušnost hran do párování a navíc první a
-%poslední hrana v párování nejsou.}, když ji najde, tak příslušnost hran do
-%párování prohodí a proces opakuje. Když ji nenajde skončí, protože
-%nalezl maximální párování\footnote{Důkaz:
-%\href{https://ksp.mff.cuni.cz/encyklopedie/parovani.html}{https://ksp.mff.cuni.cz/encyklopedie/parovani.html}}.
-
-Problém největšího párování v~obecných grafech řeší Edmondsův blossom
-algoritmus, jehož myšlenky pouze nastíníme.
-Algoritmus opakovaně hledá pomocí {\em zlepšující
-cestu} (cesta ve které
-se po řadě alternuje příslušnost hran do párování a navíc první a
-poslední hrana v párování nejsou), když ji najde, tak příslušnost hran do
-párování prohodí a proces opakuje. Když ji nenajde skončí, protože
-nalezl maximální párování.
-
-Nyní stručně popíšeme jak funguje algoritmus pro hledání zlepšujících
-cest. Vrchol nazveme {\em odhalený}, pokud žádná přilehlá hrana není v~párování.
-Nejprve založí strom $F$, do kterého přidá všechny vrcholy odhalené
-v~$M$. Každý strom se potom nějakým (?) průchodem buduje, až je v~něm nalezena zlepšující
-cesta (ta je vrácena), blossom (cyklus s~$2k+1$ vrcholy, z~nichž $k$ je
-v~párování; ten je kontrahován a algoritmus pokračuje), případně ani
-jedno a potom zlepšující cesta neexistuje.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=300pt]{blossom_contraction.png}
-    \caption{Kontrakce květu, \href{https://en.wikipedia.org/wiki/Blossom_algorithm}{zdroj}}
-\end{figure}
 
 \subsection{Datové struktury pro grafové algoritmy}
 \label{subsec:data_structures}

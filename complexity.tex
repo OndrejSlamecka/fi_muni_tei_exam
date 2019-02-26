@@ -156,9 +156,10 @@ výpočtu neobmedzene veľa krát (ale iba polynomiálne veľa krát, inak by
 už nebežal v~polynomiálnom čase) \uv{opýtať orákula}, ktoré mu 
 rozhodne ľubovoľný problém v~triede $\NP$.
 
-Poznamenajme, že táto trieda nemá moc význam, keďže deterministický polynomiálny
-stroj nedokáže rozhodnúť nič navyše oproti tomu, čo by dokázalo
-orákulum rozhodnúť samo, tj. $\P^{\NP} = \NP$.
+% TODO: toto je podľa mňa možno blbosť, či?
+%Poznamenajme, že táto trieda nemá moc význam, keďže deterministický polynomiálny
+%stroj nedokáže rozhodnúť nič navyše oproti tomu, čo by dokázalo
+%orákulum rozhodnúť samo, tj. $\P^{\NP} = \NP$.
 
 \begin{definition}[Polynomiálna hierarchia]
 	Definujeme systém tried $\Sigma_i^\P$ a $\Pi_i^\P$ ako
@@ -177,8 +178,8 @@ Turingovy stroje (PTS) a třídy složitosti.
 	Trieda $\RP$ obsahuje problémy rozhodnutelné v~polynomiálním čase 
 	PTS s~jednostrannou chybou, tj.
 	\begin{itemize}
-		\item pokiaľ $x \in A$, $P(\mathcal{M}(x) \text{akceptuje}) \geq 3/4$,
-		\item pokiaľ $x \not\in A$, $P(\mathcal{M}(x) \text{akceptuje}) = 0$.
+		\item pokiaľ $x \in A$, $P(\mathcal{M}(x) \text{ akceptuje}) \geq 3/4$,
+		\item pokiaľ $x \not\in A$, $P(\mathcal{M}(x) \text{ akceptuje}) = 0$.
 	\end{itemize}
 \end{definition}
 
@@ -186,8 +187,8 @@ Turingovy stroje (PTS) a třídy složitosti.
 	Trieda $\BPP$ obsahuje problémy rozhodnutelné v~polynomiálním čase 
 	PTS s~oboustrannou chybou, tj.
 	\begin{itemize}
-		\item pokiaľ $x \in A$, $P(\mathcal{M}(x) \text{akceptuje}) \geq 3/4$,
-		\item pokiaľ $x \not\in A$, $P(\mathcal{M}(x) \text{akceptuje}) \leq 1/4$.
+		\item pokiaľ $x \in A$, $P(\mathcal{M}(x) \text{ akceptuje}) \geq 3/4$,
+		\item pokiaľ $x \not\in A$, $P(\mathcal{M}(x) \text{ akceptuje}) \leq 1/4$.
 	\end{itemize}
 \end{definition}
 
