@@ -1,6 +1,101 @@
 \section{Algoritmy pro těžké problémy}
 
+\subsection{Úvod}
 Algoritmy pro řešení výpočetně náročných problémů.
+
+\subsubsection*{Znenie otázky}
+Algoritmy pro řešení výpočetně náročných problémů. Náhodnostní 
+algoritmy Monte Carlo a Las Vegas; náhodné procházky; aproximační 
+algoritmy a jejich potenciál; genetické algoritmy; 
+kvantové algoritmy (Shorův faktorizační a Groverův vyhledávací algoritmus).
+
+\subsubsection*{Pojmy}
+Rozhodovacie/otimalizačné problémy; deterministické techniky (pseudopolynomiálne
+algoritmy, parametrizované algoritmy, exponenciálne algoritmy); 
+náhodnostné algoritmy (STRCMP, MAX-SAT, MAX-CUT, randomized quicksort),
+typy náhodnostných algoritmov (Las Vegas, one sided error Monte Carlo, 
+double sided error Monte Carlo, neohraničené Monte Carlo), derandomizovaný 
+MAX-SAT; náhodné prechádzky (Markovove modely), očakávaný počet krokov 
+(pre konkrétne u,v/navštíviť všetky vrcholy), Coupon selection problem, 2-SAT,
+Drunkard's walk, MC; aproximatívne algoritmy, aproximatívny pomer, 
+$\delta/f(n)$ aproximácia, technika hladového výberu (vrcholové pokrytie,
+výber centier), technika cenovej funkcie (pokrytie množín);
+techniky dymanického programovania (knapsack, problém súčtov), lineárne programovanie
+(problém batohu, pokrytie množín), účelová funkcia + podmienky, primárna/duálna
+funkcia, simplexový algoritmus; genetické algoritmy, populácia, selekcia, kríženie,
+mutácia, použitie; kvantové algoritmy, Qubit, superpozícia, Shorov/Groverov algoritmus
+
+\subsection{Algoritmy všeobecne}
+Nech $\Sigma_1$ a $\Sigma_2$ sú abecedy, $U \subseteq \Sigma_1^*$.
+{\em Výpočetný problém} je definovaný ako úloha vypočítať
+funkciu $U \to \Sigma_2^*$, pričom prvky $x \in U$ sa nazývajú 
+{\em vstupnými inštanciami}. 
+
+Špeciálne sa budeme venovať dvom typom problémov - rozhodovacím
+a optimalizačným.
+
+\begin{definition}[Rozhodovací problém]
+	{\em Rozhodovací problém} je trojica $(L, U, \Sigma)$, kde 
+	$\Sigma$ je abeceda, $L \subseteq U \subseteq \Sigma^*$.
+	Algoritmus $A$ rieši rozhodovací problém, $(L, U, \Sigma)$,
+	ak pre každé $x \in U$ platí
+	\[
+		A(x) = 
+		\begin{cases}
+			1 &\quad\text{ak } x \in L\\
+			0 &\quad\text{ak } x \in U \setminus L
+		\end{cases}
+	\]
+\end{definition}
+
+\begin{definition}[Optimalizačný problém]
+	{\em Optimalizačný problém} je definovaný ako šestica 
+	$(\Sigma_I, \Sigma_O, L, \mathcal{M}, cena, ciel)$, kde 
+	\begin{itemize}
+		\item $\Sigma_I, \Sigma_O$ sú vstupná a výstupná abeceda,
+		\item $L \subseteq \Sigma_I^*$ je množina vstupných inštancií,
+		\item $\mathcal{M}: L \to 2^{\Sigma_O^*}$ je funkcia, ktorá vstupnej
+		inštancii priradí množinu prípustných riešení,
+		\item $cena$ je funkcia, ktorá dvojici $(u,x), x \in L, u \in \mathcal{M}(x)$
+		priradí reálne číslo $cena(u,x)$,
+		\item $ciel \in \{maximum, minimum\}$.
+	\end{itemize}
+	
+	Pre vstupnú inštanciu $x \in L$ sa riešenie $y \in \mathcal{M}(x)$ nazýva {\em optimálnym},
+	pokiaľ $cena(y,x) = ciel\{ cena(z,x) | z \in \mathcal{M}(x) \} = Opt_U(x)$.
+	
+	Algoritmus je {\em konzistentný} ak pre každý vstup vráti prípustné riešenie,
+	navyše je {\em optimálny}, ak pre každý vstup vráti optimálne riešenie.
+\end{definition}
+
+Pre začiatok spomenieme niekoľko deterministických techník na riešenie týchto 
+problémov.
+
+\subsubsection{Pseudopolynomiálne algoritmy}
+Celočíselné problémy sú také, kde vstupom je množina celých čísel. Ako $Max(x)$
+značíme maximálne číslo z danej množiny, ako $|x|$ dĺžku vstupu (vyjadreného 
+binárne s oddeľovačmi).
+
+Pre funkciu $h$ definujeme $h$-zúženie problému tak, že problém obmedzíme
+na vstupné inštancie také, že $Max(x) \leq h(|x|)$.
+
+Pseudopolynomiálny algoritmus je taký, ktorý pre polynomiálnu funkciu $p$ 
+beží v čase $Time_A(x) = p(|x|, Max(x))$.
+
+Celočíselný problém $U$ sa nazýva silne NP-ťažký, pokiaľ existuje polynóm $h$
+taký, že $h$-zúženie problému $U$ je NP-ťažký problém. Pokiaľ $P \neq NP$, tak 
+pre silne NP-ťažký celočíselný problém neexistuje žiadny pseudopolynomiálny algoritmus.
+
+\subsubsection{Parametrizované algoritmy}
+Parametrizované algoritmy sú také, ktoré bežia v polynomiálnom čase
+voči veľkosti vstupu, avšak môžu byť exponenciálne voči nejakému parametru vstupu.
+
+Parametrizáciou problému je funkcia $P$, ktorá je polynomiálne vypočítateľná
+a platí, že pre nekonečne veľa hodnôt $k \in \mathbb{N}$ je $k$-parametrizovaná
+množina $Set_U(k)=\{ x \in U | P(x) = k \}$ konečná.
+
+Parametrizovaný algoritmus potom musí bežať v čase 
+$Time_A(x) \leq f(P(x))\cdot p(|x|)$.
 
 \subsection{Náhodnostní algoritmy}
 
@@ -9,28 +104,25 @@ Algoritmy pro řešení výpočetně náročných problémů.
 Monte Carlo algoritmy mají povolenou chybu s~omezenou pravděpodobností
 menší než $1/2$.
 
-% Text v komentáři je pro rozhodovací problémy, nás zajímají spíše
-% funkční problémy.
-%
-%\begin{definition}
-%Pravděpodobnostní algoritmus $M$ pro $L$ nazveme {\em Monte Carlo s~dvoustrannou
-%chybou}, pokud počítá v~polynomiálním čase
-%a navíc
-%\begin{itemize}
-    %\item pro $x \in L$ platí $P(M(x) = 1) > 1/2$,
-    %\item pro $x \not \in L$ platí $P(M(x) = 1) < 1/2$.
-%\end{itemize}
-%\end{definition}
+\begin{definition}
+Pravděpodobnostní algoritmus $M$ pro $L$ nazveme {\em Monte Carlo s~dvoustrannou
+chybou}, pokud počítá v~polynomiálním čase
+a navíc
+\begin{itemize}
+    \item pro $x \in L$ platí $P(M(x) = 1) > 1/2$,
+    \item pro $x \not \in L$ platí $P(M(x) = 1) < 1/2$.
+\end{itemize}
+\end{definition}
 
-%\begin{definition}
-%Pravděpodobnostní algoritmus $M$ pro $L$ nazveme {\em Monte Carlo s~jednostrannou
-%chybou}, který počítá v~polynomiálním čase
-%a navíc
-%\begin{itemize}
-    %\item pro $x \in L$ platí $P(M(x) = 1) > 1/2$,
-    %\item pro $x \not \in L$ platí $P(M(x) = 1) = 0$.
-%\end{itemize}
-%\end{definition}
+\begin{definition}
+Pravděpodobnostní algoritmus $M$ pro $L$ nazveme {\em Monte Carlo s~jednostrannou
+chybou}, který počítá v~polynomiálním čase
+a navíc
+\begin{itemize}
+    \item pro $x \in L$ platí $P(M(x) = 1) > 1/2$,
+    \item pro $x \not \in L$ platí $P(M(x) = 1) = 0$.
+\end{itemize}
+\end{definition}
 
 %Třídu problémů řešitelných MC algoritmy s~dvoustrannou chybou nazýváme
 %$\BPP$, třídu problémů řešitelných MC algoritmy s~jednostrannou chybou
@@ -60,9 +152,17 @@ opakováními je pravděpodobnost chyby $p^k$, tedy klesá velmi rychle.
 
 \subsubsection{Las Vegas algoritmy}
 
-Las Vegas algoritmy nikdy nevrátí špatný výsledek, ale
+Existujú dva druhy Las Vegas algoritmov: bez chybnej odpovede alebo
+s možnou odpoveďou \verb|?|.
+
+Las Vegas algoritmus pre každý vstup musí vrátiť správnu odpoveď.
+Jeho kľúčovou charakteristikou je jeho očakávaná časová zložitosť.
+
+Las Vegas algoritmy s možnou odpoveďou \verb|?| nikdy nevrátí špatný výsledek, ale
 s~pravděpodobností menší než $1/2$ můžou
-vrátit odpověď \verb|?|. Příkladem Las Vegas algoritmu, který nevrací
+vrátit odpověď \verb|?|. 
+
+Příkladem Las Vegas algoritmu, který nevrací
 \verb|?| je QuickSort s~náhodnostní volbou pivotu.
 
 \begin{example}
@@ -70,6 +170,24 @@ vrátit odpověď \verb|?|. Příkladem Las Vegas algoritmu, který nevrací
     Nyní navrhneme algoritmus, který se podívá na náhodný index v~poli,
     pokud je na něm $a$, vrátí tento index, jinak se opakuje.
     Tento algoritmus je zřejmě Las Vegas.
+\end{example}
+
+\begin{example}
+    Uvažujme problém, kde máme $X$, $Y$, a každý z nich má $10$ reťazcov
+	$x_1, \ldots, x_10$, resp. $y_1, \ldots, y_10$. Problémom je zistiť,
+	či existuje $j$ také, že $x_j = y_j$. Deterministický algoritmus 
+	by potreboval komunikačnú zložitosť $n$, pretože jeden počítač
+	by musel poslať všetky svoje slová druhému.
+	
+	Vytvorme náhodnostný algoritmus taký, že $X$~pošle počítaču~$Y$
+	zahashované všetky svoje reťazce. $Y$ porovná obdržané hashe 
+	s~hashmi svojich reťazcov. Ak sa žiadny pár hashov nezhoduje, 
+	$Y$~vráti odpoveď \textsc{Nie}. Pokiaľ sa nejaký pár hashov
+	zhoduje, $Y$~vyberie náhodný z~daných párov a pošle svoj odpovedajúci
+	reťazec počítaču~$X$. $X$~porovná dané reťazce, pokiaľ sa rovnajú, 
+	vráti \textsc{Áno}, ak nie, vráti \verb|?|.
+	
+	Tento algoritmus je zjavne Las Vegas algoritmus s~možnou odpoveďou \verb|?|.
 \end{example}
 
 Každý Las Vegas algoritmus, který vrací \verb|?| lze převést na
@@ -104,19 +222,6 @@ aby s~nějakou pravděpodobností unikl z~možného lokálního minima.
 Postupně však chceme tyto možnosti stoupání omezit, abychom
 se ke konci vymezeného času dostoupali do lokálního minima.
 
-Pravděpodobnost přechodu je určena funkcí $P($energie současného stavu,
-energie nového stavu, teplota$)$, která se $P$ definuje typicky takto:
-\[
-    P(E(s), E(s_{new}), T) =
-    \begin{cases}
-        1 & \text{pokud } E(s_{new}) < E(s), \\
-        e^{-(E(s_{new}) - E(s)) / T} & \text{jinak.}
-    \end{cases}
-\]
-Motivace pro volbu této funkce má sice kořeny ve fyzikálních aplikacích,
-v~obecném použití jde ale hlavně o funkci, která má vlastnosti, které
-pro správný průběh heuristiky potřebujeme.
-
 \begin{algorithm}
 \caption{Simulované žíhání}
 \begin{algorithmic}[1]
@@ -134,10 +239,45 @@ pro správný průběh heuristiky potřebujeme.
 \end{algorithmic}
 \end{algorithm}
 
+Pravděpodobnost přechodu je určena funkcí $P($energie současného stavu,
+energie nového stavu, teplota$)$, která se $P$ definuje typicky takto:
+\[
+    P(E(s), E(s_{new}), T) =
+    \begin{cases}
+        1 & \text{pokud } E(s_{new}) < E(s), \\
+        e^{-(E(s_{new}) - E(s)) / T} & \text{jinak.}
+    \end{cases}
+\]
+Motivace pro volbu této funkce má sice kořeny ve fyzikálních aplikacích,
+v~obecném použití jde ale hlavně o funkci, která má vlastnosti, které
+pro správný průběh heuristiky potřebujeme.
+
 Heuristiku můžeme aplikovat na problém obchodního cestujícího. Stavy
 jsou permutace měst. Funkce získání souseda může například prohodit
 dvě města. Teplotu můžeme například v~každém kroku násobit nějakou mírou
 zchlazení.
+
+\begin{example}
+	Majme nasledovný algoritmus na problém 2-SAT. Náhodne vyberme nejaké
+	pridelenie hodnôt premenných. Dokým formula nie je splnená, náhodne 
+	vyber jednu nesplnenú klauzulu, a jednej z~jej premenných zmeň priradenie
+	pravdivostnej hodnoty. 
+	
+	Nech $s$ je také priradenie hodnôt premenným, že toto priradenie je riešením
+	problému. Potom zmenou prevedenou v~iterácii nášho algoritmu sa tomuto priradeniu
+	buď priblížime o~jednu hodnotu, alebo sa o~jednu hodnotu vzdialime.
+	
+	Majme lineárny graf s $n+1$ vrcholmi, kde $n$ je počet premenných vo~formule,
+	tieto vrcholmi označme číslami $0, \ldots, n$. Označenie vrchola značí
+	počet premenných, v~ktorých sa aktuálne priradenie líši od~$s$. Vrchol~$0$
+	teda značí priradenie~$s$, vrchol~$n$ presne opačné.
+	
+	Algoritmus teda simuluje náhodnú prechádzku po tomto grafe, s~tým, že v~každej
+	iterácii sa z~vrcholu~$0 < i < n$ s~pravdepodobnosťou $1/2$ presunie do vrcholu~$i-1$,
+	a s~pravdepodobnosťou $1/2$ do vrcholu $i+1$. 
+	
+	Očakávaný čas dosiahnutia vrcholu~$0$ je $n^2$.
+\end{example}
 
 \subsection{Aproximační algoritmy}
 
@@ -146,15 +286,13 @@ kvality v~porovnání s~optimálním řešením.
 Pro problém $L$ a jeho vstup $x$ definujeme aproximativní poměr
 algoritmu $A$ jako
 \[
-    R_A(x) = \max \big \{ \frac{Opt_A(x)}{cena(A(x))},
-    \frac{cena(A(x))}{Opt_A(x)} \big \}
+    R_A(x) = \max \left\{ \frac{Opt_A(x)}{cena(A(x))},
+    \frac{cena(A(x))}{Opt_A(x)} \right\}
 \]
 Algoritmus $A$ nazveme $\delta$-aproximativní pro $L$ pro
 nějaké $\delta > 1$ pokud $R_A(x) < \delta$ pro všechna $x \in L$.
 $\delta$ nemusí být jen konstanta, ale může to být i funkce velikosti
 vstupu.
-
-\pagebreak
 
 \begin{example}[Problém vrcholového pokrytí]
 Ukážeme, že následující hladový algoritmus je $2$-aproximativní.  Stačí
@@ -305,8 +443,6 @@ pravděpodobností právě $x$. Groverův algoritmus v~$\sqrt{N}$ krocích
 posune počáteční superpozici $\frac{1}{\sqrt{N}} \sum_{x = 0}^{N-1}
 \ket{x}$, ve které jsou všechny hodnoty stejně pravděpodobné,
 do směru $\bar x$.
-
-\pagebreak
 
 Každý krok Groverova algoritmu je implementován postupnou aplikací
 kvantového orákula $\mathcal{O}$, které převrátí amplitudu u $\bar x$,

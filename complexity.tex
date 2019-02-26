@@ -1,5 +1,27 @@
 \section{Složitost}
 
+\subsection{Úvod}
+
+\subsubsection*{Znenie otázky}
+Výpočetní, komunikační a Kolmogorovova složitost. Časové a paměťové 
+složitosti a jejich vlastnosti; Třídy složitosti pro deterministické, 
+nedeterministické a náhodnostní výpočty a vztahy mezi nimi; 
+úplné, zejména NP-úplné, problémy; důkazy NP-úplnosti; 
+P-NP problém a jeho implikace; aproximační řešení NP-problémů; 
+aproximační třídy složitosti; interaktivní dokazovací systémy a 
+zero-knowledge dokazovací systémy; komunikační složitost a její aplikace; 
+metody dokazování dolních odhadů komunikační složitosti; 
+třídy komunikační složitosti, základní pojmy a vlastnosti Kolmogorovovy složitosti. 
+
+\subsubsection*{Pojmy}
+$\mathcal{O}$-notácia, časová/priestorová zložitosť, determinizmus/nedeterminizmus,
+linear speedup, vzťahy; uzavretosť tried na doplnky, nek. hierarchia tried, 
+hierarchia (ostré inklúzie), randomizované triedy; redukcia (p, T, log), 
+ťažké/úplné problémy, P/NP/PSPACE-úplné problémy; vzťah P-NP a jeho
+implikácie; aproximatívne riešenia (MAX-CUT, MAX-SAT); interaktívne protokoly,
+dIP[k], dIP, IP, zero-knowledge dôkazy, GI, GNI, bit commitment/opening phase;
+fingerprinting, zníženie počtu odoslaných bitov; Kolmogorovova zložitosť, vlastnosti
+
 \subsection{Časové a paměťové složitosti}
 
 \begin{definition}
@@ -50,6 +72,24 @@ složitost $5kT(n)$ (projítí celé pásky $M'$) a je jich $T(n)$ (dle složito
 Definujeme základní třídy rozhodovacích problémů v~závistlosti
 na potřebném čase pro jejich řešení. Nejprve však uvedeme větu, která
 vysvětlí důvod multiplikativní konstanty u času vyžadovaného v~definici.
+
+\subsection{Triedy zložitosti pre deterministické a nedeterministické výpočty}
+
+Zavedeme některé užitečné třídy složitosti.
+
+\begin{itemize}
+    \item $\P = \bigcup DTIME(n^k)$
+    \item $\NP = \bigcup NTIME(n^k)$
+    \item $\PSPACE = \bigcup DSPACE(n^k)$
+\end{itemize}
+Platí například
+\begin{itemize}
+	\item $DTIME(f(n)) \subseteq NTIME(f(n))$, $DSPACE(f(n)) \subseteq NSPACE(f(n))$
+    \item $\PSPACE = \NPSPACE$ (ze Savitchovy věty),
+    \item jinak nevíme nic moc, ani třeba zda $\NP \cap \coNP$ (kde je
+        například grafový izomorfismus) je $\P$.
+	\item $DLOG \subseteq NLOG \subseteq \P \subseteq \NP \subseteq \PSPACE \subseteq EXPTIME \subseteq NEXPTIME \subseteq EXPSPACE$
+\end{itemize}
 
 \begin{theorem}[Lineární zrychlení]
     Nechť $M$ je TS se složitostí $T(n)$ a $c > 0$.
@@ -103,32 +143,64 @@ velikosti $2^{S(n)}$, počáteční stav nazvat $s$, zkusit koncové stavy
 $t$ a za $k$ dosadit $n$. Celková složitost je tedy
 $\mathcal{O}((\log 2^{S(n)})^2) = \mathcal{O}((S(n))^2)$.
 
-Zavedeme některé užitečné třídy složitosti.
+\subsection{Triedy zložitosti pre náhodnostné výpočty}
 
-\begin{itemize}
-    \item $\P = \bigcup DTIME(n^k)$
-    \item $\NP = \bigcup NTIME(n^k)$
-    \item $\PSPACE = \bigcup DSPACE(n^k)$
-\end{itemize}
-Platí například
-\begin{itemize}
-    \item $\PSPACE = \NPSPACE$ (ze Savitchovy věty),
-    \item jinak nevíme nic moc, ani třeba zda $\NP \cap \coNP$ (kde je
-        například grafový izomorfismus) je $\P$.
-\end{itemize}
+(Nie som si istý, či je potrebné vedieť aj orákulové Turingove stroje
+a polynomiálnu hierarchiu, ale keďže nižšie je spomenutá, aspoň ich spomeniem.)
 
-Povolíme-li navíc pásku s~náhodnými bity získáváme pravděpodobnostní
+Pre definovanie polynomiálnej hierarchie je potrebné zhrnúť princíp
+orákulových Turingových strojov. Uveďme na príklade - jazyk je v~triede
+$\P^{\NP}$ pokiaľ je rozhodovaný orákulovým Turingovým strojom,
+ktorý beží v~deterministickom polynomiálnom čase, avšak môže sa počas
+výpočtu neobmedzene veľa krát (ale iba polynomiálne veľa krát, inak by
+už nebežal v~polynomiálnom čase) \uv{opýtať orákula}, ktoré mu 
+rozhodne ľubovoľný problém v~triede $\NP$.
+
+% TODO: toto je podľa mňa možno blbosť, či?
+%Poznamenajme, že táto trieda nemá moc význam, keďže deterministický polynomiálny
+%stroj nedokáže rozhodnúť nič navyše oproti tomu, čo by dokázalo
+%orákulum rozhodnúť samo, tj. $\P^{\NP} = \NP$.
+
+\begin{definition}[Polynomiálna hierarchia]
+	Definujeme systém tried $\Sigma_i^\P$ a $\Pi_i^\P$ ako
+	\begin{align*}
+		\Sigma_0^\P = \P \\
+		\Sigma_{i+1}^{\P} = \NP^{\Sigma_i^{\P}} \\
+		\Pi_i^{\P} = co-\Sigma_i^{\P}
+	\end{align*}
+	Triedu $PH$ definujeme ako $PH=\bigcup_{i=0}^{\infty} \Sigma_i^\P \cup \Pi_i^\P$.
+\end{definition}
+
+Povolíme-li k deterministickým TS navíc pásku s~náhodnými bity získáváme pravděpodobnostní
 Turingovy stroje (PTS) a třídy složitosti.
 
-\begin{itemize}
-    \item $\BPP$ -- problémy rozhodnutelné v~polynomiálním čase PTS s~oboustrannou chybou,
-    \item $\RP$ -- problémy rozhodnutelné v~polynomiálním čase PTS s~jednostrannou chybou,
-    \item $\ZPP$ -- problémy rozhodnutelné v~{\bf očekávaném}
-        polynomiálním čase na PTS bez chyb.
-\end{itemize}
+\begin{definition}
+	Trieda $\RP$ obsahuje problémy rozhodnutelné v~polynomiálním čase 
+	PTS s~jednostrannou chybou, tj.
+	\begin{itemize}
+		\item pokiaľ $x \in A$, $P(\mathcal{M}(x) \text{ akceptuje}) \geq 3/4$,
+		\item pokiaľ $x \not\in A$, $P(\mathcal{M}(x) \text{ akceptuje}) = 0$.
+	\end{itemize}
+\end{definition}
+
+\begin{definition}
+	Trieda $\BPP$ obsahuje problémy rozhodnutelné v~polynomiálním čase 
+	PTS s~oboustrannou chybou, tj.
+	\begin{itemize}
+		\item pokiaľ $x \in A$, $P(\mathcal{M}(x) \text{ akceptuje}) \geq 3/4$,
+		\item pokiaľ $x \not\in A$, $P(\mathcal{M}(x) \text{ akceptuje}) \leq 1/4$.
+	\end{itemize}
+\end{definition}
+
+\begin{definition}
+	Triedu $\ZPP$ definujeme ako $\RP \cap \coRP$.
+\end{definition}
+
 Platí například
 \begin{itemize}
     \item $\ZPP = \RP \cap \coRP$,
+	\item $\ZPP \subseteq \RP$, $\ZPP \subseteq \coRP$
+	\item $\RP \subseteq \NP$, $\coRP \subseteq \coNP$
     \item $\P \subseteq \ZPP$,
     \item vztah $\BPP$ a $\NP$ není znám,
     \item $\BPP \subseteq \Sigma_2 \cap \Pi_2$ (důkaz není snadný).
@@ -206,8 +278,6 @@ Příkladem $\P$ úplného problému vzhledem k~logaritmické redukci je
     v~ostatních místech stačí prostor konstantní.
 \end{proof}
 
-\pagebreak
-
 \begin{theorem}[Cook-Levin]
     $SAT$ je $\NP$-úplný.
 \end{theorem}
@@ -258,6 +328,11 @@ redukují. Stačí vědět o jednom (předpokládejme, že máme důkaz), že je
 $\NP$-těžký a nyní automaticky víme, že i ten druhý je $\NP$-těžký.
 Důkaz příslušnosti do $\NP$ je snadný, problémy jsou tedy $\NP$-úplné.
 
+Príkladom $\PSPACE$-úplného problému je $TQBF$, čo je problém splniteľnosti
+plne kvantifikovanej formule. Plne kvantifikovaná formula je formula,
+v~ktorej je každá premenná kvantifikovaná buď existenčným alebo všeobecným
+kvantifikátorom. Dôkaz $\PSPACE$-úplnosti nebudeme uvádzať.
+
 \subsection{$\P-\NP$ problém}
 
 \begin{itemize}
@@ -279,6 +354,13 @@ Důkaz příslušnosti do $\NP$ je snadný, problémy jsou tedy $\NP$-úplné.
     vzhledem k současným možnostem hardware.
     Mění se teorie i praxe.
 \end{itemize}
+
+Čo sa týka dôsledkov v~teórii, pokiaľ by platilo $\P = \NP$, tak by 
+platilo aj $\P = \NP = \coNP$, alebo aj $\P = PH$, čo by teda znamenalo,
+že celá polynomiálna hierarchia by bola jedinou triedou.
+
+Takisto by všetky $\NP$-úplné problémy boli v~$\P$, čo by mohlo znamenať
+schopnosť efektívne riešiť problémy, na ktorých stojí súčasná kryptografia.
 
 \subsection{Složitost aproximací}
 
@@ -340,8 +422,6 @@ Platí $\FPTAS \subseteq \PTAS \subseteq \APX$.
     Třídu problémů rozhodnutelných interaktivním dokazovacím systémem nazýváme
     $\IP$.
 \end{definition}
-
-\pagebreak
 
 \begin{theorem}
     $SAT \in \IP$.
@@ -479,8 +559,6 @@ schová název funkce pro tisk a závorky.
 V opačném případě by všech nekonečně mnoho možných řetězců bylo možné
 generovat (konečně mnoha) programy kratší než $n$ bitů (pro nějaké $n$).
 \end{proof}
-
-\pagebreak
 
 \begin{theorem}
     $K$ není totálně vyčíslitelná.

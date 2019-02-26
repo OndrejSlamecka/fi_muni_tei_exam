@@ -1,10 +1,52 @@
 \section{Grafy a grafové algoritmy}
 
+\subsection{Úvod}
+\subsubsection*{Znenie otázky}
+Grafy a grafové algoritmy. Základní pojmy a způsoby reprezentace
+a prohledávání; stromy a jejich reprezentace a prohledávání; planární 
+grafy a jejich vlastnosti, algoritmy pro konstrukci minimální kostry, 
+pro hledání nejkratší cesty; pro optimální párování; pro maximální 
+toky atd.; datové struktury pro grafové algoritmy; náhodné grafy a 
+jejich použití; náhodnostní grafové algoritmy.
+
+\subsubsection*{Pojmy}
+Graf (jednoduchý, orientovaný), cyklus, cesta, kompletný graf,
+bipartitný graf, reprezentácia grafu, BFS, DFS, Best FS; strom,
+koreňový strom, binárny vyhľadávací strom, in order, pre order,
+post order, les; arc, slučka, planárny graf, izomorfizmus planárnych
+grafov, rotačný systém, duálny graf, polygonálny planárny graf,
+Eulerova formula, triangulácia, obmedzenie počtu hrán, Kuratowski theorem;
+kostra, minimálna kostra, cut/cycle property, Kruskal, Jarník, 
+Borůvka, Fredman-Tarjan, Gabow et al., Karger-Klein-Tarjan;
+relaxácia hrany, Bellman-Ford, Dijkstra, Floyd-Warshall, Johnson;
+matching (perfektné, maximálne), M-alternating/augmenting path,
+bipartitný matching, blossom, Edmonds' blossom algorithm;
+tok, reziduálna sieť, Ford-Fulkerson, Edmonds-Karp, level graph,
+Dinic, MPM; minimálny rez, Gomory trees, globálny minimálny rez,
+legal ordering, Naganochi-Ibaraki-Karger;
+union-find, Fibonacciho halda; náhodné grafy a grafové algoritmy,
+Kargerov algoritmus
+
 \subsection{Základní pojmy, reprezentace a prohledávání}
 
-Struktura $G = (V, E)$, kde $E \subseteq V^2$, se nazývá graf.
-Cesta délky $n$ je posloupnost $v_1,e_1,v_2,\ldots,v_n$ taková, že $e_i
-= (v_i, v_{i+1}) \in E$.
+Struktura $G = (V, E)$, kde $E \subseteq V^2$, se nazývá (neorientovaný) graf.
+Pridaním orientácie k hranám (tj. $E \subseteq V \times V$) vznikne orientovaný graf.
+
+Cesta $P_n$ délky $n$ je posloupnost $v_1,e_1,v_2,\ldots,v_n,e_n,v_{n+1}$ 
+taková, že $e_i = (v_i, v_{i+1}) \in E$. Cyklus $C_n$ dĺžky $n$ vznikne
+pridaním hrany $(v_n, v_1)$ k ceste dĺžky $n-1$. Cyklus dĺžky~$n$ má 
+teda $n$~hrán a $n$~vrcholov, zatiaľ čo cesta dĺžky~$n$ má $n$~hrán a $n+1$~vrcholov.
+
+Úplný graf $K_n$ má o veľkosti~$n$ má $n$~vrcholov, pričom každá dvojica
+vrcholov je spojená hranou. V bipartitnom grafe sa vrcholy dajú
+rozdeliť do dvoch množín $A,B$ tak, že $A \cap B = \emptyset$ a 
+$A \cup B = V$, a pre každú hranu $(u,v)$ platí, že jeden z~jej
+koncových vrcholov je v~množine $A$, zatiaľ čo druhý je v~množine $B$.
+
+Graf reprezentuje reláciu $R \subseteq V \times V$ tak, že pokiaľ
+$(a,b) \in R$, tak tieto vrcholy sú spojené hranou. Pokiaľ ide 
+o~neorientovaný graf, táto relácia musí byť symetrická a antireflexívna.
+Pri neorientovanom grafe nie sú na reláciu kladené žiadne obmedzenia.
 
 V paměti graf reprezentujeme maticí (polem polí, hodí se pro hustý
 graf), seznamem následníků (polem seznamů, hodí se pro řídký graf), či
@@ -18,44 +60,11 @@ prozkoumat malou část).
 často pro jednoduchost
 $\forall v \in V \subseteq \mathbb{N} : 0 \leq v < \lvert V \rvert$.
 Je-li graf ohodnocený, pak je navíc definována funkce $w : E \to
-\mathbb{R}$.
-
-\subsubsection*{Depth-First Search}
-
-Algoritmus prohledávání do hloubky v uvedené variantě označí za
-navštívené všechny vrcholy dosažitelné z počátečního vrcholu. V drobných
-variantách slouží ke hledání komponent grafu, topologickému uspořádání,
-dále s většími úpravami například pro hledání silně souvislých komponent
-(Tarjanův algoritmus).
-
-Paměťová náročnost je úměrná hloubce grafu, časová velikosti
-$(\lvert V \rvert + \lvert E \rvert)$.
-
-\begin{algorithm}
-\caption{Depth-First Search}
-\begin{algorithmic}[1]
-\Function{DFS}{G, u}
-    \State visited[$u$] = True
-    \For{$v \in$ neighbours of $u$}
-        \If{not visited[$v$]}
-            \State \Call{DFS}{G,v}
-        \EndIf
-    \EndFor
-\EndFunction
-\end{algorithmic}
-\end{algorithm}
-
-Pozor na \uv{nepravé} imperativní varianty DFS. Zejména by ke kontrole,
-zda je vrchol navštívený, mělo docházet po vyndání ze zásobníku, ne při
-vkládání.
-%Někteří považují za pravou imperativní variantu pouze tu,
-%která zachovává pořadí procházení následníků vrcholu
-Problém vysvětluje Radek Pelánek ve své knize {\em Programátorská
-cvičebnice}.
+\mathbb{R}$. Pri analýze zložitosti občas používame $|V|=n$ a $|E|=m$.
 
 \subsubsection*{Breadth-First Search}
 
-Algoritmus prohledávání do hloubky v následující variantě označí za
+Algoritmus prohledávání do šířky v následující variantě označí za
 navštívené všechny vrcholy dosažitelné z počátečního vrcholu. V drobných
 variantách slouží ke hledání nejkratší cesty nebo testování
 dvojobarvitelnosti.
@@ -82,18 +91,70 @@ $(\lvert V \rvert + \lvert E \rvert)$.
 \end{algorithmic}
 \end{algorithm}
 
+Tento algoritmus prehľadáva graf po~vrstvách, a keď sa dostane k~nejakému vrcholu,
+tak rovno má najkrajšiu cestu k~nemu. Ako dátová štruktúra sa teda používa
+fronta.
+
+\subsubsection*{Depth-First Search}
+
+Algoritmus prohledávání do hloubky v uvedené variantě označí za
+navštívené všechny vrcholy dosažitelné z počátečního vrcholu. V drobných
+variantách slouží ke hledání komponent grafu, topologickému uspořádání,
+dále s většími úpravami například pro hledání silně souvislých komponent
+(Tarjanův algoritmus).
+
+Paměťová náročnost je úměrná hloubce grafu, časová velikosti
+$(\lvert V \rvert + \lvert E \rvert)$.
+
+Ako dátová štruktúra sa používa zásobník. Oproti BFS má menšiu pamäťovú 
+náročnosť, keďže nemusí toľko vrcholov uchovávať v~zásobníku.
+Vrchol je označovaný ako {\em biely}, keď jeho prieskum ešte nezačal,
+{\em šedý}, ak jeho prieskum začal, ale ešte nebol dokončený, a {\em čierny},
+ak jeho jeho prieskum bol dokončený (tj. neexistuje hrana, ktorá by z~neho
+vychádzala a ešte by nebola preskúmaná).
+
+\begin{algorithm}
+\caption{Depth-First Search}
+\begin{algorithmic}[1]
+\Function{DFS}{G, u}
+    \State visited[$u$] = True
+    \For{$v \in$ neighbours of $u$}
+        \If{not visited[$v$]}
+            \State \Call{DFS}{G,v}
+        \EndIf
+    \EndFor
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+Pozor na \uv{nepravé} imperativní varianty DFS. Zejména by ke kontrole,
+zda je vrchol navštívený, mělo docházet po vyndání ze zásobníku, ne při
+vkládání.
+%Někteří považují za pravou imperativní variantu pouze tu,
+%která zachovává pořadí procházení následníků vrcholu
+Problém vysvětluje Radek Pelánek ve své knize {\em Programátorská
+cvičebnice}.
 
 \subsection{Stromy, jejich reprezentace a prohledávání}
 
 Nechť $G$ je graf. $G$ nazveme {\em strom}, pokud mezi každými dvěma
 vrcholy existuje právě jedna cesta. Ekvivalentně je to souvislý graf
-s~$\lvert V \rvert - 1$ hranami.
+s~$\lvert V \rvert - 1$ hranami, prípadne súvislý graf bez~cyklov. 
+Nesúvislý graf bez cyklov sa nazýva {\em les}. 
+
+O~strome (resp. lese) hovoríme, že je {\em koreňový}, pokiaľ jeden 
+z~jeho vrcholov (v~prípade lesu je to jeden z každej jeho komponenty)
+je vybraný ako koreň. O~vrchole hovoríme, že je v hĺbke $l$, pokiaľ 
+jeho vzdialenosť od koreňa je~$l$. Pri dvoch vrcholoch spojených
+hranou hovoríme, že ten s nižšou hĺbkou je {\em rodičom} toho druhého.
+Z~tranzitívneho uzáveru tejto relácie vznikajú pojmy {\em predok} a 
+{\em potomok}.
 
 Stromy v paměti často reprezentujeme jako datové struktury se seznamem
 následníků. V~mnoha aplikacích potřebujeme ukládat ve vrcholech hodnoty.
 Pro stromy s~hodnotami a s~pevnou aritou můžeme použít pole.
-Například pro binární strom indexovaný od 0 máme na pozici $0$ kořen,
-každý vrchol na pozici $i$ má levého potomka na indexu $2i+1$, pravého
+Například pro binární strom indexovaný od 0 máme na pozici~$0$ kořen,
+každý vrchol na pozici~$i$ má levého potomka na indexu~$2i+1$, pravého
 na indexu $2i+2$ a rodiče na indexu $\lfloor (i - 1) / 2 \rfloor$.
 
 Stejně jako u obecných grafů můžeme použít DFS nebo BFS. Pro binární
@@ -103,8 +164,64 @@ relativně k~jeho potomkům.
 
 \subsection{Planární grafy a jejich vlastnosti}
 
+\begin{definition}
+	{\em Oblúk} v rovine je spojitý obraz intervalu $[0,1]$ pod spojitým
+	jednoduchým zobrazením $\varphi: [0,1] \to \mathbb{R}^2$. 
+	{\em Smyčka} je oblúk, kde $\varphi(0)=\varphi(1)$.
+\end{definition}
+Neformálne je oblúk spojitou čiarou medzi dvomi bodmi takou, že sa
+nikde nepretína. Smyčka sa nikde nepretína, ale má spoločný začiatočný
+a konečný bod.
+
 Graf je planární, pokud ho lze zakreslit do roviny tak, že se žádné dvě
 hrany nekříží. Příklad $C_4$, nepříklad $K_{3,3}$ (lze na torusu).
+
+{\em Rovinne nakreslený graf} je konkrétny nákres planárneho grafu v rovine.
+
+\begin{definition}
+	Pre rovinne nakreslený graf, nech $\Pi$ je množinou permutácií $\pi_v$
+	pre každý vrchol $v$, kde $\pi_v$ je permutácia hrán incidentných 
+	k~vrcholu~$v$ v~smere proti hodinovým ručičkám. $\Pi$~sa nazýva {\em rotačným
+	systémom} nakresleného grafu.
+	
+	Dve nakreslenia sú {\em ekvivalentné}, pokiaľ medzi nimi existuje izomorfizmus,
+	ktorý zachováva rotačný systém, až na možný zrkadlový obraz (kde všetky permutácie
+	sú opačné).
+\end{definition}
+
+\begin{definition}[Stena]
+	V rovinne nakreslenom grafe, oblúkovo súvislé regióny roviny (vrátane vonkajšieho),
+	rozdelené nákresom grafu, sa nazývajú stenami grafu.
+	
+	Hranice každej steny tvoria uzatvorený sled\footnote{walk}, ktorý sa pre
+	danú stenu nazýva stenovou prechádzkou. Jej dĺžka sa nazýva veľkosťou steny.
+\end{definition}
+
+\begin{definition}[Duálny multigraf]
+	Pre graf $G=(V,E,\epsilon)$ je graf $H=(F,E,\phi)$ {\em duálnym multigrafom}, pokiaľ
+	\begin{itemize}
+		\item $F$ je množina stien v $G$,
+		\item $\phi$ je reláciou, ktorá pre každú $e \in E$ spája steny, ktoré táto hrana rozdeľuje.
+	\end{itemize}
+	$G$ sa v tomto prípade nazýva {\em primálnym grafom} multigrafu $H$.
+\end{definition}
+
+\begin{definition}[Polygonálny planárny rovinne nakreslený graf]
+	{\em Lomená čiara} je konečná postupnosť bodov $(p_0, p_1, \ldots,
+	p_k) \subseteq \mathbb{R}^2$ spolu s rovnými čiarami $p_0p_1, p_1p_2, 
+	\ldots, p_{k-1}p_k$ takými, že žiadne dve nemajú spoločný prienik
+	(okrem možného prieniku keď $p_0=p_k$ v tomto bode).
+	
+	{\em Polygonálny planárny rovinne nakreslený graf} je planárne rovinne
+	nakreslený graf, ktorého všetky hrany sú lomené čiary.
+\end{definition}
+
+Pre každý planárny rovinne nakreslený graf existuje ekvivalentný polygonálny
+rovinne nakreslený graf.
+
+Pokiaľ sa v stenovej prechádzke jedna hrana nachádza dva krát, táto hrana
+sa nazýva {\em mostom}. Vrchol, ktorý sa v nej nachádza dva krát sa nazýva
+{\em cutvertex}.
 
 \begin{theorem}[Kuratowski]
 Graf je planární právě tehdy, když nemá jako podgraf
@@ -117,6 +234,7 @@ Dále uvažujme zakreslení grafů bez křížení v~rovině a s~$f$
 stěnami.
 
 \begin{theorem}[Euler]
+Pre planárny spojitý graf platí 
 $v - e + f = 2$.
 \end{theorem}
 
@@ -145,6 +263,23 @@ a získáme $e \leq 3v - 6$.
 
 \subsection{Konstrukce minimální kostry}
 
+Kostra $T$ grafu $G$ je spanning podgrafom\footnote{Spanning podgraf $T$
+obsahuje všetky vrcholy pôvodného grafu, tj. $V(T)=V(G)$.} grafu $G$ takým,
+že $T$~je stromom. Minimálna kostra pri ohodnotenom grafe je takou kostrou,
+že súčet hodnôt hrán, ktoré obsahuje, je minimálny.
+
+\begin{theorem}[Cut property]
+	Pokiaľ $e$ je nahľahšou v nejakom reze grafu $G$, táto hrana musí
+	byť v minimálnej kostre.
+\end{theorem}
+
+\begin{theorem}[Cycle property]
+	Pokiaľ $e$ je najťažšou v nejakom cykle grafu $G$, táto hrana nemôže
+	byť v minimálnej kostre.
+\end{theorem}
+
+\subsubsection*{Kruskalův algoritmus}
+
 Ukážeme Kruskalův algoritmus. Přidává hrany v pořadí od nejlehčí tak,
 aby nikdy nevytvořil cyklus.
 Algoritmus udržuje informaci o komponentách grafu v datové struktuře
@@ -168,15 +303,132 @@ Union Find, která je je popsána v
 \end{algorithmic}
 \end{algorithm}
 
+Zložitosť Kruskalovho algoritmu je $\mathcal{O}(m \log(m))=\mathcal{O}(m \log(n))$, pričom
+časovo najnáročnejšie je zoradenie hrán.
+
+\subsubsection*{Jarníkov algoritmus}
+
+V Jarníkovom (niekedy nazývaným aj Primovom) algoritme sa začne
+náhodným výberom jedného vrcholu z grafu a jeho vložením do kostry.
+Algoritmus pokračuje tak, že vyberie najľahšiu hranu opúšťajúcu
+aktuálnu kostru, a pridá daný vrchol do kostry. Toto sa opakuje,
+dokým kostra neobsahuje všetky vrcholy grafu.
+
+Zložitosť Jarníkovho algoritmu pomocou Fibonacciho haldy
+ je $\mathcal{O}(m + n \log n)$.
+
+\subsubsection*{Borůvkov algoritmus}
+
+Borůvkov algoritmus začne tým, že graf berie ako les obsahujúci
+$n$ jedno-vrcholových komponent. Pokračuje sa tak, že pre každú
+komponentu sa nájde najľahšia hrana, ktorá ju opúšťa, a komponenty
+spájané touto hranou sa spoja. Opakuje sa, dokým neostane jediná 
+komponenta, ktorá bude minimálnou kostrou.
+
+V Borůvkovom algoritme sa vykoná najviac $\log(n)$~fáz, pričom
+každá fáza sa vykoná v čase $\mathcal{O}(m)$. Celková zložitosť
+je teda $\mathcal{O}(m \log(n))$.
+
+\subsubsection*{Fredman-Tarjan}
+
+V tomto algoritme sa simuluje Jarníkov algoritmus s~haldou s~obmedzenou
+veľkosťou najviac~$k$. Keď sa táto veľkosť prekoná, náš budovaný strom má 
+viac ako $k$~susedov. Vtedy začneme budovať kostru z nového vrcholu. Týmto
+spôsobom dostaneme les, ktorý stiahneme\footnote{contract; nie som si istý 
+prekladom. Princípom je, že z každého stromu sa stane v novom grafe jeden
+vrchol.} a znova spustíme algoritmus.
+
+Zložitosť Fredman-Tarjan algoritmu je $\mathcal{O}(m \cdot \beta(m,n))$, kde
+funkcia $\beta(m,n)$ je definovaná ako $\beta(m,n)= \min\{ i | \log^{(i)}n \leq m/n \}$.
+Tento algoritmus je v každom prípade aspoň tak rýchly, ako Jarník, pričom
+je lepší najmä v~prípade riedkych grafov.
+
+\subsubsection*{Gabow et al.}
+
+Základnou myšlienkou tohto algoritmu je, že sa vytvorí $2m/p$ paketov,
+kde každý z~nich obsahuje $p$ hrán. Každý paket má váhu svojej najľahšej
+hrany. Potom sa simuluje Fredman-Tarjan algoritmus, ktorý používa pakety
+miesto hrán.
+
+Za použitia Fibonacciho haldy je zložitosť tohto algoritmu 
+$\mathcal{O}(m \cdot \log\beta(m,n))$.
+
+\subsubsection*{Karger-Klein-Tarjan}
+
+Tento algoritmus využíva princíp $F$-ľahkých a $F$-ťažkých hrán.
+Nech $F\subseteq G$ je podgraf grafu $G$, ktorý je lesom. Pre
+každú hranu $e=(u,v) \in E(G)$ nech $w_F(e)$ je váha najťažšej hrany
+na ceste medzi vrcholmi $u,v$ v lese $F$, prípadne $\infty$ pokiaľ
+dané vrcholy v lese $F$ nie sú v rovnakej komponente. Hrana $e$
+sa nazýva {\em $F$-ťažkou}, pokiaľ jej váha je väčšia ako $w_F(e)$, 
+{\em $F$-ľahkou} inak.
+
+Pre pochopenie tohto algoritmu najskôr ukážeme prvý pokus o~náhodnostný
+algoritmus, na ktorom budeme ilustrovať kocepty, ktoré sa potom 
+použíjú v~algoritme Karger-Klein-Tarjan. Začneme tak, že z grafu $G$ náhodne
+vytvoríme pomocný graf $H$, v~ktorom je každá hrana s~pravdepodobnosťou~$1/2$. 
+V grafe~$H$ rekurzívne nájdeme minimálnu kostru $F$ (aj keď v tomto prípade
+táto kostra nemusí byť spojitá, keďže graf $H$ nemusí byť spojitý).
+V kostre $F$ nájdeme všetky $F$-ťažké hrany, tieto v minimálej 
+kostre grafu $G$ nemôžu byť, kvôli cycle property. Tieto $F$-ťažké
+hrany teda z grafu $F$ odobereme. Na zvyšku tohto grafu~$F$ budeme
+opäť rekurzívne hľadať minimálnu kostru a tento postup budeme opakovať, kým
+nedostaneme minimálnu kostru grafu $G$.
+
+\begin{algorithm}
+\caption{Karger-Klein-Tarjan}
+\begin{algorithmic}[1]
+\Function{RandomizedMSF}{$G$}
+    \State \textbf{if} {$E = \emptyset$} \textbf{then} \Return $\emptyset$
+    \State $(G_1, F_1) \gets \text{BoruvkaPhase}(G)$
+	\State $(G_2, F_2) \gets \text{BoruvkaPhase}(G_1)$
+	\State $H \gets \text{náhodný podgraf }G_2\text{, kde každá hrana je s pravdepodobnosťou }1/2$
+	\State $F' \gets RandomizedMSF(H)$
+	\State $E' \gets F'\text{-ľahké hrany z }G_2$
+	\State $H' \gets G[E']$
+	\State $F_3 \gets RandomizedMSF(H')$
+    \State \Return $F_1 \cup F_2 \cup F_3$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+Zložitosť Karger-Klein-Tarjan algoritmu je $\mathcal{O}(m+n)$.
+
 \subsection{Hledání nejkratší cesty}
 
-V neohodnoceném grafu pomocí BFS.
-V ohodnoceném grafu cestu z jednoho vrcholu do druhého pomocí Dijkstrova
-algoritmu, cestu mezi každými dvěma pomocí Floydova-Warshallova
-algoritmu.
+V probléme hľadania najkratšej cesty ide o to nájsť takú cestu
+medzi vrcholmi, že súčet váh hrán na nej je minimálny. V prípade
+neohodnotených grafov predpokladáme, že váha každej hrany je~$1$.
 
+Existujú rôzne varianty tohto problému, a to najmä hľadanie najkratšej
+cesty medzi dvomi konkrétnymi vrcholmi, hľadanie najkratšej cesty
+z~konkrétneho vrcholu do všetkých ostatných, a hľadanie najkratšej
+cesty medzi všetkými dvojicami vrcholov.
+
+Algoritmy pre tento problém často využívajú pojem {\em relaxácia hrany}.
+Majme hranu $e=(u,v)$ s váhou $w(e)$ a pre vrcholy $u,v$ majme nejakú
+ich vzdialenosť $d(u), d(v)$ od vrcholu~$s$. Potom relaxácia tejto
+hrany je proces, kde skúsime, či sa pomocou tejto hrany dá
+vylepšiť minimálna vzdialenosť vrcholu $v$ od $s$, tj. nastavíme
+$d(v)$ na $min(d(v),d(u)+w(e))$.
+
+\subsubsection*{Bellman-Ford}
+Tento algoritmus počíta najkrašiu vzdialenosť z jedného vrcholu
+(nazvime ho~$s$) do všetkých ostatných. Na rozdiel od Dijkstrovho
+algoritmu funguje aj na grafoch so záporne hodnotenými hranami.
+
+V jednej iterácii Bellman-Ford algoritmus relaxuje každú hranu.
+Takúto iteráciu algoritmus opakuje $n$ krát, a tým končí. 
+
+Nakoniec ešte posledný krát zopakuje relaxáciu všetkých hrán,
+a pokiaľ je ešte nejaká relaxácia úspešná, graf obsahuje 
+záporný cyklus a algoritmus končí s chybou.
+
+Zložitosť tohto algoritmu sa dá triviálne odvodiť a je to $\mathcal{O}(mn)$.
+
+\subsubsection*{Dijkstra}
 Dijkstrův algoritmus udržuje jednoduchý invariant:
-Pro každý navštívený vrchol $v$, je $dist[v]$ nejkratší cesta z $s$ do
+Pro každý navštívený vrchol~$v$, je $dist[v]$ nejkratší cesta z $s$ do
 $v$. Pro každý nenavštívený vrchol $u$, je $dist[u]$ nejkratší cesta z
 $s$ do $u$ přes dosud navštívené vrcholy.
 
@@ -202,6 +454,13 @@ $s$ do $u$ přes dosud navštívené vrcholy.
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
+
+Za použitia Fibonacciho haldy je zložitosť algoritmu $\mathcal{O}(m + n \log n)$
+
+\subsubsection*{Floyd-Warshall}
+
+Algoritmus Floyd-Warshall počíta najkrašiu cestu medzi všetkými
+dvojicami vrcholov.
 
 Floydův-Warshallův algoritmus postupně napočítává nejkratší cestu z $i$
 do $j$, vždy zváží cestu přes vrchol $k$, takže v $k$-tém kroce
@@ -232,44 +491,30 @@ Floyd-Warshallův algoritmus se dá také použít k detekci záporných cyklů.
 \end{algorithmic}
 \end{algorithm}
 
-\subsection{Maximální tok}
+V každej z $n$~iterácií pre každú dvojicu vrcholov skúsi,
+či sa ich vzdialenosť dá znížiť cez práve prechádzaný vrchol. 
+Zložitosť algoritmu je teda $\mathcal{O}(n^3)$.
 
-Funkce $c : E \to \mathbb{R}$ přiřazuje každé hraně její maximální
-možnou kapacitu. Definujeme reziduální graf
-$G_{f}(V,E_{f})$ s~kapacitou $c_{f}(u,v)=c(u,v)-f(u,v)$ a bez toku.
+\subsubsection*{Johnson}
+Tento algoritmus hľadá najkrajšiu cestu medzi všetkými dvojicami vrcholov.
+V tomto algoritme skúsime nájsť záporný cyklus - v tom prípade
+končíme s chybou. Inak modifikujeme hrany tak, aby už neobsahovali
+záporné hrany, a spustíme Dijkstru z každého vrcholu.
 
-V~průběhu algoritmu udržujeme čtyři invarianty:
-$f(u,v) = -f(v,u)$, tok nepřevyšuje kapacitu,
-do každého vrcholu (kromě $s,t$) vteče stejně jako z~něj vyteče,
-kolik vyteče z~$s$, tolik doteče do $t$.
+Zložitosť tohto algoritmu je súčet zložitosti Bellman-Ford (pre detekciu
+záporných cyklov) + $n$ krát Dijkstra. Teda celková zložitosť
+je $\mathcal{O}(n^2 \log(n) + mn)$.
 
-Hledání cesty na řádku 3 se provede algoritmem BFS. S DFS by algoritmus
-neměl zaručenou konvergenci. Pro cesty délky $k$
-může být až $\lvert E \rvert$ zlepšujících cest, délka cesty je nejvýše
-$\lvert V \rvert$, celkem $\lvert E \rvert \lvert V \rvert$
-počtů nalezení zlepšujících čas a zlepšení trvá $\lvert E \rvert$
-kroků -- složitost algoritmu je
-$\mathcal{O}(\lvert V \rvert \lvert E \rvert ^2)$.
+\subsubsection*{Algoritmus A*}
+Algoritmus A* je modifikáciou Dijkstrovho algoritmu s~tým,
+že váhy hrán sa modifikujú, aby ovplyvnili rýchlosť výpočtu.
+Napríklad v mapovej navigácii sa do váhy zakomponuje Euklidovská
+vzdialenosť od cieľa, aby sa cesty, ktoré vedú správnym smerom,
+vyhodnocovali s~väčšou váhou, ako cesty, ktoré idú opačne.
 
-\begin{algorithm}[H]
-\caption{Edmonds-Karp}
-\begin{algorithmic}[1]
-\Function{EdmondsKarp}{$G, s, t, c$}
-    \State $f(u,v) \gets 0$ for all $(u,v) \in E$
-    \While{exists $s$--$t$ path $p$ in $G_f$, s.t. $c_f(u,v) > 0$ for all $(u,v) \in p$}
-        \State $c_f(p) = \min \{ c_f(u,v) \mid (u,v) \in p \}$
-        \For{$(u,v) \in p$}
-            \State $f(u,v) \gets f(u,v) + c_f(p)$
-            \State $f(v,u) \gets f(v,u) - c_f(p)$
-        \EndFor
-    \EndWhile
-\EndFunction
-\end{algorithmic}
-\end{algorithm}
-
-\begin{theorem}
-Hodnota maximálního toku je zároveň váhou minimálního řezu.
-\end{theorem}
+Nech váha hrany $e=(u,v)$ je $w(e)$. Potom modifikovaná
+váha hrany bude $w'(e) = w(e) + p(v) - p(u)$, kde $p(x)$
+pre vrchol $x$ je potenciálová funkcia pre daný vrchol.
 
 \subsection{Optimální párování}
 
@@ -328,13 +573,138 @@ jedno a potom zlepšující cesta neexistuje.
     \caption{Kontrakce květu, \href{https://en.wikipedia.org/wiki/Blossom_algorithm}{zdroj}}
 \end{figure}
 
+\subsection{Maximální tok}
+Máme orientovaný graf, kde každá hrana má priradenú kapacitu.
+Naším cieľom je vypočítať maximálny tok, ktorý môže
+grafom prúdiť z vrcholu $s$ do vrcholu~$t$.
 
+V~průběhu algoritmu udržujeme čtyři invarianty:
+$f(u,v) = -f(v,u)$, tok nepřevyšuje kapacitu,
+do každého vrcholu (kromě $s,t$) vteče stejně jako z~něj vyteče,
+kolik vyteče z~$s$, tolik doteče do $t$.
+
+Funkce $c : E \to \mathbb{R}$ přiřazuje každé hraně její maximální
+možnou kapacitu. Definujeme {\em reziduální graf}
+$G_{f}(V,E_{f})$ s~kapacitou $c_{f}(u,v)=c(u,v)-f(u,v)$ a bez toku.
+Reziduálny graf teda obsahuje hrany s ohodnoteniami, ako sa tok
+cez danú hranu môže zmeniť. Keď je napr. v sieti hrana $(x,y)$
+s naplnenou kapacitou $8/10$, tak v reziduálnom grafe je
+hrana $(x,y)$ s kapacitou $2$ a hrana $(y,x)$ s kapacitou $8$.
+
+{\em Augmentujúca cesta} je ľubovoľná cesta z $s$ do $t$
+v~reziduálnom grafe. {\em Bottleneck kapacita} je augmentujúcej
+cesty je minimálna kapacita z~jej hrán.
+
+\begin{theorem}
+Hodnota maximálního toku je zároveň váhou minimálního řezu.
+\end{theorem}
+
+\subsubsection*{Ford-Fulkerson}
+Algoritmus udržiava reziduálny graf. Dokým v~tomto grafe
+existuje augmentujúca cesta, tak nejakú nájdeme a 
+augmentujeme ju\footnote{Pri augmentovaní cesty ju naplníme 
+a aktualizujeme reziduálny graf}.
+
+Časová zložitosť jednej iterácie je $\mathcal{O}(m)$, pretože
+toľko trvá nájdenie augmentujúcej cesty. Predpokladáme, že 
+kapacity hrán sú celočíselné, inak by nebolo zaručené, že algoritmus skončí. 
+Nech $C$ je maximálna kapacita. Zložitosť algoritmu je potom $\mathcal{O}(nm \cdot C)$.
+
+\subsubsection*{Edmonds-Karp}
+
+Tento algoritmus je takou modifikáciou Ford-Fulkerson algoritmu,
+že v každej iterácii vyberie takú augmentujúcu cestu, ktorá obsahuje
+minimálny počet hrán.
+
+Hledání cesty na řádku 3 se provede algoritmem BFS. S DFS by algoritmus
+neměl zaručenou konvergenci. Pro cesty délky $k$
+může být až $m$ zlepšujících cest, délka cesty je nejvýše
+$n$, celkem $mn$
+počtů nalezení zlepšujících čas a zlepšení trvá $m$
+kroků -- složitost algoritmu je
+$\mathcal{O}(nm^2)$.
+
+\begin{algorithm}[H]
+\caption{Edmonds-Karp}
+\begin{algorithmic}[1]
+\Function{EdmondsKarp}{$G, s, t, c$}
+    \State $f(u,v) \gets 0$ for all $(u,v) \in E$
+    \While{exists $s$--$t$ path $p$ in $G_f$, s.t. $c_f(u,v) > 0$ for all $(u,v) \in p$}
+        \State $c_f(p) = \min \{ c_f(u,v) \mid (u,v) \in p \}$
+        \For{$(u,v) \in p$}
+            \State $f(u,v) \gets f(u,v) + c_f(p)$
+            \State $f(v,u) \gets f(v,u) - c_f(p)$
+        \EndFor
+    \EndWhile
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\subsubsection*{Dinic}
+Dinicov algoritmus využíva dva pojmy, ktoré si najprv definujeme.
+
+\begin{definition}[Level graf]
+Nech $L_i$ je množina vrcholov, ktoré sú vo vzdialenosti~$i$ od
+vrcholu $s$. {\em Level graf} $L_G$ pre graf $G$ je jeho podgrafom
+takým, že obsahuje iba hrany $(u,v)$ také, že $u \in L_i$ a 
+$v \in L_{i+1}$ pre nejaké prirodzené číslo~$i$.
+\end{definition}
+
+Pre graf $G$ sa jeho level graf dá vypočítať v čase $\mathcal{O}(m)$.
+
+\begin{definition}[Blokujúci prúd]
+Hovoríme, že prúd je {\em blokujúci}, pokiaľ každá $s-t$ cesta v~danom
+prúde obsahuje aspoň jednu blokujúcu hranu. 
+\end{definition}
+
+\begin{lemma}
+	Každý maximálny prúd je blokujúci, avšak nie každý blokujúci prúd
+	je maximálny.
+\end{lemma}
+
+Myšlienkou Dinicovho algoritmu je to, že všetky jeho minimálne augmentujúce
+cesty augmentujeme naraz. Keďže dĺžka najkratšej augmentujúcej cesty
+nemôže klesnúť, toto nám zaručí najviac $n$ iterácií.
+
+V každej iterácii musíme nájsť level graf aktuálneho reziduálneho grafu,
+v ňom nájsť blokujúci prúd, tento potom augmentovať, a nakoniec 
+aktualizovať reziduálny graf.
+
+Každá iterácia sa dá implementovať so zložitosťou $\mathcal{O}(mn)$, takže
+zložitosť celého algoritmu je $\mathcal{O}(mn^2)$.
+
+\subsubsection*{MPM algoritmus}
+Modifikácia Dinicovho algoritmu, ktorá každú iteráciu vykoná v čase $\mathcal{O}(n^2)$.
+Jeho zložitosť je teda $\mathcal{O}(n^3)$.
+
+Popis TODO
+
+\subsubsection*{Push-relabel}
+Tento algoritmus bude využívať pseudotok, ktorý spĺňa kapacitné
+ohraničenie, avšak tok prichádzajúci do vrcholu môže byť väčší, 
+ako tok odchádzajúci z tohto vrcholu (tj. vrchol môže určitú časť
+toku ukladať do rezervnej nádrže). Každý vrchol má v priebehu 
+algoritmu svoju výšku, ktorá sa iba zväčšuje. Zdroj má fixovanú
+výšku $n$, stok má fixovanú výšku $0$, ostatné vrcholy majú na začiatku
+algoritmu výšku $0$.
+
+Na začiatku algoritmu sa zo zdroja pretlačí maximálny tok
+do všetkých možných hrán. Tok, ktorý pritečie do vnútorného vrcholu
+siete sa uloží do rezervnej nádrže; odtiaľ sa potom postupne pretláča
+do vrcholov s menšou výškou (\textsc{Push}). Keď nastane situácia, že 
+rezervná nádrž nie je prázdna, ale všetky nenasýtené hrany, ktoré z~vrchola
+odchádzajú, vedú do vrcholov s~väčšou výškou, zvýšime výšku vrchola
+(\textsc{Relabel}). Výpočet končí, keď už nie je možné pretlačiť viac
+toku do stoku.
+
+Pokiaľ sa v priebehu algoritmu vyberá ako aktívny vrchol vždy ten
+s~maximálnou výškou, zložitosť algoritmu je $\mathcal{O}(n^3)$.
 
 \subsection{Datové struktury pro grafové algoritmy}
 \label{subsec:data_structures}
 
-Pro implementaci Dijkstrova algoritmu lze použít Fibonacciho haldu
-(popis neuvádíme, je poměrně složitý). Pro implementaci Kruskalova
+\subsubsection*{Union Find}
+Pro implementaci Kruskalova
 algoritmu používáme strukturu Union Find.
 
 Struktura \textsc{Union Find} ukládá vrcholy do stromů.
@@ -344,7 +714,7 @@ Spojení komponent probíhá přidáním jednoho stromu k druhému -- to se
 řídí podle hodnoty $rank$ každého stromu tak, aby hloubka zůstala nízká.
 
 V \autoref{alg:union_find} proměnnou $self$ používáme ve smyslu jako v
-Pythonu. Funkce \textsc{Initialze} je konstruktor.
+Pythonu. Funkce \textsc{Initialize} je konstruktor.
 
 \begin{algorithm}[H]
 \caption{Union Find}
@@ -378,6 +748,46 @@ Pythonu. Funkce \textsc{Initialze} je konstruktor.
 
 \end{algorithmic}
 \end{algorithm}
+
+\subsubsection*{Fibonacciho halda}
+
+Pre implementáciu viacerých algoritmov sa využíva Fibonacciho halda.
+Fibonacciho halda je modifikáciou binomiálnej haldy, ktorá umožňuje
+efektívne realizovať operácie union, insert a decrease-key.
+Keďže táto halda je pomerne zložitá, jej popis popíšeme iba zjednodušene.
+
+Každý vrchol má v sebe uložený kľúč, binárny príznak, počet synov
+a ukazetele na otca, ľavého a pravého brata a jedného zo synov.
+Halda sama o sebe obsahuje počet prvkov a ukazateľ na najmenší z nich.
+
+Pri vkladaní sa vrchol iba vloží na prvú úroveň (do koreňového zoznamu), 
+a pokiaľ je jeho kľúč menší ako prechádzajúce minimum, ukazateľ
+na minimum sa nastaví na nový vrchol. Zložitosť tejto operácie je konštantná.
+
+Nájdenie minimálneho prvku je triviálne a konštantné.
+
+Pri zjendnotení dvoch háld proste spojíme koreňové zoznamy. Zložitosť
+tejto operácie je teda opäť konštantná.
+
+Pri odstránení minimálneho prvku všetkých jeho synov presunieme do 
+koreňového zoznamu. Pomocou funkcie \textsc{Consolidate} upravíme haldu,
+aby neobsahovala dva stromy rovnakého stupňa. Nový minimálny 
+prvok nájdeme prechádzaním koreňového zoznamu.
+
+Funkcia \textsc{Consolidate} nájde dva vrcholy $x,y$ s rovnakým stupňom,
+$x.key \leq y.key$, a urobí $y$ synom vrcholu $x$. Táto operácia
+sa robí opakovane.
+
+Amortizovaná zložitosť odstránenia minimálneho prvku je logaritická.
+
+Ak sa pri znížovaní kľúča poruší vlastnosť minimovej haldy,
+celý podstrom sa odreže a presunie sa do koreňového zoznamu.
+Pokiaľ sa nejakému vrcholu odreže druhý syn, tak aj tento vrchol
+sa presunie do koreňového zoznamu. Toto môže viezť ku kaskádovému
+odrezávaniu smerom ku koreňu.
+
+Amortizovaná zložitosť znižovania kľúča je opäť konštantná.
+
 
 
 \subsection{Náhodné grafy a jejich použití}

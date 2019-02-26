@@ -1,9 +1,46 @@
 \section{Kódování a kryptografie}
 
+\subsection{Úvod}
+
+\subsubsection*{Znenie otázky}
+
+Kódování, kryptografie a kryptografické protokoly. Lineární 
+kódy (definice, vlastnosti, kódování a dekódování, důležité příklady 
+lineárních kódů; cyklické kódy (definice, algebraická charakterizace, 
+kódování a dekódování, důležité příklady cyklických kódů); turbo 
+kódy a low-density kódy; kryptosystémy s privátním klíčem; DES a AES 
+kryptosystémy; kryptosystémy s veřejným klíčem; RSA kryptosystém a jeho 
+vlastnosti; kryptografické systémy založené na eliptických křivkách; 
+schémata pro digitální podpisy; autentizační protokoly; protokoly pro 
+coin tossing, bit commitment a oblivious transfer; steganografie a vodotisk; 
+kryptografické stroje a jejich historie; kvantová kryptografie (generování 
+náhodných tajných klasických klíčů, kvantová teleportace).
+
+\subsubsection*{Pojmy}
+Majoritná voľba, paritný bit, kanál, $(n,M,d)$-kód, Huffmanove kódy,
+dĺžka kódu, entropia; Galois field, lineárny kód, $[n,k]$-kód, coset
+leader, kódovanie, dekódovanie, Hadamard code, Hamming code; cyklické 
+kódy, posun, generátor, okruh/pole polynómov; Shannonov limit, turbo kódy,
+low-density kódy; symetrická kryptografia, informácia/zložitosť, 
+security/quantom security, schéma, podmienky kryptosystému, útoky na
+kryptosystém, Hillov, afinný kryptosystém, one time pad, DES;
+asymetrická kryptografia, schéma, distribúcia kľúča, one-way funkcie,
+permutácie, Diffie-Hellman, MITM, RSA; eliptické krivky, ťažký problém,
+sčítanie bodov, Hasx theorem, eliptický Diffie-Hellman, El Gamal;
+digitálne podpisy, schéma, RSA podpis, El Gamal podpis, DSA, Fiat-Shamir;
+challenge-response protokol, autentizačné protokoly, útoky;
+coin tossing protokol, bit commitment, commit/reveal fáza, oblivious
+transfer, all-or-nothing; steganografia, vodotlač, steganografický model,
+pure/secret key/public key kryptosystém, typy; história, enigma;
+kvantová kryptografia, kvantová informácia, qubit, QKD algoritmus, kvantový
+entanglement.
+
+\subsection{Základy}
+
 Blokový kód je injektivní zobrazení $C : \Sigma^k \to \Sigma^n$,
-kde $k$ značí délku zpráv a $n$ délku jejich kódů.
-Běžně značíme kód trojicí $(n,k,d)_q$, kde $q$ je velikost abecedy
-$\Sigma$ a $d$ značí vzdálenost kódu. Vzdálenost
+kde $k$ značí délku zpráv a $n$~délku jejich kódů.
+Běžně značíme kód trojicí $(n,k,d)_q$, kde $q$ je velikost 
+abecedy~$\Sigma$ a $d$~značí vzdálenost kódu. Vzdálenost
 $\Delta(c, c') = \lvert \{ i \mid c_i \neq c'_i \} \rvert$
 slov $c, c' \in \Sigma^k$ je počet znaků, ve kterých se $c, c'$
 liší. Vzdálenost kódu je minimální počet pozic ve kterých se nějaká dvě
@@ -21,11 +58,24 @@ dekódování dle nejmenší vzdálenosti funguje dobře za předpokladu, že
 přenos probíhá přes binární, symetrický, bezpaměťový kanál
 s~pravděpodobností chyby menší než $1/2$.
 
+Aby bolo možné odhaliť a prípadne opraviť chybu, je potrebné pridať redundanciu.
+Na to je možné použiť napríklad majoritnú voľbu, kde napr. $0$ zakódujeme
+ako $00000$, $1$ ako $11111$ a pri dekódovaní sa \uv{hlasuje}; prípadne
+aj pridanie iba paritného bitu dokáže zabrániť veľkému množstvu chýb,
+najmä v kanáloch s~malou pravdepodobnosťou chyby.
+
+{\em Huffmanov kód} kóduje častejšie používané slová kratšími kódovými slovami.
+Tým sa dokáže priblížiť entropii.
+
 \subsection{Lineární kódy}
 
 \subsubsection{Základní vlastnosti}
 
 % http://web.mit.edu/6.02/www/s2012/handouts/6.pdf
+
+{\em Galoi field} $GF(q)$ s~prvočíselným parametrom~$q$ je množina $\{0,1,\ldots, q-1 \}$
+s~operáciami sčítania a násobenia modulo~$q$. Tieto sa využívajú pre návrh
+lineárnych kódov.
 
 \begin{definition}
     {\em Lineární kód} délky $n$ a stupně $k$
@@ -146,10 +196,31 @@ a vynásobí generátorem $g(x)$.
 
 Každý binární Hammingův kód je cyklický.
 
+\pagebreak
+
 \subsection{Turbo kódy a low-density kódy}
 
 (Profesor Gruska tuto látku na přednášce naznačil jen pár schématy, takže
-to tady taky odbydu. Low-density kódy se AFAIK neprobraly vůbec.)
+to tady taky odbydu.)
+
+\begin{theorem}[Shannon]
+	Pre kanál, jeho kapacita $C=\sup_{P_X}I(X,Y)$ má nasledovné vlastnosti:
+	\begin{enumerate}
+		\item Pre každé $\epsilon > 0$ a $R < C$, pre dostatočne veľké $N$, existuje
+		kód s~mierou~$R$ a rozhodovací algoritmus taký, že maximálna pravdepodobnosť
+		blokovej chyby je~$\leq \epsilon$.
+		\item Ak pravdepodobnosť blokovej chyby~$p_b$ je akceptovateľná, miera
+		kódu až do $R(p_b)$ je dosiahnuteľná, kde $P(p_b)=\frac{C}{1-H_2(p_b)}$ a
+		$H_2(p_b)$ je binárna funkcia entropie.
+		\item Kódy s~mierou väčšou ako $R(p_b)$ nie sú dosiahnuteľné.
+	\end{enumerate}
+\end{theorem}
+
+\begin{theorem}[Shannon]
+	\[ 
+		C = B \log_2\left(1+\frac{S}{N}\right)
+	\]
+\end{theorem}
 
 % https://pdfs.semanticscholar.org/a3a7/4017298a273ec8a955b6147ec3caf6559286.pdf
 % http://users.ecs.soton.ac.uk/sqc/ELEC6214/AWCNS-L16.pdf
@@ -158,6 +229,7 @@ Motivace: Míra (rate) turbo kódu je se blíží teoretické kapacitě,
 low-density kódy se ukazují ještě o něco lepší. Využívají se například
 k~přenosu televizního signálu.
 
+\subsubsection{Turbo kódy}
 Turbo kódy jsou lineární blokové kódy.
 Turbo kódování kódem délky $n$ probíhá tak, že se nejprve za vstup délky $k$ přidá $n -
 k$ nul. Posloupnost se pošle jednou nezměněná $x_0$ a dvakrát upravená
@@ -171,28 +243,122 @@ s~$k\times n$ generující maticí $G$ a $k$-tici zpráv
 $I = (I_0(x),\ldots,I_k(x))$ jako polynomů. $n$-tici kódových slov
 $C$ získáme pro každé $0 \leq j \leq n$ jako $C_j = I_j(G) \cdot G$.
 
+\subsubsection{Low density kódy}
+
 % https://en.wikipedia.org/wiki/Low-density_parity-check_code#Operational_use
 
-Low-density kódy jsou zadány řídkými maticemi, často náhodně
-generovanými. Paritní kódy se dají popsat bipartitními grafy.
-Jednu stranu nazveme $=$, druhou $+$. Umístíme-li bity zprávy z~LD kódu
+{\em LDPC (Low-density parity check)} kódy jsou zadány velmi řídkými maticemi, často náhodně
+generovanými. 
+
+Lineárny $[n,k]$-kód je regulárnym $[n,k,r,c]$ LDPC kódom, ak $r << n$,
+$c << n-k$ a kontrolná matica obsahuje $r$~jednotiek v~každom riadku
+a $c$~jednotiek v~každom stĺpci.
+
+Paritní kódy se dají popsat bipartitními grafy.
+Jednu stranu nazveme $=$, druhou~$+$. Umístíme-li bity zprávy z~LD kódu
 do vrcholů strany $=$, tak musí platit, že součet hodnot, ke kterým je
-připojený každý $+$ vrchol je roven $0$ mod $2$.
+připojený každý $+$ vrchol je roven $0$~mod~$2$.
 
-Například kód s~třemi $+$ a šesti $=$ kóduje tříbitové zprávy šesti
-bity. Bipartitní graf přímo zadává matici sousednosti matice parity pro
-daný kód, z~nějž pak můžeme standardním způsobem dopočítat generující
-matici.
+\begin{example}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=150pt]{ldpc.png}
+		\caption{Bipartitný graf reprezentujúci $(6,3)$-LDPC kód.}
+	\end{figure}
+	
+	Majme kód reprezentovaný grafom vyššie.
+	
+	Kontrolnú maticu zostrojíme tak, že každý~$+$ vrchol bude reprezentovaný
+	jedným riadkom, pričom tam bude $1$~pre každý $=$ vrchol, s~ktorým
+	je tento $+$~vrchol spojený, $0$~pre ostatné.
+	
+	Pre kód zadaný daným grafom teda vyzerá kontrolná matica nasledovne:
+	\[
+		H =
+		\begin{pmatrix}
+			1 & 1 & 1 & 1 & 0 & 0 \\
+			0 & 0 & 1 & 1 & 0 & 1 \\
+			1 & 0 & 0 & 1 & 1 & 0 \\
+		\end{pmatrix}
+	\]
+	
+	Pre všetky slová tohto kódu potom platia nasledovné rovnosti:
+	\[
+		\begin{aligned} 
+			a_1 + a_2 + a_3 + a_4 &= 0 \\
+			a_3 + a_4 + a_6 &= 0 \\
+			a_1 + a_4 + a_5 &= 0
+		\end{aligned}
+	\]
+	
+	Keď teda s použitím daného kódu obdržíme slovo $?01?11$, tak
+	z~druhej rovnice vyplýva, že $a_4$~musí byť~$0$. Potom z~tretej
+	rovnice vyplýva, že $a_1$~musí byť~$1$.
+\end{example}
 
 
-\subsection{Kryptosystémy s privátním klíčem}
+\subsection{Symetrická kryptografia}
 
-Caesarova šifra (posun každého písmena o konstantu).
-Vigenèrova šifra (posun $n$-tic písmen, každé o různou konstantu).
+V~symetrickej kryptografii obe strane zdieľajú jeden spoločný
+tajný kľúč.
+
+\begin{example}
+	Príkladom je Caesarova šifra (posun každého písmena o konstantu).
+	
+	Nech Alica a Bob zdieľajú tajný kľúč $K=17$. Alica chce zakódovať 
+	správu $m=\verb|INFORMATIKA JE SUPER|$. Zakódovaná správa po zakódovaní
+	s~kľúčom $K=17$	bude $c=e_K(m)=\verb|ZEWFIDRKZBR AV JLGVI|$.
+	
+	Eva bez znalosti tajného kľúča nebude vedieť túto správu dekódovať
+	(aj keď samozrejme Caesarova šifra môže mať najviac 26 rôznych kľúčov
+	takže celkom jednoducho môže všetky vyskúšať). Bob so znalosťou 
+	kľúča~$K$ jednoducho správu rozlúšti $m=d_K(c)$.
+\end{example}
+
+Ďalšími príkladmi sú Vigenèrova šifra (posun $n$-tic písmen, každé o různou konstantu).
 Hillův kryptosystém (kódujeme $n$-tice násobením maticí-klíčem,
 dekódujeme její inverzí). DES a AES.
 
-\subsection{DES a AES}
+Pre symetrickú kryptografiu by mali platiť nasledovné podmienky:
+\begin{enumerate}
+	\item So znalosťou kľúča~$K$ a funkcii~$e,d$ je ľahké spočítať
+	$e_K(m)$ a $d_K(c)$.
+	\item Zakódované $e_K(m)$ by nemalo byť o~moc dlhšie ako $m$.
+	\item Malo by byť nemožné efektívne spočítať $d_K(c)$ bez znalosti
+	funkcie~$d$ a kľúča~$K$.
+	\item Malá zmena $m$ veľmi zmení $e_K(m)$.
+	\item Množina kľúčov by mala byť veľká.
+\end{enumerate}
+
+Takisto by mali platiť podmienky \verb|CIAAN|:
+\begin{itemize}
+	\item \textsc{Confidentiality}: dáta môže dekódovať iba ten, 
+	komu su určené
+	\item \textsc{Integrity}: adresát si môže overiť, že dáta neboli 
+	neautorizovane zmenené
+	\item \textsc{Availability}: autorizovaní užívatelia musia mať
+	prístup k~dátam a službám
+	\item \textsc{Authenticity}: dáta pochádzajú od toho, od koho majú
+	\item \textsc{Non-Repudiation}
+\end{itemize}
+
+Šifry sa dajú deliť na dva druhy - substitučné a transpozičné.
+
+Substitučné nahradia časť textu časťou nejakého iného kryptotextu
+podľa daných pravidiel. Môžu byť jednoduché (vždy na jedinom znaku),
+monoalfabetické (zadané nejakou pevnou permutáciou),
+polyalfabetické (môžu používať iné permutácie v~inej časti textu),
+či polygrafické (menia naraz viac znakov).
+
+Transpozičné šifry nemenia znaky, iba menia ich poradie v slove.
+
+\begin{example}[Afinný kryptosystém]
+	Afinný kryptosystém je špecifikovaný dvomi číslami $0 \leq a,b \leq 25$,
+	$\gcd(a,26)=1$. Každý znak $x$ slova $m$ sa zakóduje ako $e_{a,b}(x)=(ax+b)\mod 26$.
+	Dekóduje sa potom $d_{a,b}(y) = a^{-1}(y-b)\mod 26$.
+\end{example}
+
+\subsubsection{DES a AES}
 
 DES rozdělí zprávu do 64-bitových bloků
 a v~šestnácti krocích provádí nad každým blokem operace, které mají jako
@@ -212,13 +378,15 @@ další je posun bitů v řádcích,
 ještě další je přehazování sloupců
 a poslední je xor-ování sloupců s~klíčem.
 
-\subsection{Kryptosystémy s veřejným klíčem, RSA}
+\subsection{Asymetrická kryptografia}
 
 V~kryptosystémech s~veřejným klíčem disponuje každý účastník dvěma
 klíči: veřejným a soukromým. Uživatel může podepsat dokument svým
 soukromým klíčem a každý potom může pomocí veřejného klíče ověřit
 autenticitu dokumentu. Navíc každý může zašifrovat pomocí veřejného
 klíče dokument, ten je pak dešifrovatelný pouze s~klíčem privátním.
+
+\subsubsection{RSA}
 
 Nejznámější kryptosystém s~veřejným klíčem je RSA, který je založený na
 myšlence, že násobení čísel je snadné, zatímco na rozklad na prvočísla
@@ -255,6 +423,21 @@ algoritmus.
 
 % https://en.wikipedia.org/wiki/RSA_(cryptosystem)#Proofs_of_correctness
 
+\subsubsection{Iné asymetrické kryptosystémy}
+{\em Rabinov kryptosystém} je založený na tom, že modulo $n=pq$ je ľahké urobiť druhú
+mocninu čísla, avšak odmocniť číslo je ťažké bez faktorizácie. Po odmocnení
+vyjdú štyri odmocniny daného čísla, z~ktorých jedna je pôvodné slovo.
+
+{\em Kryptosystém El~Gamal} je založený na diskrétnom logaritme. 
+Verejným kľúčom je trojica $p,q,y$, kde $p$~je prvočíslo, $q$~je 
+primitívny prvok $\mathbb{Z}^*_p$ a $y=q^x \mod p$. Súkromným kľúčom
+je číslo $x < p$.
+
+Slovo $w$ sa zakóduje pomocou náhodného čísla $r$ ako $a=q^r \mod p$,
+$b=y^r w \mod p$. Kryptotextom je dvojica $(a,b)$.
+
+Dekrypcia prebieha ako $w = \frac{b}{a^x}=ba^{-x}\mod p$.
+
 \subsection{Kryptografie na eliptických křivkách}
 
 Výhodou eliptických křivek je,
@@ -262,7 +445,7 @@ Výhodou eliptických křivek je,
 $\mathbb{Z}_n$) stačí použít podstatně menších klíčů.
 
 Eliptická křivka je graf bodů v~rovině splňujících
-$y^2 = x + ax + b \bmod n$, kde $a,b,n$ jsou celá čísla,
+$y^2 = x^3 + ax + b \bmod n$, kde $a,b,n$ jsou celá čísla,
 spolu s {\em bodem v nekonečnu}. Uvažujeme pouze křivky, kde neexistují
 násobné kořeny (ekvivalentně $4a^3 + 27b^2 \neq 0$).
 
@@ -301,6 +484,29 @@ Podpis pomocí RSA se vytvoří $c = w^d$ a ověřuje se zda $w = c^e$.
 
 Další schémata jsou například ElGamal či Rabinovo schéma.
 
+\subsubsection{DSA}
+
+Ako štandard pre podpisy bol vybraný DSA, ktorý vznikol modifikáciou
+podpisov pomocou schématu El Gamal. Verejným kľúčom
+je štvorica $(p,q,r,y)$, kde $p$ je prvočíslo, $q$ je prvočíslo, ktoré
+delí $p-1$, $r=h^{(p-1)/q}\mod p$, kde $h$ je náhodný primitívny
+prvok $\mathbb{Z}_p$, $r>1$ a $y=r^x\mod p$. Privátnym kľúčom
+je hodnota $x$.
+
+Podpis slova $w$ prebieha nasledovne: vyberie sa náhodné $k < q$.
+Spočíta sa $a=(r^k\mod p) \mod q$, $b = k^{-1}(w+xa)\mod q$.
+Podpisom je dvojica $(a,b)$.
+
+Podpis sa overí tak, že sa spočíta $z=b^{-1}\mod q$, $u_1=wz\mod q$,
+$u_2=az\mod q$. Potom sa overí, že $r^{u_1}y^{u_2}\mod q=a$.
+
+\subsubsection{Fiat-Shamir}
+V protokole Fiat-Shamir sa pre prvočísla $p,q$ spočíta $p \cdot q = n$,
+ako verejný kľúč sa vyberú čísla $v_1, \ldots, v_k$ a ako súkromný kľúč
+$s_1, \ldots, s_k$, $s_i=\sqrt{v_i^{-1}}\mod n$.
+
+Podpis a overenie TODO
+
 \subsection{Autentizační protokoly}
 
 (Uvedeme jeden protokol. Profesor Gruska uvádí ještě dva, technicky
@@ -329,10 +535,13 @@ Bob vybere $1 \leq x \leq n/2$, pošle alici $y = x^2 \bmod n$.
 Alice vypočte všechny čtyři kořeny $x_1, n-x_1, x_2, n - x_2$ (spočte
 nějakým algoritmem nebo zkusí možnosti modulo každé prvočíslo a pak použije CRT)
 a tipem vybere jeden ze dvou,
-které jsou menší než $n/2$. Bob jí sdělí, zda trefila $x$ nebo ne a
+které jsou menší než $n/2$.
+Alica Bobovi nepošle svoj tip, ale dá mu vedieť, ktoré si vybrala (napr. 
+vyberie nejaký bit, kde sa líšia, a pošle Bobovi poradie a hodnotu 
+daného bitu).
+Bob jí sdělí, zda trefila $x$ nebo ne a
 pošle jí ho pro ověření, zatímco ona jemu pošle $p,q$ pro ověření.
 
-\pagebreak
 
 \subsection{Protokoly pro bit commitment}
 
@@ -378,13 +587,11 @@ Takový je například následující protokol:
         Bobovi.
     \item Bob ověří, jestli zaslaný kořen je kongruentní $x$. Pokud ano,
         nic se nedozvěděl. Pokud ne, má dva různé kořeny modulo $n$ a
-        může tak faktorizovat $n$. Alice se nic nedozvěděla.
+        může tak faktorizovat~$n$. Alice se nic nedozvěděla.
 \end{enumerate}
 
 Můžeme také navrhnout protokol, ve kterém Alice pošle dvě zprávy a Bob
 se dozví právě jednu z~nich a Alice se nedozví kterou.
-
-\pagebreak
 
 \subsection{Steganografie a vodotisk}
 
@@ -414,6 +621,14 @@ mít verzi s~vodotiskem.
 
 \subsection{Kryptografické stroje a jejich historie}
 
+V~histórii kryptografie hovoríme o~štyroch obdobiach:
+\begin{enumerate}
+	\item Kryptografia bez strojov: lingvistické šifry (Caesar, Vigenère, Hill)
+	\item Mechanická kryptografia: napr. Enigma
+	\item Digitálna kryptografia: počítače, RSA, DSA, AES, ...
+	\item Kvantová kryptografia
+\end{enumerate}
+
 Enigma byla vynalezena v~roce 1918. Má tři libovolně rotory, kde každá
 pozice implementuje Caesarovu šifru. První rotor po napsání písmena
 otočí o jedno dál a až obejde celou otáčku, tak posune o jedna další
@@ -441,8 +656,64 @@ Britům. Britský tým tuto technologii značně zdokonalil.
 
 \subsection{Kvantová kryptografie}
 
-Generování náhodných tajných klasických klíčů, kvantová teleportace.
 Ve slidech profesora Grusky (které na přednášce neprobral)
 a na Wikipedii.
 % https://en.wikipedia.org/wiki/Quantum_key_distribution
 % https://en.wikipedia.org/wiki/Quantum_teleportation
+
+Pokúsim sa to tu nejako popísať, avšak za správnosť a úplnosť informácií
+neručím.
+
+Kvantová kryptografia je teoreticky absolútne bezpečná, fyzikálne
+zákony zaručujú, že sa (v~istých prípadoch) nedá prelomiť. Kvantová
+informácia sa ťažko ukladá a posiela, nie je možné ju skopírovať
+a meraním sa zničí. Tento fakt prakticky znemožňuje man-in-the-middle
+útoky, keďže pokiaľ by útočník informáciu získal, táto sa zničila
+a on nie je schopný ju poslať ďalej; komunikujúce strany sa teda 
+dozvedia o~útočníkovi. Kvôli tomuto v~kvantovej kryptografii
+neexistuje spôsob ako vykonávať bit commitment a oblivious transfer.
+
+V~kvantových počítačoch je informácia reprezentovaná qubitmi,
+ktoré môžu mať ľubovoľnú z~nespočetného množstva hodnôt 
+$\alpha|0\rangle + \beta|1\rangle$, kde $|\alpha|^2+|\beta|^2=1$ a 
+$|\phi\rangle$ je stĺpcový vektor ekvivalentný $\phi$.
+
+Qubit register môže mať naraz uložené všetky superpozície $2^n$.
+
+\subsubsection{Generování náhodných tajných klasických klíčů}
+Cieľom je využiť metód kvantovej kryptografie na vygenerovanie
+náhodného tajného kľúča, ktorý bude mať Alica aj Bob, a Eva
+nebude mať šancu ho zistiť.
+
+Alica vygeneruje náhodný kľúč a posiela ho Bobovi nasledovne:
+pre každý znak si vyberie náhodne bázu ($|0\rangle$, $|0'\rangle$,
+resp. $|1\rangle$, $|1'\rangle$) a túto informáciu pošle Bobovi.
+
+Bob prichádzajúce fotóny meria náhodne buď so štandardnou bázou~B
+alebo s~duálnou bázou~D.
+
+Pokiaľ meria s~bázou~B a Alica poslala buď $|0\rangle$ alebo $|1\rangle$,
+Bob obdrží správnu hodnotu s~pravdepodobnosťou~1, inak je hodnota,
+ktorú obdrží, dokonale náhodná.
+
+Bob potom Alici pošle (klasickým kanálom) postupnosť báz, ktorú použil 
+na meranie. Alica mu potom povie, ktoré bázy vybral správne,
+a tieto hodnoty sú potom vybrané ako kľúč.
+
+\begin{example}
+	Alica posiela postupnosť \verb|10001100011| a posiela ju polarizovanú
+	ako $|1\rangle|0'\rangle|0\rangle|0'\rangle|1\rangle|1'\rangle|0'\rangle|0\rangle|0\rangle|1\rangle|1'\rangle$.
+	Bob použije na meranie postupnosť báz \verb|BDDDBBDBBDB| a obdrží
+	postupnosť \verb|10001000010|.
+	Po komunikácii klasickým kanálom vie, že obdržal postupnosť \verb|10R01R000RR|
+	a kľúčom sa teda stáva postupnosť \verb|1001000|.
+\end{example}
+
+\subsubsection{Kvantová teleportace}
+Princípom je, že Alica a Bob zdieľajú dve častice, ktoré
+sú kvantovo prepojené.
+\[
+	|EPR_{pair}\rangle=\frac{1}{\sqrt{2}}(|00\rangle+|11\rangle)
+\]
+Potom stačí odmerať jednu z~častíc a meranie druhej častice je známe.
+Toto sa dá využiť napríklad na zdieľanie symetrického kľúča.

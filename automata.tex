@@ -1,37 +1,109 @@
 \section{Automaty}
 
+\subsection{Úvod}
+\subsubsection*{Znenie otázky}
+Automaty. Konečné deterministické, nedeterministické a pravděpodobnostní 
+automaty a jejich vlastnosti (minimalizace, ekvivalence, rozhodovací problémy); 
+regulární jazyky a jejich vlastnosti; pumping lemma, zásobníkové 
+automaty a jejich vlastnosti; bezkontextové jazyky a jejich vlastnosti; 
+Chomského gramatiky a jejich normální formy a vztah k modelům automatů. 
+Syntaktická analýza nejpoužívanějších modelů bezkontextových gramatik; 
+konečné automaty nad nekonečnými slovy; Turingovy stroje a jejich vlastnosti 
+(rekurzivní a rekurzivně spočetné množiny, univerzalita a halting problem); 
+RAM a PRAM modely a jejich kategorie. Celulární automaty.
+
+\subsubsection*{Pojmy}
+Abeceda, jazyk, gramatika, pravidlá; deterministický/nedeterministický konečný automat, 
+minimálny automat; regulárne jazyky, uzavretosť regulárnych jazykov, rozhodnuteľné
+problémy, pumping lemma; zásobníkové automaty, syntaktická analýza, pumping lemma
+pre bezkontextové jazyky, bezkontextová gramatika, derivačný strom,
+viacznačná/jednoznačná gramatika, redukovaná gramatika, gramatika
+bez $\epsilon$ pravidiel, jednoduchých pravidiel, necyklická, vlastná,
+neľavorekurzívna, uzavretosť, rozhodnuteľné problémy;
+Chomského gramatiky, normálne formy (CNF, GNF);
+First, Follow, SLL, LL, LR, SLR, LALF, vzťahy;
+$\omega$ automaty, Büchiho automaty, uzáverové vlastnosti, 
+Müllerove automaty; Turingove stroje, konfigurácia, výpočet,
+rekurzívne/rekurzívne spočetné jazyky, rozhodnuteľné/semirozhodnuteľné/nerozhodnuteľné problémy,
+Turingove stroje s $k$-páskou, obojstranne nekonečnou páskou, 
+s viac páskami, NTM/DTM, uzavretosť, rozhodnuteľné problémy,
+rec., RE, gramatika typu $0$, r.e. jazyk, lineárne ohraničený automat,
+univerzálny Turingov stroj, diagonalizácia, problémy, redukcia;
+RAM, PRAM, cululárne automaty.
+
+\subsection{Základné pojmy}
+
+{\em Abeceda} $\Sigma$ je množinou {\em znakov}. {\em Slovo} 
+nad konkrétnou abecedou je konečná postupnosť znakov.
+Dĺžka slova $v$ sa značí $|v|$, počet výskytov písmena~$a$
+v~slove~$v$ zas $\#_a(v)$. Prázdne slovo sa značí $\epsilon$
+a má dĺžku $|\epsilon|=0$.
+
+Pre abecedu $\Sigma$ je $\Sigma^*$ množina všetkých slov,
+$\Sigma^+$ množina všetkých neprázdnych slov. Pre dve slová
+$u,v$ je $.$ operáciou zreťazenia; $u.v=uv$.
+
+{\em Jazyk} nad abecedou $\Sigma$ je ľubovoľná podmnožina $L \subseteq\Sigma^*$.
+
+Zreťazenie jazykov $K$ a $L$ je jazyk $K.L=\{ uv | u \in K, v \in L\}$.
+Pre jazyk~$L$ je jeho $i$-tá mocnina $L^0=\{\epsilon\}$; $L^{i+1}=L.L^i$.
+Iterácia jazyka $L^*=\bigcup_{i=0}^{\infty} L^i$, pozitívna
+iterácia $L^+=\bigcup_{i=1}^{\infty} L^i$. Doplnok
+jazyka $L$ je $co-L=\Sigma^* \setminus L$.
+
+Majme abecedy $\Sigma$ a $\Delta$. {\em Substitúcia} $f : \Sigma \to \powerset{\Delta^*}$
+je zobrazenie, ktoré každému znaku z abecedy $\Sigma$ priradí
+jazyk nad abecedou $\Delta$.
+
+Substitúcia $h$ je {\em homomorfizmom}, keď pre každý znak $a \in \Sigma$,
+$h(a)$ obsahuje iba jediný prvok.
+
+\begin{definition}
+	{\em Gramatika} je štvorica $(N, \Sigma, P, S)$, kde
+	\begin{itemize}
+		\item $N$ je množina neterminálov,
+		\item $\Sigma$ je množina terminálov, $N \cap \Sigma = \emptyset$, $N \cup \Sigma = V$,
+		\item $P \subseteq V^*NV^* \times V^*$ je množina pravidiel,
+		\item $S \in N$ je počiatočný neterminál.
+	\end{itemize}
+\end{definition}
+
+Viac o gramatikách a Chomského hierarchií v sekcií o nich.
+
 \subsection{Deterministické automaty}
 
 \begin{definition}
-    Deterministický konečný automat (DFA) je zadán
-    pracovní abecedou $\Sigma$,
-    množinou stavů $S$,
-    počátečním stavem $s_0$,
-    množinou koncových stavů $F$,
-    a přechodovou funkcí $\delta : S \times \Sigma \to S$.
+    Deterministický konečný automat (DFA) je pätica $(Q, \Sigma, \delta, q_0, F)$, kde
+    \begin{itemize}
+		\item $Q$ je množina stavov,
+		\item $\Sigma$ je vstupná abeceda,
+		\item $\delta: Q \times \Sigma \to Q$ je prechodová funkcia,
+		\item $q_0 \in Q$ je počiatočný stav,
+		\item $F \subseteq Q$ je množina koncových stavov.
+	\end{itemize}
 \end{definition}
 
 Není-li přechodová funkce totální, snadno získáme ekvivalentní automat
-s~totální prechodovou funkcí tak, že přidáme nový stav, kam pošleme
+s~totální prechodovou funkcí tak, že přidáme nový stav (tzv. peklo), kam pošleme
 všechny dosud nedefinované přechody. Od teď pracujeme pouze s~úplnými
 automaty.
 
 \begin{definition}
-    Pro daný $\mathcal{M} = (\Sigma, S, s_0, F, \delta)$
+    Pro daný $\mathcal{M} = (Q, \Sigma, \delta, q_0, F)$
     induktivně definujeme přechodovou funkci
-    $\delta^* : S \times \Sigma^* \to S$.
-    Pro libovolný stav $s \in S$, písmeno $a \in \Sigma$ a
+    $\delta^* : Q \times \Sigma^* \to Q$.
+    Pro libovolný stav $q \in Q$, písmeno $a \in \Sigma$ a
     slovo $aw \in \Sigma^*$ (tedy začínající písmenem $a$).
 \begin{align*}
-    \delta^*(s, \epsilon) &= s \\
-    \delta^*(s, aw) &= \delta^*(\delta(s,a), w)
+    \delta^*(q, \epsilon) &= q \\
+    \delta^*(q, aw) &= \delta^*(\delta(q,a), w)
 \end{align*}
 \end{definition}
 
 \begin{definition}[Jazyk rozpoznávaný automatem]
     Funkce $L$ přiřazuje automatu jazyk. Tedy
-    $L(\mathcal{M}) = \{ w \mid \delta^*(s_0, w) \in F \}$
-    pro $\mathcal{M} = (\Sigma, S, s_0, F, \delta)$.
+    $L(\mathcal{M}) = \{ w \mid \delta^*(q_0, w) \in F \}$
+    pro $\mathcal{M} = (Q, \Sigma, \delta, q_0, F)$.
     %Definujeme funkci $L : \mathfrak{M} \to \powerset{\Sigma^*}$.
 \end{definition}
 
@@ -68,7 +140,7 @@ skončí stejně pro libovolné slovo.
 \begin{algorithm}
 \caption{Minimalizace DFA bez nedosažitelných stavů}
 \begin{algorithmic}[1]
-\Function{MinDFA}{$\mathcal{M} = (\Sigma, S, s_0, F, \delta)$}
+\Function{MinDFA}{$\mathcal{M} = (Q, \Sigma, \delta, q_0, F)$}
     \State ${\equiv} \gets \{(p,q) \mid p \in F \iff q \in F \}$
     \While{${\equiv}$ changes}
         \State ${\equiv} \gets
@@ -98,6 +170,9 @@ akceptuje jedno ze slov délky nejvýše $\lvert S \rvert -1$.
 Kdyby akceptoval pouze delší slova, musel by se ve výpočtu některý stav
 opakovat, výpočet by šel o získaný cyklus zkrátit a získali bychom tak
 kratší akceptované slovo (stejný princip jako pumping lemma).
+Prípadne sa dá zistiť, či je jazyk prázdny, hľadaním dosažitelných
+stavov. Jazyk je prázdny práve vtedy, keď ani jeden dosažitelný stav 
+nie je konečný.
 
 $L(\mathcal{M})$ je konečný pravě tehdy, když $\mathcal{M}$
 akceptuje jedno ze slov délky $n$ až $2 \lvert S \rvert - 1$.
@@ -110,11 +185,14 @@ nekonečně mnoho delších slov.
 \begin{definition}
     Nedeterministický konečný automat (NFA) je zadán
     pracovní abecedou $\Sigma$,
-    množinou stavů $S$,
-    počátečním stavem $s_0$,
+    množinou stavů $Q$,
+    počátečním stavem $q_0$,
     množinou koncových stavů $F$,
-    a přechodovou funkcí $\delta : S \times \Sigma \to \powerset{S}$.
+    a přechodovou funkcí $\delta : Q \times \Sigma \to \powerset{Q}$.
 \end{definition}
+
+Oproti definícii deterministického konečného automatu sa mení iba
+typ prechodovej funkcie $\delta$.
 
 Narozdíl od NFA se může vyskytovat ve více stavech zároveň. Každé NFA
 však lze snadno převést na ekvivalentní DFA. Řešení dříve uvažovaných
@@ -156,6 +234,19 @@ existuje DFA $\mathcal{A}$ takový, že $L(\mathcal{A}) = R$.
 Ekvivalentně lze regulární jazyky definovat pomocí regulárních výrazů a
 regulárních gramatik.
 
+\begin{definition}
+	Množina {\em regulárnych výrazov} nad abecedou $\Sigma$,
+	značená $RE(\Sigma)$, je induktívne definovaná nasledovne:
+	\begin{itemize}
+		\item $\epsilon, \emptyset, a \in RE(\Sigma)$, pre každé $a \in \Sigma$,
+		\item ak $E,F \in RE(\Sigma)$, tak aj $E+F, E.F, E^*, E^+ \in RE(\Sigma)$.
+	\end{itemize}
+\end{definition}
+
+Pre regulárne výrazy $E,F$ je $E.F$ ich zreťazením, $E+F$ ich zjednotením a 
+$E^*$ (resp. $E^+$) (pozitívnou) iteráciou.
+
+
 Regulární jazyky jsou uzavřené na sjednocení (důkaz: spojením
 dvou regexů pomocí \verb|+|), zřetězení (důkaz: spojením dvou
 regexů za sebe), doplněk (důkaz: automat pro doplněk je stejný
@@ -177,6 +268,11 @@ platí, že existují $x,y,z \in \Sigma^*$ tak, že $w = xyz$ a zároveň
 \end{itemize}
 \end{theorem}
 
+Ideou dôkazu je, že pre dostatočne dlhé slovo musí existovať v~automate 
+stav, v~ktorom sa ocitne viac krát (inak by slovo muselo byť kratšie,
+ako je počet stavov automatu). Potom výpočet automatu medzi viacerými
+návštevami tohto stavu sa môže opakovať ľubovoľne veľa krát.
+
 \begin{example}
     Mějme jazyk $L = \{ a^n b^n \mid n \in \mathbb{N} \}$,
     pro spor předpokládejme, že je regulární.
@@ -189,17 +285,17 @@ platí, že existují $x,y,z \in \Sigma^*$ tak, že $w = xyz$ a zároveň
 \subsection{Zásobníkové automaty a bezkontextové jazyky}
 
 \begin{definition}
-    Zásobníkový automat (PDA) je zadán
-    pracovní abecedou $\Sigma$,
-    zásobníkovou abecedou $\Gamma$,
-    množinou stavů $S$,
-    počátečním stavem $s_0$,
-    počátečním zásobníkovým symbolem,
-    množinou koncových stavů $F$,
-    přechodovou funkcí
-    $\delta : S \times (\Sigma \cup \{ \varepsilon \}) \times \Gamma \to
-    \finpowerset{S \times \Gamma^*}$
-    a navíc informací o způsobu akceptování: buď koncovým stavem, nebo
+    Zásobníkový automat (PDA) je sedmica $(Q, \Sigma, \Gamma, \delta, q_0, Z_0,F)$, kde
+	\begin{itemize}
+		\item $Q$ je množina stavov,
+		\item $\Sigma$ je vstupná abeceda,
+		\item $\Gamma$ je zásobníková abeceda,
+		\item $\delta : Q \times (\Sigma \cup \epsilon) \times \Gamma \to \finpowerset{Q \times \Gamma^*}$ je prechodová funkcia,
+		\item $q_0 \in Q$ je počiatočný stav,
+		\item $Z_0 \in \Gamma$ je počiatočný symbol v zásobníku,
+		\item $F \subseteq Q$ je množina koncových stavov.
+	\end{itemize}
+    Naviac musí obsahovať informaci o způsobu akceptování: buď koncovým stavem, nebo
     zásobníkem.
 \end{definition}
 
@@ -229,8 +325,66 @@ $L$ či $P$).
     vyplývá, že CFL nejsou uzavřené ani na doplněk.
 \end{example}
 
-\pagebreak
-\subsection{Gramatiky}
+\begin{definition}
+	Pre bezkontextovú gramatiku $G$ je strom $T$ jej 
+	{\em derivačným stromom}, pokiaľ 
+	\begin{itemize}
+		\item ku každému uzlu je priradený symbol z $N \cup \Sigma \cup \{ \epsilon \}$,
+		\item koreň má priradený symbol $S$,
+		\item pre vnútorný uzol s priradeným symbolom $A$ platí:
+		\begin{itemize}
+			\item $A \in N$,
+			\item nech jeho synovia majú priradené (zľava) symboly $X_1, \ldots, X_k$. Potom existuje pravidlo $A \to X_1\ldots X_k$,
+		\end{itemize}
+		\item ak má uzol priradený symbol $\epsilon$, potom je listom a jediným potomkom svojho otca.
+	\end{itemize}
+\end{definition}
+
+Derivačný strom reprezentuje generovanie slova gramatikou.
+
+Bezkontextová gramatika sa nazýva {\em viacznačná}, pokiaľ
+existujú dva rôzne derivačné stromy, ktorých výsledkom je rovnaké slovo.
+V opačnom prípade sa gramatika nazýva {\em jednoznačná}.
+
+{\em Necyklickou} sa nazýva, keď neexistuje neterminál $A$ taký,
+že $A \Rightarrow^+ A$. {\em Vlastnou} sa nazýva ak je bez nepoužiteľných symbolov,
+bez $\epsilon$-pravidiel a necyklická.
+
+\begin{lemma}[O eleminácií ľavej rekurzie]
+	Majme bezkontextovú gramatiku $\mathcal{G}=(N, \Sigma, P, S)$,
+	kde všetky $A$-pravidlá sú:
+	\[
+		A \to A\alpha_1|\ldots|A\alpha_m|\beta_1|\ldots|\beta_n.
+	\]
+	Tieto pravidlá potom nahradíme pravidlami
+	\[
+		A \to \beta_1|\ldots|\beta_n|\beta_1A'|\ldots|\beta_nA', A' \to \alpha_1|\ldots|\alpha_m|\alpha_1A'|\ldots|\alpha_mA',
+	\]
+	kde $A'$ je nový neterminál. Potom táto gramatika generuje
+	rovnaký jazyk a neobsahuje ľavú rekurziu.
+\end{lemma}
+
+\begin{theorem}[Pumping lemma pre CFL]
+	Nech $L$ je bezkontextový jazyk. Potom existujú čísla $p,q \in \mathbb{N}$
+	také, že každé slovo $z \in L$ také, že $|z| > p$ sa dá
+	zapísať v tvare $z=uvwxy$, kde
+	\begin{itemize}
+		\item $vx \neq \epsilon$,
+		\item $|vwx| \leq q$,
+		\item $uv^iwx^iy \in L$ pre všetky $i \geq 0$.
+	\end{itemize}
+\end{theorem}
+
+Idea dôkazu je taká, že pre dostatočne dlhé slovo musí existovať
+tak dlhá cesta v derivačnom strome, aby sa na nej nejaký 
+neterminál (nazvime ho $A$) musel opakovať. V tomto prípade 
+slová $u$ a $y$ obsahujú tie terminály, ktoré sa zapísali pred a po 
+prvom výskyte neterminálu $A$, $w$ obsahuje terminály, na ktoré
+sa neterminál $A$ prepísal po jeho poslednom výskyte.
+Do $v$ a $x$ sa zapisujú tie terminály, ktoré sa pridávajú
+pred a po $A$ počas takej derivácie, že $A \Rightarrow^+ vAx$.
+
+\subsection{Gramatiky a normálne formy}
 
 % https://en.wikipedia.org/wiki/Chomsky_hierarchy#The_hierarchy
 
@@ -331,6 +485,7 @@ které se opakují:
 \begin{example}
 \end{example}
 
+\pagebreak
 
 \subsubsection{CYK algoritmus}
 
@@ -354,7 +509,7 @@ else
   I is not member of language
 \end{Verbatim}
 
-\subsubsection{LL(1) gramatiky}
+\subsubsection{LL(k) gramatiky a analýza LL(1)}
 
 % https://www.fi.muni.cz/usr/kretinsky/LL1aSLL.pdf
 
@@ -365,20 +520,31 @@ analýzu nejpoužívanější varianty, a to LL(1).
     Funkce $FIRST^G_k(\alpha)$ pro dané $\alpha \in (N \cup \Sigma)^+$
     vrátí všechny řetězce délky až $k$, které se dají z~$\alpha$
     odvodit.
+	\[
+		FIRST^G_k(\alpha)= \{ w \in \Sigma^*~|~(\alpha \Rightarrow^* w \land |w| \leq k) \lor (\alpha \Rightarrow^* wx \land |w| = k \land x \in \Sigma^*) \}
+	\]
 
     Funkce $FOLLOW^G_k(A)$ pro dané $A \in N$
     vrátí všechny řetězce délky až $k$, které mohou po terminálu $A$
     následovat.
 
+	\[
+		FOLLOW^G_k(A) = \{ w \in \Sigma^*~|~S \Rightarrow^* \gamma A \alpha, w \in FIRST^G_k(\alpha) \}
+	\]
+
     Binární operátor ${:}$ definujeme pro $k : w$ jako prvních $k$ znaků
     ze slova $w$ (nebo celé $w$ pro $w$ kratší než $k$).
 \end{definition}
 
-\begin{definition}
+\begin{definition}[LL(k) gramatiky]
     Nechť $G = (N, \Sigma, P, S)$ je CFG, $k \geq 1$. $G$ nazveme LL(k)
     právě tehdy, když pro libovolné dvě nejlevější derivace
-    $S \Rightarrow^* wA\alpha \Rightarrow w\beta\alpha \Rightarrow^* wx$,
-    $S \Rightarrow^* wA\alpha \Rightarrow w\gamma\alpha \Rightarrow^* wy$,
+	\[
+		S \Rightarrow^* wA\alpha \Rightarrow w\beta\alpha \Rightarrow^* wx,
+	\]
+    \[ 
+		S \Rightarrow^* wA\alpha \Rightarrow w\gamma\alpha \Rightarrow^* wy,
+	\]
     platí, že $k : x = k : y \implies \beta = \gamma$.
 \end{definition}
 
@@ -432,7 +598,6 @@ Přechodová tabulka má řádek pro neterminál $A$,
 pod symbolem $a$ je pravidlo $A \to aAb$, pod $b$ není nic a pod $c$ je
 $A \to c$.
 
-\pagebreak
 
 Mějme vstup \verb|aacbb$|, analýza probíhá takto:
 
@@ -452,6 +617,25 @@ Mějme vstup \verb|aacbb$|, analýza probíhá takto:
 \textbf{8} & \verb|$|                       & \verb|$|       \\ \hline
 \textbf{9} & $\varepsilon$                              & $\varepsilon$          \\ \hline
 \end{tabular}
+\end{example}
+
+Syntaktická analýza LL(1) gramatík sa síce nedá priamočiaro
+rozšíriť na LL(k) gramatiky, avšak dá sa rozšíriť na SLL(k) gramatiky.
+
+\begin{definition}[SLL(k) gramatiky]
+    Nechť $G = (N, \Sigma, P, S)$ je CFG, $k \geq 1$. $G$~nazveme SLL(k)
+    právě tehdy, když pro libovolné dvě nejlevější derivace
+	\[
+		S \Rightarrow^* wA\alpha \Rightarrow w\beta\alpha \Rightarrow^* wx,
+	\]
+    \[ 
+		S \Rightarrow^* w'A\alpha' \Rightarrow w'\gamma\alpha' \Rightarrow^* w'y,
+	\]
+    platí, že $k : x = k : y \implies \beta = \gamma$.
+\end{definition}
+
+\begin{example}
+	Príklady 2.3, 3.5 v zbierke z~predmetu \verb|IA006|, ktoré sú v~zbierke aj vyriešené.
 \end{example}
 
 \subsubsection{LR(0) gramatiky}
@@ -517,6 +701,9 @@ automatu, že není splněna jedna z~části definice.
 {https://www.cs.bgu.ac.il/{\textasciitilde}comp151/wiki.files/ps6.html\#sec-2}
 \end{example}
 
+\begin{example}
+	Príklad 6.3 v zbierke z~predmetu \verb|IA006|, ktorý je v~zbierke aj vyriešený.
+\end{example}
 
 \subsection{Konečné automaty nad nekonečnými slovy}
 
@@ -544,7 +731,7 @@ $\emptyset^* = \{ \varepsilon \}$.
     Dále $(a+b)^\omega$ značí jazyk nekonečně dlouhých slov z~písmen
     $a,b$;
     $(a+b)^*b^\omega$ značí jazyk $\omega$-slov s konečně mnoha $a$;
-    $(a+b)*ab)^\omega$ je jazyk slov obsahujících nekonečně mnoho $a$ i $b$.
+    $(a+b)*(ab)^\omega$ je jazyk slov obsahujících nekonečně mnoho $a$ i $b$.
 \end{example}
 
 \begin{definition}
@@ -563,6 +750,9 @@ Posloupnost navštívených stavů při výpočtu na slově $w$ nazveme {\em bě
 na $w$}.
 $\omega$-automat akceptuje $w \in \Sigma^\omega$,
 pokud běh na $w$ leží v~$S_{Acc}$.
+
+Pre beh automatu nazývame $\Inf{\rho}$ množinu jeho stavov,
+ktoré sa počas behu navštívia nekonečne veľa krát.
 
 $\omega$-automaty řadíme do několika kategorií podle volby akceptující
 podmínky.
@@ -624,6 +814,16 @@ deterministický by na to potřeboval nekonečně mnoho stavů.
 Můžeme uvažovat i jiné podmínky než Büchiho.
 
 \begin{definition}
+    Nech $F \subseteq \powerset{Q}$ je množina množín stavov.
+	V {\em Műllerovom automate} pre každý beh $\rho \in S_{Acc}$ platí
+    $\Inf{\rho} \in F$.
+\end{definition}
+
+Müllerov automat teda obsahuje viac množín stavov, pričom
+pre každé akceptujúce slovo musí platiť, že stavy, ktoré 
+sú navštívené nekonečne krát, sú práve jednou z týchto možností.
+
+\begin{definition}
     Nechť $\Omega = \{(E_i, F_i)\}_{1 \leq i \leq n}$ pro nějaké
     $n \in \mathbb{N}$.
     $\omega$-automat nazveme {\em Rabinův},
@@ -661,17 +861,24 @@ právě tehdy, když je limitním jazykem nějakého regulární jazyka.
 \subsection{Turingovy stroje}
 
 \begin{definition}
-    Turingův stroj (TM) je zadán
-    páskovou abecedou $\Gamma$,
-    symbolem prázdného políčka $b \in \Gamma$,
-    vstupní abecedou $\Sigma \subseteq \Gamma \setminus \{b\}$,
-    množinou stavů $S$,
-    počátečním stavem $s_0$,
-    množinou koncových stavů $F$,
-    a přechodovou funkcí \linebreak
-    $\delta : (S \setminus F) \times \Gamma
-        \to S \times \Gamma \times \{L,R\}$.
+    Turingov stroj (TM) je devätica $(Q, \Sigma, \Gamma, \triangleright,
+	\sqcup, \delta, q_0, q_{accept}, q_{reject})$, kde
+	\begin{itemize}
+		\item $Q$ je množina stavov,
+		\item $\Sigma$ je vstupná abeceda,
+		\item $\Gamma$ je množina páskových pracovných symbolov, $\Sigma \subseteq \Gamma$,
+		\item $\triangleright \in \Gamma \setminus \Sigma$ je symbol ľavého konca pásky,
+		\item $\sqcup \in \Gamma \setminus \Sigma$ je symbol označujúci prázdne políčko,
+		\item $\delta : (Q \setminus \{q_{accept}, q_{reject} \}) \times \Gamma \to Q \times \Gamma \times \{L,R \}$ je prechodová funkcia,
+		\item $q_0 \in Q$ je počiatočný stav,
+		\item $q_{accept} \in Q$ je akceptujúci stav,
+		\item $q_{reject} \in Q$ je zamietajúci stav.
+	\end{itemize}
 \end{definition}
+
+{\em Konfigurácia} Turingovho stroja je kompletná informácia
+o~aktuálnom stave výpočtu, tj. aktuálny stav, obsah pásky
+a poloha hlavy na páske.
 
 \begin{definition}[Univerzální TS]
 Turingův stroj nazveme {\em univerzální},
@@ -683,11 +890,20 @@ Je třeba si dát pozor na technické problémy jako například různě velké
 pracovní abecedy.
 
 \begin{definition}[Rozhodnutelnost a vyčíslitelnost]
-    Jazyk $L$ je {\em částečně rozhodnutelný}, pokud existuje Turingův
+    Jazyk $L$ je {\em rekursivně spočetný}, pokud existuje Turingův
     stroj, který každý vstup $w$ akceptuje právě tehdy, když $w \in L$.
 
-    Jazyk je {\em rozhodnutelný}, pokud je částečně rozhodnutelný
-    strojem $M$ a navíc stroj $M$ zastaví na každém vstupu $w$.
+    Jazyk je {\em rekursivní}, pokud existuje úplný Turingův
+    stroj, který každý vstup $w$ akceptuje právě tehdy, když $w \in L$,
+	tj. daný Turingov stroj zastaví na každom výpočte.
+
+	Problém je {\em rozhodnuteľný}, pokiaľ množina všetkých reťazcov
+	majúcich danú vlastnosť je rekurzívna.
+	
+	Problém je {\em nerozhodnuteľný}, pokiaľ nie je rozhodnuteľný.
+	
+	Problém je {\em čiastočne rozhodnuteľný}, pokiaľ množina všetkých reťazcov
+	majúcich danú vlastnosť je rekurzívne spočetná.
 
     Funkce $f$ je {\em vyčíslitelná}, pokud existuje Turingův
     stroj $M$ takový, že pro $w$ z definičního oboru $f$ zastaví a na pásce má
@@ -697,6 +913,11 @@ pracovní abecedy.
     navíc totální.
 \end{definition}
 
+Triedy rekurzívnych a rekurzívne spočetných jazykov sú uzavreté na 
+zjednotenie, prienik, zreťazenie a iteráciu. Trieda rekurzívnych
+jazykov je navyše uzavretá na komplement.
+
+Rekurzívne spočetné jazyky sú práve tie generované gramatikami typu~$0$.
 
 \begin{theorem}[Nerozhodnutelnost problému zastavení]
 Mějme nějakou enumeraci vyčíslitelných Turingových strojů.
@@ -734,6 +955,12 @@ vyčíslitelností.
 Problém zastavení je však zřejmě částečně rozhodnutelný.
 Naopak problém nezastavení není ani částečně rozhodnutelný (bez důkazu).
 
+Jazyky generované gramatikami typu~$1$ sú rozhodovateľné {\em lineárne
+ohraničenými automatmi}. Lineárne ohraničený automat je zjednodušene
+v podstate nedeterministický Turingov stroj, ktorý však obsahuje aj 
+koncovú značku, takže nikdy nemôže opustiť políčka, na ktorých bol
+napísaný vstup.
+
 \subsection{RAM a PRAM modely}
 
 % http://pages.cs.wisc.edu/~tvrdik/2/html/Section2.html
@@ -762,6 +989,9 @@ zápisu. Viz
 
 \subsection{Celulární automaty}
 
+Všeobecne model celulárnych automatov je na $n$-rozmernej nekonečnej
+mriežke, kde každá bunka je v jednom z konečného počtu stavov.
+
 Například {\em Game of Life}, celulární automat na dvourozměrné, nekonečné
 mřížce, kde každá buňka nabývá stavu {\em live} nebo {\em dead}.
 
@@ -781,3 +1011,4 @@ chaotičnosti jejich vývoje. Již pro jednorozměrné
 mřížky existují pravidla, která demonstrují jak chaotické chování
 (pravidlo 30), tak částečně pravidelné a částečně chaotické (pravidlo
 110).
+
